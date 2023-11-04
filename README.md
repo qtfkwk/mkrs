@@ -32,7 +32,7 @@ Build automation tool
 
 ```
 $ mkrs -V
-mkrs 0.1.1
+mkrs 0.1.2
 ```
 
 ```
@@ -49,6 +49,77 @@ Options:
   -n             Dry run
   -h, --help     Print help
   -V, --version  Print version
+```
+
+# Examples
+
+```
+$ mkrs -l
+build
+README.md
+clippy
+test
+check
+update
+install
+uninstall
+install-deps
+fail
+```
+
+```
+$ mkrs -n
+cargo build --release
+kapow t/README.md >README.md
+cargo clippy -- -D clippy::all
+cargo build --release
+```
+
+```
+$ mkrs
+cargo build --release
+    Finished release [optimized] target(s) in 0.02s
+kapow t/README.md >README.md
+cargo clippy -- -D clippy::all
+    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
+cargo build --release
+    Finished release [optimized] target(s) in 0.07s
+```
+
+```
+$ mkrs check
+cargo outdated --exit-code 1
+All dependencies are up to date, yay!
+cargo audit
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 576 security advisories (from /home/nick/.cargo/advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (47 crate dependencies)
+```
+
+```
+$ mkrs update check build
+cargo upgrade --incompatible
+    Updating 'https://github.com/rust-lang/crates.io-index' index
+    Checking mkrs's dependencies
+note: Re-run with `--verbose` to show more dependencies
+  latest: 5 packages
+cargo update
+    Updating crates.io index
+cargo outdated --exit-code 1
+All dependencies are up to date, yay!
+cargo audit
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 576 security advisories (from /home/nick/.cargo/advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (47 crate dependencies)
+cargo build --release
+    Finished release [optimized] target(s) in 0.03s
+kapow t/README.md >README.md
+cargo clippy -- -D clippy::all
+    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
+cargo build --release
+    Finished release [optimized] target(s) in 0.06s
 ```
 
 ---
