@@ -12,6 +12,7 @@ Build automation tool
   immediately
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
+[`Makefile.md`]: Makefile.md
 
 # Syntax
 
@@ -31,7 +32,7 @@ Build automation tool
 
 ```
 $ mkrs -V
-mkrs 0.1.0
+mkrs 0.1.1
 ```
 
 ```

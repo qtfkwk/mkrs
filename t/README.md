@@ -12,6 +12,7 @@ Build automation tool
   immediately
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
+[`Makefile.md`]: Makefile.md
 
 # Syntax
 
