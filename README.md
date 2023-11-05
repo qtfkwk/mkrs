@@ -6,6 +6,7 @@ Build automation tool
 * No automatic targets[^one]
 * Minimalist functionality; maximalist readability
 * Configuration is a simple Markdown file named [`Makefile.md`]
+* Output is colorized Markdown
 * Processes the target(s) specified or if none, processes the first target
 * Commands are run via `sh` shell
 * If any command fails (exits with a non-zero code), processing halts
@@ -30,12 +31,12 @@ Build automation tool
 
 # Usage
 
-```
+~~~text
 $ mkrs -V
-mkrs 0.1.2
-```
+mkrs 0.2.0
+~~~
 
-```
+~~~text
 $ mkrs -h
 Build automation tool
 
@@ -46,81 +47,150 @@ Arguments:
 
 Options:
   -l             List available targets
+  -B             Force processing
   -n             Dry run
+  -C <PATH>      Change directory
+  -f <PATH>      Configuration file [default: Makefile.md]
+  -r             Print readme
   -h, --help     Print help
   -V, --version  Print version
-```
+~~~
 
 # Examples
 
-```
+~~~text
 $ mkrs -l
-build
-README.md
-clippy
-test
-check
-update
-install
-uninstall
-install-deps
-fail
-```
+# Targets
 
-```
+* build
+* `README.md`
+* clippy
+* test
+* check
+* update
+* install
+* uninstall
+* install-deps
+* fail
+
+~~~
+
+~~~text
 $ mkrs -n
-cargo build --release
-kapow t/README.md >README.md
-cargo clippy -- -D clippy::all
-cargo build --release
+# `README.md`
+
+*Up to date*
+
+# clippy
+
+```text
+$ cargo clippy -- -D clippy::all
 ```
 
+# build
+
+```text
+$ cargo build --release
 ```
+
+~~~
+
+~~~text
 $ mkrs
-cargo build --release
-    Finished release [optimized] target(s) in 0.02s
-kapow t/README.md >README.md
-cargo clippy -- -D clippy::all
-    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
-cargo build --release
-    Finished release [optimized] target(s) in 0.07s
+# `README.md`
+
+*Up to date*
+
+# clippy
+
+```text
+$ cargo clippy -- -D clippy::all
+    Checking mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.25s
 ```
 
+# build
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.39s
 ```
+
+~~~
+
+~~~text
 $ mkrs check
-cargo outdated --exit-code 1
+# check
+
+```text
+$ cargo outdated --exit-code 1
 All dependencies are up to date, yay!
-cargo audit
-    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 576 security advisories (from /home/nick/.cargo/advisory-db)
-    Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (47 crate dependencies)
 ```
 
+```text
+$ cargo audit
+[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
+[0m[0m[1m[32m      Loaded[0m 576 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m    Updating[0m crates.io index
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (61 crate dependencies)
 ```
+
+~~~
+
+~~~text
 $ mkrs update check build
-cargo upgrade --incompatible
+# update
+
+```text
+$ cargo upgrade --incompatible
     Updating 'https://github.com/rust-lang/crates.io-index' index
     Checking mkrs's dependencies
 note: Re-run with `--verbose` to show more dependencies
-  latest: 5 packages
-cargo update
-    Updating crates.io index
-cargo outdated --exit-code 1
-All dependencies are up to date, yay!
-cargo audit
-    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 576 security advisories (from /home/nick/.cargo/advisory-db)
-    Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (47 crate dependencies)
-cargo build --release
-    Finished release [optimized] target(s) in 0.03s
-kapow t/README.md >README.md
-cargo clippy -- -D clippy::all
-    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
-cargo build --release
-    Finished release [optimized] target(s) in 0.06s
+  latest: 8 packages
 ```
+
+```text
+$ cargo update
+    Updating crates.io index
+```
+
+# check
+
+```text
+$ cargo outdated --exit-code 1
+All dependencies are up to date, yay!
+```
+
+```text
+$ cargo audit
+[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
+[0m[0m[1m[32m      Loaded[0m 576 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m    Updating[0m crates.io index
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (61 crate dependencies)
+```
+
+# `README.md`
+
+*Up to date*
+
+# clippy
+
+```text
+$ cargo clippy -- -D clippy::all
+    Checking mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.26s
+```
+
+# build
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.40s
+```
+
+~~~
 
 ---
 

@@ -1,6 +1,6 @@
 [package]
 name = "mkrs"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 description = "Build automation tool"
 repository = "https://github.com/qtfkwk/mkrs"
@@ -8,7 +8,12 @@ license = "MIT"
 
 [dependencies]
 anyhow = "1.0.75"
+bunt = "0.2.8"
 clap = { version = "4.4.7", features = ["derive", "wrap_help"] }
 dep-graph = { version = "0.2.0", default-features = false }
 indexmap = "2.1.0"
+is-terminal = "0.4.9"
 pulldown-cmark = { version = "0.9.3", features = ["simd"] }
+
+[target.'cfg(unix)'.dependencies]
+pager = "0.16.1"

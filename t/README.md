@@ -6,6 +6,7 @@ Build automation tool
 * No automatic targets[^one]
 * Minimalist functionality; maximalist readability
 * Configuration is a simple Markdown file named [`Makefile.md`]
+* Output is colorized Markdown
 * Processes the target(s) specified or if none, processes the first target
 * Commands are run via `sh` shell
 * If any command fails (exits with a non-zero code), processing halts
@@ -30,86 +31,42 @@ Build automation tool
 
 # Usage
 
-```
+~~~text
 $ mkrs -V
-!run:../target/release/mkrs -V
-```
+!run:../target/release/mkrs -f ../Makefile.md -V 2>&1
+~~~
 
-```
+~~~text
 $ mkrs -h
-!run:../target/release/mkrs -h
-```
+!run:../target/release/mkrs -f ../Makefile.md -h 2>&1
+~~~
 
 # Examples
 
-```
+~~~text
 $ mkrs -l
-build
-README.md
-clippy
-test
-check
-update
-install
-uninstall
-install-deps
-fail
-```
+!run:../target/release/mkrs -C .. -l 2>&1
+~~~
 
-```
+~~~text
 $ mkrs -n
-cargo build --release
-kapow t/README.md >README.md
-cargo clippy -- -D clippy::all
-cargo build --release
-```
+!run:../target/release/mkrs -f ../Makefile.md -n 2>&1
+~~~
 
-```
+~~~text
 $ mkrs
-cargo build --release
-    Finished release [optimized] target(s) in 0.02s
-kapow t/README.md >README.md
-cargo clippy -- -D clippy::all
-    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
-cargo build --release
-    Finished release [optimized] target(s) in 0.07s
-```
+!run:../target/release/mkrs -f ../Makefile.md 2>&1
+~~~
 
-```
+~~~text
 $ mkrs check
-cargo outdated --exit-code 1
-All dependencies are up to date, yay!
-cargo audit
-    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 576 security advisories (from /home/nick/.cargo/advisory-db)
-    Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (47 crate dependencies)
-```
+!run:../target/release/mkrs -f ../Makefile.md check 2>&1
+~~~
 
-```
+~~~text
 $ mkrs update check build
-cargo upgrade --incompatible
-    Updating 'https://github.com/rust-lang/crates.io-index' index
-    Checking mkrs's dependencies
-note: Re-run with `--verbose` to show more dependencies
-  latest: 5 packages
-cargo update
-    Updating crates.io index
-cargo outdated --exit-code 1
-All dependencies are up to date, yay!
-cargo audit
-    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 576 security advisories (from /home/nick/.cargo/advisory-db)
-    Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (47 crate dependencies)
-cargo build --release
-    Finished release [optimized] target(s) in 0.03s
-kapow t/README.md >README.md
-cargo clippy -- -D clippy::all
-    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
-cargo build --release
-    Finished release [optimized] target(s) in 0.06s
-```
+!run:../target/release/mkrs -f ../Makefile.md update check build 2>&1
+~~~
 
 ---
 
