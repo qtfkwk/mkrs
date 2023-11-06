@@ -33,7 +33,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.2.0
+mkrs 0.2.1
 ~~~
 
 ~~~text
@@ -105,16 +105,16 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.25s
+    Checking mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
 ```
 
 # build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.39s
+   Compiling mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.32s
 ```
 
 ~~~
@@ -130,10 +130,10 @@ All dependencies are up to date, yay!
 
 ```text
 $ cargo audit
-[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 576 security advisories (from /home/nick/.cargo/advisory-db)
-[0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (61 crate dependencies)
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 577 security advisories (from /home/nick/.cargo/advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (61 crate dependencies)
 ```
 
 ~~~
@@ -164,10 +164,10 @@ All dependencies are up to date, yay!
 
 ```text
 $ cargo audit
-[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 576 security advisories (from /home/nick/.cargo/advisory-db)
-[0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (61 crate dependencies)
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 577 security advisories (from /home/nick/.cargo/advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (61 crate dependencies)
 ```
 
 # `README.md`
@@ -178,7 +178,7 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.26s
 ```
 
@@ -186,8 +186,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.2.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.40s
+   Compiling mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.31s
 ```
 
 ~~~
