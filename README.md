@@ -33,7 +33,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.2.1
+mkrs 0.3.0
 ~~~
 
 ~~~text
@@ -46,17 +46,20 @@ Arguments:
   [NAME]...  Target(s)
 
 Options:
-  -l             List available targets
-  -B             Force processing
-  -n             Dry run
-  -C <PATH>      Change directory
-  -f <PATH>      Configuration file [default: Makefile.md]
-  -r             Print readme
-  -h, --help     Print help
-  -V, --version  Print version
+  -l              List available targets
+  -B              Force processing
+  -n              Dry run
+  -C <PATH>       Change directory
+  -f <PATH>       Configuration file [default: Makefile.md]
+  -g <STYLE>      Generate Makefile.md content [styles: rust]
+  -r              Print readme
+  -h, --help      Print help
+  -V, --version   Print version
 ~~~
 
 # Examples
+
+## List available targets
 
 ~~~text
 $ mkrs -l
@@ -74,6 +77,8 @@ $ mkrs -l
 * fail
 
 ~~~
+
+## Dry run
 
 ~~~text
 $ mkrs -n
@@ -95,6 +100,8 @@ $ cargo build --release
 
 ~~~
 
+## Process default target
+
 ~~~text
 $ mkrs
 # `README.md`
@@ -105,19 +112,21 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
+    Checking mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
 ```
 
 # build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.32s
+   Compiling mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.36s
 ```
 
 ~~~
+
+## Process `check` target
 
 ~~~text
 $ mkrs check
@@ -137,6 +146,8 @@ $ cargo audit
 ```
 
 ~~~
+
+## Process `update`, `check`, and `build` targets
 
 ~~~text
 $ mkrs update check build
@@ -178,7 +189,7 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.26s
 ```
 
@@ -186,8 +197,76 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.2.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.31s
+   Compiling mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.36s
+```
+
+~~~
+
+## Generate a default Makefile.md for a Rust project
+
+~~~text
+$ mkrs -g rust
+# build
+
+* clippy
+* `README.md`
+
+```
+cargo build --release
+```
+
+# `README.md`
+
+* `t/README.md`
+
+```
+cargo build --release
+kapow {0} >{target}
+```
+
+# clippy
+
+```
+cargo clippy -- -D clippy::all
+```
+
+# test
+
+```
+cargo test
+```
+
+# check
+
+```
+cargo outdated --exit-code 1
+cargo audit
+```
+
+# update
+
+```
+cargo upgrade --incompatible
+cargo update
+```
+
+# install
+
+```
+cargo install --path .
+```
+
+# uninstall
+
+```
+cargo uninstall $(toml get -r Cargo.toml package.name)
+```
+
+# install-deps
+
+```
+cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
 ```
 
 ~~~

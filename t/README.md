@@ -43,29 +43,46 @@ $ mkrs -h
 
 # Examples
 
+## List available targets
+
 ~~~text
 $ mkrs -l
 !run:../target/release/mkrs -C .. -l 2>&1
 ~~~
+
+## Dry run
 
 ~~~text
 $ mkrs -n
 !run:../target/release/mkrs -f ../Makefile.md -n 2>&1
 ~~~
 
+## Process default target
+
 ~~~text
 $ mkrs
 !run:../target/release/mkrs -f ../Makefile.md 2>&1
 ~~~
+
+## Process `check` target
 
 ~~~text
 $ mkrs check
 !run:../target/release/mkrs -f ../Makefile.md check 2>&1
 ~~~
 
+## Process `update`, `check`, and `build` targets
+
 ~~~text
 $ mkrs update check build
 !run:../target/release/mkrs -f ../Makefile.md update check build 2>&1
+~~~
+
+## Generate a default Makefile.md for a Rust project
+
+~~~text
+$ mkrs -g rust
+!run:../target/release/mkrs -f ../Makefile.md -g rust 2>&1
 ~~~
 
 ---

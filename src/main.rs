@@ -44,6 +44,10 @@ struct Cli {
     #[arg(short = 'f', default_value = "Makefile.md", value_name = "PATH")]
     config_file: PathBuf,
 
+    /// Generate Makefile.md content [styles: rust]
+    #[arg(short = 'g', value_name = "STYLE")]
+    generate: Option<String>,
+
     /// Print readme
     #[arg(short)]
     readme: bool,
@@ -63,6 +67,18 @@ fn main() -> Result<()> {
         Pager::with_pager("bat -pl md").setup();
 
         print!("{}", include_str!("../README.md"));
+        std::process::exit(0);
+    }
+
+    if let Some(style) = cli.generate {
+        match style.as_str() {
+            "rust" => {
+                print!("{}", include_str!("../styles/Makefile.rust.md"));
+            }
+            _ => {
+                error!(6, "ERROR: Invalid style: `{style}`!");
+            }
+        }
         std::process::exit(0);
     }
 
