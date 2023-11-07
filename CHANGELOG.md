@@ -7,8 +7,9 @@
   options; error on invalid target(s); update dependencies
 * 0.2.1 (2023-11-06): Resolved issue [#1]; update dependencies
 * 0.3.0 (2023-11-06): Added `-g` option and
-  [default Makefile.md for Rust projects]; fixed changelog; improved readme
+  [default `Makefile.md` for a Rust project]; fixed changelog; improved readme
+* 0.3.1 (2023-11-07): Improved readme and changelog
 
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
-[default Makefile.md for Rust projects]: styles/Makefile.rust.md
+[default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 

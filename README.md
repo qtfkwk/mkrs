@@ -11,6 +11,7 @@ Build automation tool
 * Commands are run via `sh` shell
 * If any command fails (exits with a non-zero code), processing halts
   immediately
+* Generates a [default `Makefile.md` for a Rust project]
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
@@ -33,7 +34,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.3.0
+mkrs 0.3.1
 ~~~
 
 ~~~text
@@ -112,15 +113,15 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
+    Checking mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.25s
 ```
 
 # build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
+   Compiling mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished release [optimized] target(s) in 1.36s
 ```
 
@@ -189,7 +190,7 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.26s
 ```
 
@@ -197,8 +198,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.3.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.36s
+   Compiling mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.37s
 ```
 
 ~~~
@@ -270,6 +271,23 @@ cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
 ```
 
 ~~~
+
+**Note:** Save to `Makefile.md` via redirection: `mkrs -g rust >Makefile.md`
+
+# Changelog
+
+* 0.1.0 (2023-11-04): Initial release
+* 0.1.1 (2023-11-04): Fix readme
+* 0.1.2 (2023-11-04): Add examples to readme
+* 0.2.0 (2023-11-05): Colorized Markdown output; added `-B`, `-C`, `-f`, `-r`
+  options; error on invalid target(s); update dependencies
+* 0.2.1 (2023-11-06): Resolved issue [#1]; update dependencies
+* 0.3.0 (2023-11-06): Added `-g` option and
+  [default `Makefile.md` for a Rust project]; fixed changelog; improved readme
+* 0.3.1 (2023-11-07): Improved readme and changelog
+
+[#1]: https://github.com/qtfkwk/mkrs/issues/1
+[default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 
 ---
 

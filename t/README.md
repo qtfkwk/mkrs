@@ -11,6 +11,7 @@ Build automation tool
 * Commands are run via `sh` shell
 * If any command fails (exits with a non-zero code), processing halts
   immediately
+* Generates a [default `Makefile.md` for a Rust project]
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
@@ -84,6 +85,10 @@ $ mkrs update check build
 $ mkrs -g rust
 !run:../target/release/mkrs -f ../Makefile.md -g rust 2>&1
 ~~~
+
+**Note:** Save to `Makefile.md` via redirection: `mkrs -g rust >Makefile.md`
+
+!inc:../CHANGELOG.md
 
 ---
 
