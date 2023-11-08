@@ -293,7 +293,7 @@ impl Config {
                                         },
                                     )
                                     .replace("{target}", name.as_ref().unwrap());
-                                if command.is_empty() {
+                                if command.is_empty() || command.starts_with('#') {
                                     None
                                 } else {
                                     Some(command)

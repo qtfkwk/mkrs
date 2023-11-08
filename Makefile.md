@@ -10,6 +10,7 @@ cargo build --release
 # `README.md`
 
 * `t/README.md`
+* `Cargo.toml`
 
 ```
 cargo build --release
@@ -64,6 +65,8 @@ cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
 
 ```
 echo This command runs
+
+#echo Ignore this command
 
 echo This command runs too but the next one fails
 
