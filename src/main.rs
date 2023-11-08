@@ -189,18 +189,28 @@ fn process_target(
     let target = target.to_owned();
     let target = targets.get(&target).unwrap();
     if let Some(ts) = target.dtg.as_ref() {
+        // File target...
+        let file_does_not_exist = !Path::new(&target.name).exists();
         if target.commands.is_empty() {
-            if !Path::new(&target.name).exists() {
+            if file_does_not_exist {
+                // File dependency (without commands) must exist
                 error!(3, "ERROR: File `{}` does not exist!", target.name);
             }
-        } else if force_processing || target.outdated(ts, targets) {
+            // Otherwise, file dependency exists so don't print or do anything
+        } else if force_processing || file_does_not_exist || target.outdated(ts, targets) {
+            // Process the target if any of:
+            // * `-B`
+            // * file doesn't exist & target has commands
+            // * target is outdated
             target.print_heading();
             target.run(dry_run);
         } else {
+            // Otherwise, don't process the target
             target.print_heading();
             bunt::println!("{$#00ff00+italic}*Up to date*{/$}\n");
         }
     } else {
+        // "Phony" target
         target.print_heading();
         target.run(dry_run);
     }
@@ -350,7 +360,10 @@ impl Target {
         Target {
             name: name.to_owned(),
             dtg: if is_file {
-                std::fs::metadata(name).unwrap().modified().ok()
+                match std::fs::metadata(name) {
+                    Ok(m) => m.modified().ok(),
+                    Err(_e) => Some(std::time::SystemTime::UNIX_EPOCH),
+                }
             } else {
                 None
             },

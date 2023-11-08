@@ -9,6 +9,8 @@
 * 0.3.0 (2023-11-06): Added `-g` option and
   [default `Makefile.md` for a Rust project]; fixed changelog; improved readme
 * 0.3.1 (2023-11-07): Improved readme and changelog
+* 0.3.2 (2023-11-08): Fix error when a target file does not exist; update
+  dependencies
 
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md

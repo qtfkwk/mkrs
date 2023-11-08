@@ -72,3 +72,9 @@ exit 1
 echo This does not run because the prior command failed
 ```
 
+# `nonexistent`
+
+```
+echo
+```
+  

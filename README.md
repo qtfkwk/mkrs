@@ -34,7 +34,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.3.1
+mkrs 0.3.2
 ~~~
 
 ~~~text
@@ -76,6 +76,7 @@ $ mkrs -l
 * uninstall
 * install-deps
 * fail
+* `nonexistent`
 
 ~~~
 
@@ -113,7 +114,7 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.3.2 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.25s
 ```
 
@@ -121,8 +122,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.36s
+   Compiling mkrs v0.3.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.34s
 ```
 
 ~~~
@@ -190,7 +191,7 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.3.2 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.26s
 ```
 
@@ -198,8 +199,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.3.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.37s
+   Compiling mkrs v0.3.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.39s
 ```
 
 ~~~
@@ -285,6 +286,8 @@ cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
 * 0.3.0 (2023-11-06): Added `-g` option and
   [default `Makefile.md` for a Rust project]; fixed changelog; improved readme
 * 0.3.1 (2023-11-07): Improved readme and changelog
+* 0.3.2 (2023-11-08): Fix error when a target file does not exist; update
+  dependencies
 
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
