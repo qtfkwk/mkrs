@@ -5,7 +5,9 @@ use indexmap::IndexMap;
 use is_terminal::IsTerminal;
 use pulldown_cmark as pd;
 use std::collections::HashSet;
+use std::io::Write;
 use std::path::{Path, PathBuf};
+use std::process::{Command, Stdio};
 
 #[cfg(unix)]
 use pager::Pager;
@@ -21,12 +23,20 @@ macro_rules! error {
 
 //--------------------------------------------------------------------------------------------------
 
+fn print_h1(s: &str) {
+    bunt::println!("{$#00ffff+bold}# {}{/$}\n", s);
+}
+
+fn print_h2(s: &str) {
+    bunt::println!("{$#ffff22+bold}## {}{/$}\n", s);
+}
+
 fn print_file_target(name: &str) {
-    bunt::println!("{$#ff22ff+bold}# `{}`{/$}\n", name);
+    bunt::println!("{$#ff22ff+bold}### `{}`{/$}\n", name);
 }
 
 fn print_target(name: &str) {
-    bunt::println!("{$#ff22ff+bold}# {}{/$}\n", name);
+    bunt::println!("{$#ff22ff+bold}### {}{/$}\n", name);
 }
 
 fn print_list_file_target(name: &str) {
@@ -45,8 +55,19 @@ fn print_start_command(command: &str) {
     bunt::println!("{$#555555}```text\n${/$} {$#00ffff+bold}{}{/$}", command);
 }
 
-fn print_end_command() {
+fn print_start_script(script: &str) {
+    bunt::println!(
+        "{$#555555}```bash{/$}\n{}\n{$#555555}```{/$}\n\n{$#555555}```text{/$}",
+        script
+    );
+}
+
+fn print_end_fence() {
     bunt::println!("{$#555555}```{/$}\n");
+}
+
+fn print_fence() {
+    bunt::println!("{$#555555}```{/$}");
 }
 
 fn set_terminal_colors() {
@@ -67,7 +88,7 @@ fn set_terminal_colors() {
 
 //--------------------------------------------------------------------------------------------------
 
-#[derive(Parser)]
+#[derive(Debug, Parser)]
 #[command(about, version, max_term_width = 80)]
 struct Cli {
     /// List available targets
@@ -81,6 +102,10 @@ struct Cli {
     /// Dry run
     #[arg(short = 'n')]
     dry_run: bool,
+
+    /// Script mode
+    #[arg(short)]
+    script_mode: bool,
 
     /// Verbose
     #[arg(short, action = Count)]
@@ -110,6 +135,10 @@ struct Cli {
 //--------------------------------------------------------------------------------------------------
 
 fn main() -> Result<()> {
+    if cfg!(windows) {
+        error!(255, "ERROR: Windows is not a supported operating system!");
+    }
+
     let cli = Cli::parse();
 
     // Print the readme (`-r`)
@@ -135,9 +164,24 @@ fn main() -> Result<()> {
     }
 
     // Change directory (`-C`)
-    if let Some(dir) = cli.change_directory {
+    if let Some(dir) = &cli.change_directory {
         std::env::set_current_dir(dir)?;
     }
+
+    // Set terminal colors
+    set_terminal_colors();
+
+    print_h1("mkrs");
+
+    // Print configuration
+    if cli.verbose >= 3 {
+        print_h2("Configuration");
+        print_fence();
+        println!("{cli:#?}");
+        print_end_fence();
+    }
+
+    print_h2("Target(s)");
 
     // Process the configuration file (`Makefile.md` or `-f PATH`)
     if cli.config_file.exists() {
@@ -151,12 +195,8 @@ fn main() -> Result<()> {
                 // Parse the content to a `Config`
                 let cfg = Config::from_markdown(&s);
 
-                // Set terminal colors
-                set_terminal_colors();
-
                 // List targets (`-l`)
                 if cli.list_targets {
-                    print_target("Targets");
                     for target in cfg.targets.values() {
                         if target.dtg.is_none()
                             || !target.dependencies.is_empty()
@@ -201,6 +241,7 @@ fn main() -> Result<()> {
                             cli.dry_run,
                             cli.force_processing,
                             cli.verbose,
+                            cli.script_mode,
                         );
                     });
                 }
@@ -260,6 +301,7 @@ fn process_target(
     dry_run: bool,
     force_processing: bool,
     verbose: u8,
+    script_mode: bool,
 ) {
     let target = target.to_owned();
     let target = targets.get(&target).unwrap();
@@ -275,22 +317,22 @@ fn process_target(
         } else if force_processing || file_does_not_exist || target.outdated(ts, targets) {
             // Process the target if `-B`, target has commands & file doesn't exist, or target is
             // outdated
-            target.run(dry_run);
-        } else if verbose > 0 {
+            target.run(dry_run, verbose, script_mode);
+        } else if verbose >= 2 {
             // Otherwise, don't process the target
             target.print_heading();
             print_up_to_date();
         }
     } else {
         // "Phony" target
-        target.run(dry_run);
+        target.run(dry_run, verbose, script_mode);
     }
 }
 
 fn run(command: &str, dry_run: bool) {
     print_start_command(command);
     if !dry_run
-        && std::process::Command::new("sh")
+        && Command::new("sh")
             .args(["-c", command])
             .spawn()
             .unwrap()
@@ -299,10 +341,32 @@ fn run(command: &str, dry_run: bool) {
             .code()
             != Some(0)
     {
-        print_end_command();
+        print_end_fence();
         error!(4, "ERROR: The command failed!");
     }
-    print_end_command();
+    print_end_fence();
+}
+
+fn run_script(script: &str, dry_run: bool, verbose: u8) {
+    print_start_script(script);
+    let mut args = vec!["-eo", "pipefail"];
+    if verbose >= 1 {
+        args.push("-x");
+    }
+    if !dry_run {
+        let mut c = Command::new("bash")
+            .args(args)
+            .stdin(Stdio::piped())
+            .spawn()
+            .unwrap();
+        let stdin = c.stdin.as_mut().unwrap();
+        writeln!(stdin, "{script}").unwrap();
+        if !c.wait().unwrap().success() {
+            print_end_fence();
+            error!(4, "ERROR: The script failed!");
+        }
+    }
+    print_end_fence();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -350,27 +414,30 @@ impl Config {
                     } else if in_dependencies {
                         dependencies.push(s.to_string());
                     } else if in_commands {
-                        commands = s
-                            .replace("\\\n", "")
-                            .lines()
-                            .filter_map(|x| {
-                                let command = x
-                                    .replace(
-                                        "{0}",
-                                        if dependencies.is_empty() {
-                                            "{0}"
-                                        } else {
-                                            &dependencies[0]
-                                        },
-                                    )
-                                    .replace("{target}", name.as_ref().unwrap());
-                                if command.is_empty() || command.starts_with('#') {
-                                    None
-                                } else {
-                                    Some(command)
-                                }
-                            })
-                            .collect();
+                        commands.append(
+                            &mut s
+                                .replace("\\\n", "")
+                                .lines()
+                                .filter_map(|x| {
+                                    let command = x
+                                        .trim()
+                                        .replace(
+                                            "{0}",
+                                            if dependencies.is_empty() {
+                                                "{0}"
+                                            } else {
+                                                &dependencies[0]
+                                            },
+                                        )
+                                        .replace("{target}", name.as_ref().unwrap());
+                                    if command.is_empty() || command.starts_with('#') {
+                                        None
+                                    } else {
+                                        Some(command)
+                                    }
+                                })
+                                .collect(),
+                        );
                     }
                 }
                 pd::Event::End(pd::Tag::Heading(pd::HeadingLevel::H1, ..)) => {
@@ -469,10 +536,14 @@ impl Target {
         }
     }
 
-    fn run(&self, dry_run: bool) {
+    fn run(&self, dry_run: bool, verbose: u8, script_mode: bool) {
         self.print_heading();
-        for command in &self.commands {
-            run(command, dry_run);
+        if script_mode {
+            run_script(&self.commands.join("\n"), dry_run, verbose);
+        } else {
+            for command in &self.commands {
+                run(command, dry_run);
+            }
         }
     }
 }

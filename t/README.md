@@ -8,9 +8,12 @@ Build automation tool
 * Configuration is a simple Markdown file named [`Makefile.md`]
 * Output is colorized Markdown
 * Processes the target(s) specified or if none, processes the first target
-* Commands are run via `sh` shell
+* Commands are run independently via `sh -c` by default, or if script mode is
+  enabled via `-s`, entire target recipes are run via `bash -eo pipefail`
 * If any command fails (exits with a non-zero code), processing halts
   immediately
+* Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
+  print up to date targets, `-vvv`: show configuration
 * Generates a [default `Makefile.md` for a Rust project]
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)

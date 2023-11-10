@@ -8,9 +8,12 @@ Build automation tool
 * Configuration is a simple Markdown file named [`Makefile.md`]
 * Output is colorized Markdown
 * Processes the target(s) specified or if none, processes the first target
-* Commands are run via `sh` shell
+* Commands are run independently via `sh -c` by default, or if script mode is
+  enabled via `-s`, entire target recipes are run via `bash -eo pipefail`
 * If any command fails (exits with a non-zero code), processing halts
   immediately
+* Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
+  print up to date targets, `-vvv`: show configuration
 * Generates a [default `Makefile.md` for a Rust project]
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
@@ -34,7 +37,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.4.0
+mkrs 0.5.0
 ~~~
 
 ~~~text
@@ -50,6 +53,7 @@ Options:
   -l              List available targets
   -B              Force processing
   -n              Dry run
+  -s              Script mode
   -v...           Verbose
   -C <PATH>       Change directory
   -f <PATH>       Configuration file [default: Makefile.md]
@@ -65,7 +69,9 @@ Options:
 
 ~~~text
 $ mkrs -l
-# Targets
+# mkrs
+
+## Target(s)
 
 * build
 * `README.md`
@@ -85,13 +91,17 @@ $ mkrs -l
 
 ~~~text
 $ mkrs -n
-# clippy
+# mkrs
+
+## Target(s)
+
+### clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
 ```
 
-# build
+### build
 
 ```text
 $ cargo build --release
@@ -103,20 +113,24 @@ $ cargo build --release
 
 ~~~text
 $ mkrs
-# clippy
+# mkrs
+
+## Target(s)
+
+### clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.25s
+    Checking mkrs v0.5.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
 ```
 
-# build
+### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.39s
+   Compiling mkrs v0.5.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.51s
 ```
 
 ~~~
@@ -125,7 +139,11 @@ $ cargo build --release
 
 ~~~text
 $ mkrs check
-# check
+# mkrs
+
+## Target(s)
+
+### check
 
 ```text
 $ cargo outdated --exit-code 1
@@ -146,7 +164,11 @@ $ cargo audit
 
 ~~~text
 $ mkrs update check build
-# update
+# mkrs
+
+## Target(s)
+
+### update
 
 ```text
 $ cargo upgrade --incompatible
@@ -161,7 +183,7 @@ $ cargo update
     Updating crates.io index
 ```
 
-# check
+### check
 
 ```text
 $ cargo outdated --exit-code 1
@@ -176,20 +198,20 @@ $ cargo audit
     Scanning Cargo.lock for vulnerabilities (61 crate dependencies)
 ```
 
-# clippy
+### clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
+    Checking mkrs v0.5.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
 ```
 
-# build
+### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.43s
+   Compiling mkrs v0.5.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.51s
 ```
 
 ~~~
@@ -283,6 +305,9 @@ cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
   don't process dependencies for a file target unless needed (forced via `-B`,
   doesn't exist, or outdated); change default outdated response to false to
   avoid processing a file target unnecessarily
+* 0.5.0 (2023-11-??): Fail to run on Windows; ignore leading/trailing whitespace
+  in commands; append commands instead of replacing them; improve readme; add
+  `-s` (script mode)
 
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
