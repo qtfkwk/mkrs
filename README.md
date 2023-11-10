@@ -34,7 +34,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.3.3
+mkrs 0.4.0
 ~~~
 
 ~~~text
@@ -50,6 +50,7 @@ Options:
   -l              List available targets
   -B              Force processing
   -n              Dry run
+  -v...           Verbose
   -C <PATH>       Change directory
   -f <PATH>       Configuration file [default: Makefile.md]
   -g <STYLE>      Generate Makefile.md content [styles: rust]
@@ -84,10 +85,6 @@ $ mkrs -l
 
 ~~~text
 $ mkrs -n
-# `README.md`
-
-*Up to date*
-
 # clippy
 
 ```text
@@ -106,15 +103,11 @@ $ cargo build --release
 
 ~~~text
 $ mkrs
-# `README.md`
-
-*Up to date*
-
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.3.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.25s
 ```
 
@@ -122,8 +115,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.3.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.36s
+   Compiling mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.39s
 ```
 
 ~~~
@@ -183,24 +176,20 @@ $ cargo audit
     Scanning Cargo.lock for vulnerabilities (61 crate dependencies)
 ```
 
-# `README.md`
-
-*Up to date*
-
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.3.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.26s
+    Checking mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
 ```
 
 # build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.3.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.35s
+   Compiling mkrs v0.4.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.43s
 ```
 
 ~~~
@@ -289,6 +278,11 @@ cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
 * 0.3.2 (2023-11-08): Fix error when a target file does not exist; update
   dependencies
 * 0.3.3 (2023-11-08): Ignore commented commands
+* 0.4.0 (2023-11-10): Add `-v` option and don't print up to date targets; move
+  bunt calls to functions; improve comments and miscellaneous improvements;
+  don't process dependencies for a file target unless needed (forced via `-B`,
+  doesn't exist, or outdated); change default outdated response to false to
+  avoid processing a file target unnecessarily
 
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md

@@ -11,6 +11,8 @@ cargo build --release
 
 * `t/README.md`
 * `Cargo.toml`
+* `CHANGELOG.md`
+* `src/main.rs`
 
 ```
 cargo build --release

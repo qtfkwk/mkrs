@@ -1,5 +1,5 @@
 use anyhow::Result;
-use clap::Parser;
+use clap::{ArgAction::Count, Parser};
 use dep_graph::{DepGraph, Node};
 use indexmap::IndexMap;
 use is_terminal::IsTerminal;
@@ -21,6 +21,52 @@ macro_rules! error {
 
 //--------------------------------------------------------------------------------------------------
 
+fn print_file_target(name: &str) {
+    bunt::println!("{$#ff22ff+bold}# `{}`{/$}\n", name);
+}
+
+fn print_target(name: &str) {
+    bunt::println!("{$#ff22ff+bold}# {}{/$}\n", name);
+}
+
+fn print_list_file_target(name: &str) {
+    bunt::println!("{$#888888}*{/$} {$#44ffff}`{}`{/$}", name);
+}
+
+fn print_list_target(name: &str) {
+    bunt::println!("{$#888888}*{/$} {}", name);
+}
+
+fn print_up_to_date() {
+    bunt::println!("{$#00ff00+italic}*Up to date*{/$}\n");
+}
+
+fn print_start_command(command: &str) {
+    bunt::println!("{$#555555}```text\n${/$} {$#00ffff+bold}{}{/$}", command);
+}
+
+fn print_end_command() {
+    bunt::println!("{$#555555}```{/$}\n");
+}
+
+fn set_terminal_colors() {
+    // stdout
+    bunt::set_stdout_color_choice(if std::io::stdout().is_terminal() {
+        bunt::termcolor::ColorChoice::Always
+    } else {
+        bunt::termcolor::ColorChoice::Never
+    });
+
+    // stderr
+    bunt::set_stderr_color_choice(if std::io::stderr().is_terminal() {
+        bunt::termcolor::ColorChoice::Always
+    } else {
+        bunt::termcolor::ColorChoice::Never
+    });
+}
+
+//--------------------------------------------------------------------------------------------------
+
 #[derive(Parser)]
 #[command(about, version, max_term_width = 80)]
 struct Cli {
@@ -35,6 +81,10 @@ struct Cli {
     /// Dry run
     #[arg(short = 'n')]
     dry_run: bool,
+
+    /// Verbose
+    #[arg(short, action = Count)]
+    verbose: u8,
 
     /// Change directory
     #[arg(short = 'C', value_name = "PATH")]
@@ -62,6 +112,7 @@ struct Cli {
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
+    // Print the readme (`-r`)
     if cli.readme {
         #[cfg(unix)]
         Pager::with_pager("bat -pl md").setup();
@@ -70,6 +121,7 @@ fn main() -> Result<()> {
         std::process::exit(0);
     }
 
+    // Generate default Makefile.md content (`-g STYLE`)
     if let Some(style) = cli.generate {
         match style.as_str() {
             "rust" => {
@@ -82,11 +134,12 @@ fn main() -> Result<()> {
         std::process::exit(0);
     }
 
-    // Change directory
+    // Change directory (`-C`)
     if let Some(dir) = cli.change_directory {
         std::env::set_current_dir(dir)?;
     }
 
+    // Process the configuration file (`Makefile.md` or `-f PATH`)
     if cli.config_file.exists() {
         match std::fs::read_to_string(&cli.config_file) {
             Ok(s) => {
@@ -95,30 +148,24 @@ fn main() -> Result<()> {
                     cli.config_file.canonicalize().unwrap().parent().unwrap(),
                 )?;
 
-                // Process the configuration file
+                // Parse the content to a `Config`
                 let cfg = Config::from_markdown(&s);
 
-                // Set color
-                let color = if std::io::stdout().is_terminal() {
-                    bunt::termcolor::ColorChoice::Always
-                } else {
-                    bunt::termcolor::ColorChoice::Never
-                };
-                bunt::set_stdout_color_choice(color);
-                bunt::set_stderr_color_choice(color);
+                // Set terminal colors
+                set_terminal_colors();
 
-                // List targets
+                // List targets (`-l`)
                 if cli.list_targets {
-                    bunt::println!("{$#ffa500}# Targets{/$}\n");
+                    print_target("Targets");
                     for target in cfg.targets.values() {
                         if target.dtg.is_none()
                             || !target.dependencies.is_empty()
                             || !target.commands.is_empty()
                         {
                             if target.dtg.is_some() {
-                                bunt::println!("{$#888888}*{/$} {$#44ffff}`{}`{/$}", target.name);
+                                print_list_file_target(&target.name);
                             } else {
-                                bunt::println!("{$#888888}*{/$} {}", target.name);
+                                print_list_target(&target.name);
                             }
                         }
                     }
@@ -126,22 +173,35 @@ fn main() -> Result<()> {
                     return Ok(());
                 }
 
-                // Which targets are we processing?
+                // Which target(s) are we processing?
                 let targets = if cli.targets.is_empty() {
-                    // Default / first target
+                    // First target in `Makefile.md`
                     vec![cfg.targets[0].name.clone()]
                 } else {
                     // Target(s) specified on the command line
                     cli.targets.clone()
                 };
 
-                // Process the targets
+                // Process the target(s)
                 let mut processed = HashSet::new();
                 for target in &targets {
                     let mut nodes = vec![];
-                    add_node_and_deps(target, &cfg, &mut nodes, &mut processed);
+                    add_node_and_deps(
+                        target,
+                        &cfg,
+                        &mut nodes,
+                        &mut processed,
+                        cli.force_processing,
+                        &cfg.targets,
+                    );
                     DepGraph::new(&nodes).into_iter().for_each(|x| {
-                        process_target(&x, &cfg.targets, cli.dry_run, cli.force_processing);
+                        process_target(
+                            &x,
+                            &cfg.targets,
+                            cli.dry_run,
+                            cli.force_processing,
+                            cli.verbose,
+                        );
                     });
                 }
             }
@@ -163,14 +223,28 @@ fn add_node_and_deps(
     cfg: &Config,
     nodes: &mut Vec<Node<String>>,
     processed: &mut HashSet<String>,
+    force_processing: bool,
+    targets: &IndexMap<String, Target>,
 ) {
     let target = target.to_string();
     let mut node = Node::new(target.clone());
     if let Some(t) = cfg.targets.get(&target) {
-        for dependency in &t.dependencies {
-            node.add_dep(dependency.to_owned());
-            add_node_and_deps(dependency, cfg, nodes, processed);
+        // If a file target, only add its dependencies if it is needed
+        let add_deps = if let Some(ts) = t.dtg.as_ref() {
+            let file_does_not_exist = !Path::new(&t.name).exists();
+            force_processing || file_does_not_exist || t.outdated(ts, targets)
+        } else {
+            true
+        };
+
+        if add_deps {
+            for dependency in &t.dependencies {
+                node.add_dep(dependency.to_owned());
+                add_node_and_deps(dependency, cfg, nodes, processed, force_processing, targets);
+            }
         }
+
+        // Deduplicate nodes
         if !processed.contains(&target) {
             nodes.push(node);
             processed.insert(target);
@@ -185,6 +259,7 @@ fn process_target(
     targets: &IndexMap<String, Target>,
     dry_run: bool,
     force_processing: bool,
+    verbose: u8,
 ) {
     let target = target.to_owned();
     let target = targets.get(&target).unwrap();
@@ -198,26 +273,22 @@ fn process_target(
             }
             // Otherwise, file dependency exists so don't print or do anything
         } else if force_processing || file_does_not_exist || target.outdated(ts, targets) {
-            // Process the target if any of:
-            // * `-B`
-            // * file doesn't exist & target has commands
-            // * target is outdated
-            target.print_heading();
+            // Process the target if `-B`, target has commands & file doesn't exist, or target is
+            // outdated
             target.run(dry_run);
-        } else {
+        } else if verbose > 0 {
             // Otherwise, don't process the target
             target.print_heading();
-            bunt::println!("{$#00ff00+italic}*Up to date*{/$}\n");
+            print_up_to_date();
         }
     } else {
         // "Phony" target
-        target.print_heading();
         target.run(dry_run);
     }
 }
 
 fn run(command: &str, dry_run: bool) {
-    bunt::println!("{$#555555}```text\n${/$} {$#00ffff+bold}{}{/$}", command);
+    print_start_command(command);
     if !dry_run
         && std::process::Command::new("sh")
             .args(["-c", command])
@@ -228,10 +299,10 @@ fn run(command: &str, dry_run: bool) {
             .code()
             != Some(0)
     {
-        bunt::println!("{$#555555}```{/$}\n");
+        print_end_command();
         error!(4, "ERROR: The command failed!");
     }
-    bunt::println!("{$#555555}```{/$}\n");
+    print_end_command();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -386,19 +457,20 @@ impl Target {
                     .any(|x| targets.get(x).unwrap().outdated(reference, targets))
             }
         } else {
-            true
+            false
         }
     }
 
     fn print_heading(&self) {
         if self.dtg.is_some() {
-            bunt::println!("{$#ff22ff+bold}# `{}`{/$}\n", self.name);
+            print_file_target(&self.name);
         } else {
-            bunt::println!("{$#ff22ff+bold}# {}{/$}\n", self.name);
+            print_target(&self.name);
         }
     }
 
     fn run(&self, dry_run: bool) {
+        self.print_heading();
         for command in &self.commands {
             run(command, dry_run);
         }
