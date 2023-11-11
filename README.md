@@ -67,7 +67,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.7.0
+mkrs 0.8.0
 ~~~
 
 ~~~text
@@ -113,6 +113,7 @@ $ mkrs -l
 * uninstall
 * install-deps
 * clean
+* cocomo
 * full
 * fail
 * `nonexistent`
@@ -180,16 +181,16 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
+    Checking mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.55s
+   Compiling mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.57s
 ```
 
 ~~~
@@ -261,7 +262,7 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.29s
 ```
 
@@ -269,8 +270,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.55s
+   Compiling mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.56s
 ```
 
 ~~~
@@ -343,13 +344,21 @@ cargo uninstall $(toml get -r Cargo.toml package.name)
 # install-deps
 
 ```
-cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
+cargo install cargo-audit cargo-edit cargo-outdated cocomo kapow tokei toml-cli
 ```
 
 # clean
 
 ```
 cargo clean
+```
+
+# cocomo
+
+```
+tokei; echo
+cocomo -o sloccount
+cocomo
 ```
 
 # full
@@ -362,6 +371,59 @@ cargo clean
 ~~~
 
 **Note:** Save to `Makefile.md` via redirection: `mkrs -g rust >Makefile.md`
+
+## Generate a COCOMO report
+
+~~~text
+$ mkrs -s cocomo
+# mkrs
+
+## Target(s)
+
+### cocomo
+
+```bash
+tokei; echo
+cocomo -o sloccount
+cocomo
+```
+
+```text
+===============================================================================
+ Language            Files        Lines         Code     Comments       Blanks
+===============================================================================
+ TOML                    1           20           18            0            2
+-------------------------------------------------------------------------------
+ Markdown                5          765            0          563          202
+ |- BASH                 1            3            3            0            0
+ (Total)                            768            3          563          202
+-------------------------------------------------------------------------------
+ Rust                    1          602          502           34           66
+ |- Markdown             1           10            0           10            0
+ (Total)                            612          502           44           66
+===============================================================================
+ Total                   7         1387          520          597          270
+===============================================================================
+
+Total Physical Source Lines of Code (SLOC)                    = 520
+Development Effort Estimate, Person-Years (Person-Months)     = 0.10 (1.21)
+  (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
+Schedule Estimate, Years (Months)                             = 0.22 (2.69)
+  (Basic COCOMO model, Months = 2.50*(person-months**0.38))
+Estimated Average Number of Developers (Effort/Schedule)      = 0.45
+Total Estimated Cost to Develop                               = $13,597
+  (average salary = $56,286/year, overhead = 2.40)
+
+Description                | Value
+---------------------------|---------------------------------
+Total Source Lines of Code | 520
+Estimated Cost to Develop  | $13,597.06
+Estimated Schedule Effort  | 2.69 months
+Estimated People Required  | 0.45
+
+```
+
+~~~
 
 # Changelog
 
@@ -392,6 +454,7 @@ cargo clean
   for specified targets for `-l`; add `full` target to Makefiles; add
   `README.md` dependency on `install` target; don't print phony targets without
   commands or `-vv`; fix readme
+* 0.8.0 (2023-11-11): Add `cocomo` target to Makefiles
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

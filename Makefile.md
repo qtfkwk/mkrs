@@ -62,13 +62,21 @@ cargo uninstall $(toml get -r Cargo.toml package.name)
 # install-deps
 
 ```
-cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
+cargo install cargo-audit cargo-edit cargo-outdated cocomo kapow tokei toml-cli
 ```
 
 # clean
 
 ```
 cargo clean
+```
+
+# cocomo
+
+```
+tokei; echo
+cocomo -o sloccount
+cocomo
 ```
 
 # full

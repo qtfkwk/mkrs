@@ -128,6 +128,13 @@ $ mkrs -g rust
 
 **Note:** Save to `Makefile.md` via redirection: `mkrs -g rust >Makefile.md`
 
+## Generate a COCOMO report
+
+~~~text
+$ mkrs -s cocomo
+!run:../target/release/mkrs -f ../Makefile.md -s cocomo 2>&1
+~~~
+
 !inc:../CHANGELOG.md
 
 [^one]: Unlike [make], mkrs does not have any built-in knowledge about how to

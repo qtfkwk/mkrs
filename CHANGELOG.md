@@ -27,6 +27,7 @@
   for specified targets for `-l`; add `full` target to Makefiles; add
   `README.md` dependency on `install` target; don't print phony targets without
   commands or `-vv`; fix readme
+* 0.8.0 (2023-11-11): Add `cocomo` target to Makefiles
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
