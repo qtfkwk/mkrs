@@ -14,24 +14,51 @@ Build automation tool
   immediately
 * Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
   print up to date targets, `-vvv`: show configuration
-* Generates a [default `Makefile.md` for a Rust project]
+* Generates a [default `Makefile.md` for a Rust project] (`-g`)
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
 
 # Syntax
 
-* A Level 1 heading begins the definition of a **target**.
+## Input
+
+* A level 1 heading begins the definition of a **target**.
 * A plain text target name is a "phony" target and will *always run*.[^two]
 * A code span target name is a file target and will only run if any dependency
   file target's modification time is newer than the target.[^two]
 * An unordered list contains the target's dependencies.
+* A plain text dependency name is a "phony" dependency and will run if the
+  target runs.
+* A code span dependency name is a file dependency, which either has an
+  associated target or not.
+  If not, it is interpreted as a file glob matching existing files.
+  This enables a target to easily depend on any files matching the glob, for
+  instance, the `build` target may depend on `src/**/*.rs`, meaning any `*.rs`
+  file under `src/`
 * A code block contains the commands that are run when the target is processed.
 * Commands may use the following variables:
     * `{0}`: first dependency
     * `{target}`: target name
 
-*See [`Makefile.md`] for an example.*
+*See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for
+examples.*
+
+[`styles/Makefile.rust.md`]: styles/Makefile.rust.md
+
+## Output
+
+* A level 2 heading is the output section: "Configuration", "Target(s)".
+* A Level 3 heading in the Target(s) section is each target, either as plain
+  text "phony" target or a code span file target.
+* Code blocks:
+
+    Script Mode | Dry Run | Description
+    ------------|---------|------------------------------------------------
+                |         | Each command and output
+                | X       | Each command
+    X           |         | Each script
+    X           | X       | Each script and output (in separate code block)
 
 # Usage
 
@@ -92,8 +119,6 @@ $ mkrs -g rust
 **Note:** Save to `Makefile.md` via redirection: `mkrs -g rust >Makefile.md`
 
 !inc:../CHANGELOG.md
-
----
 
 [^one]: Unlike [make], mkrs does not have any built-in knowledge about how to
 *compile* any sort of file; all such commands must be defined in the

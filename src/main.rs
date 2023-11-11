@@ -1,6 +1,7 @@
 use anyhow::Result;
 use clap::{ArgAction::Count, Parser};
 use dep_graph::{DepGraph, Node};
+use glob::glob;
 use indexmap::IndexMap;
 use is_terminal::IsTerminal;
 use pulldown_cmark as pd;
@@ -181,8 +182,6 @@ fn main() -> Result<()> {
         print_end_fence();
     }
 
-    print_h2("Target(s)");
-
     // Process the configuration file (`Makefile.md` or `-f PATH`)
     if cli.config_file.exists() {
         match std::fs::read_to_string(&cli.config_file) {
@@ -194,6 +193,14 @@ fn main() -> Result<()> {
 
                 // Parse the content to a `Config`
                 let cfg = Config::from_markdown(&s);
+
+                if cli.verbose >= 3 {
+                    print_fence();
+                    println!("{cfg:#?}");
+                    print_end_fence();
+                }
+
+                print_h2("Target(s)");
 
                 // List targets (`-l`)
                 if cli.list_targets {
@@ -277,7 +284,6 @@ fn add_node_and_deps(
         } else {
             true
         };
-
         if add_deps {
             for dependency in &t.dependencies {
                 node.add_dep(dependency.to_owned());
@@ -404,7 +410,16 @@ impl Config {
                         is_file = true;
                         name = Some(s.to_string());
                     } else if in_dependencies {
-                        dependencies.push(s.to_string());
+                        dependencies.append(
+                            &mut glob(&s)
+                                .expect("glob")
+                                .filter_map(|x| match x {
+                                    Ok(p) => Some(p.display().to_string()),
+                                    Err(_e) => None,
+                                })
+                                .collect::<Vec<_>>(),
+                        );
+                        //dependencies.push(s.to_string());
                     }
                 }
                 pd::Event::Text(s) => {

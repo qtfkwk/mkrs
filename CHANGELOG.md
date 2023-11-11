@@ -17,10 +17,14 @@
   don't process dependencies for a file target unless needed (forced via `-B`,
   doesn't exist, or outdated); change default outdated response to false to
   avoid processing a file target unnecessarily
-* 0.5.0 (2023-11-??): Fail to run on Windows; ignore leading/trailing whitespace
+* 0.5.0 (2023-11-10): Fail to run on Windows; ignore leading/trailing whitespace
   in commands; append commands instead of replacing them; improve readme; add
   `-s` (script mode)
+* 0.6.0 (2023-11-11): Use [`glob`] crate to process file dependencies without
+  targets; `-vvv`: print `Config`; fix changelog; improve readme; add `clean`
+  target to Makefiles; update dependencies
 
-[#1]: https://github.com/qtfkwk/mkrs/issues/1
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
+[#1]: https://github.com/qtfkwk/mkrs/issues/1
+[`glob`]: https://crates.io/crates/glob
 

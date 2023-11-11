@@ -12,7 +12,7 @@ cargo build --release
 * `t/README.md`
 * `Cargo.toml`
 * `CHANGELOG.md`
-* `src/main.rs`
+* `src/**/*.rs`
 
 ```
 cargo build --release
@@ -61,6 +61,12 @@ cargo uninstall $(toml get -r Cargo.toml package.name)
 
 ```
 cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
+```
+
+# clean
+
+```
+cargo clean
 ```
 
 # fail
