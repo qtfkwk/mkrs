@@ -15,6 +15,9 @@ Build automation tool
 * Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
   print up to date targets, `-vvv`: show configuration
 * Generates a [default `Makefile.md` for a Rust project] (`-g`)
+* Lists targets via `-l`; if target(s) is specified, list hierarchical
+  dependencies
+* Processes dependencies in the order specified
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
@@ -55,8 +58,8 @@ examples.*
 
     Script Mode | Dry Run | Description
     ------------|---------|------------------------------------------------
-                |         | Each command and output
-                | X       | Each command
+    &nbsp;      |         | Each command and output
+    &nbsp;      | X       | Each command
     X           |         | Each script
     X           | X       | Each script and output (in separate code block)
 
@@ -64,7 +67,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.6.0
+mkrs 0.7.0
 ~~~
 
 ~~~text
@@ -77,7 +80,7 @@ Arguments:
   [NAME]...  Target(s)
 
 Options:
-  -l              List available targets
+  -l              List targets/dependencies
   -B              Force processing
   -n              Dry run
   -s              Script mode
@@ -110,8 +113,36 @@ $ mkrs -l
 * uninstall
 * install-deps
 * clean
+* full
 * fail
 * `nonexistent`
+
+~~~
+
+## List dependencies for `full` target
+
+~~~text
+$ mkrs -l full
+# mkrs
+
+## Target(s)
+
+* full
+    * update
+    * check
+    * build
+        * clippy
+        * `README.md`
+            * `t/README.md`
+            * `Cargo.toml`
+            * `CHANGELOG.md`
+            * `src/main.rs`
+    * install
+        * `README.md`
+            * `t/README.md`
+            * `Cargo.toml`
+            * `CHANGELOG.md`
+            * `src/main.rs`
 
 ~~~
 
@@ -149,16 +180,16 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.6.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
+    Checking mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.6.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.53s
+   Compiling mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.55s
 ```
 
 ~~~
@@ -230,16 +261,16 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.6.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
+    Checking mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.6.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.52s
+   Compiling mkrs v0.7.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.55s
 ```
 
 ~~~
@@ -297,6 +328,8 @@ cargo update
 
 # install
 
+* `README.md`
+
 ```
 cargo install --path .
 ```
@@ -318,6 +351,13 @@ cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
 ```
 cargo clean
 ```
+
+# full
+
+* update
+* check
+* build
+* install
 
 ~~~
 
@@ -348,6 +388,10 @@ cargo clean
 * 0.6.0 (2023-11-11): Use [`glob`] crate to process file dependencies without
   targets; `-vvv`: print `Config`; fix changelog; improve readme; add `clean`
   target to Makefiles; update dependencies
+* 0.7.0 (2023-11-11): Make dependency ordering significant; trace dependencies
+  for specified targets for `-l`; add `full` target to Makefiles; add
+  `README.md` dependency on `install` target; don't print phony targets without
+  commands or `-vv`; fix readme
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

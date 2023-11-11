@@ -47,6 +47,8 @@ cargo update
 
 # install
 
+* `README.md`
+
 ```
 cargo install --path .
 ```
@@ -68,6 +70,13 @@ cargo install cargo-audit cargo-edit cargo-outdated kapow toml-cli
 ```
 cargo clean
 ```
+
+# full
+
+* update
+* check
+* build
+* install
 
 # fail
 

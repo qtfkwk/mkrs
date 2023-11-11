@@ -15,6 +15,9 @@ Build automation tool
 * Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
   print up to date targets, `-vvv`: show configuration
 * Generates a [default `Makefile.md` for a Rust project] (`-g`)
+* Lists targets via `-l`; if target(s) is specified, list hierarchical
+  dependencies
+* Processes dependencies in the order specified
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
@@ -55,8 +58,8 @@ examples.*
 
     Script Mode | Dry Run | Description
     ------------|---------|------------------------------------------------
-                |         | Each command and output
-                | X       | Each command
+    &nbsp;      |         | Each command and output
+    &nbsp;      | X       | Each command
     X           |         | Each script
     X           | X       | Each script and output (in separate code block)
 
@@ -79,6 +82,13 @@ $ mkrs -h
 ~~~text
 $ mkrs -l
 !run:../target/release/mkrs -C .. -l 2>&1
+~~~
+
+## List dependencies for `full` target
+
+~~~text
+$ mkrs -l full
+!run:../target/release/mkrs -C .. -l full 2>&1
 ~~~
 
 ## Dry run

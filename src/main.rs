@@ -40,11 +40,19 @@ fn print_target(name: &str) {
     bunt::println!("{$#ff22ff+bold}### {}{/$}\n", name);
 }
 
-fn print_list_file_target(name: &str) {
+fn print_list_file_target(name: &str, level: usize) {
+    print_indent(level);
     bunt::println!("{$#888888}*{/$} {$#44ffff}`{}`{/$}", name);
 }
 
-fn print_list_target(name: &str) {
+fn print_indent(level: usize) {
+    if level > 0 {
+        print!("{}", " ".repeat(level * 4));
+    }
+}
+
+fn print_list_target(name: &str, level: usize) {
+    print_indent(level);
     bunt::println!("{$#888888}*{/$} {}", name);
 }
 
@@ -87,12 +95,24 @@ fn set_terminal_colors() {
     });
 }
 
+fn print_list_file_targets(target: &str, targets: &IndexMap<String, Target>, level: usize) {
+    let target = targets.get(target).unwrap();
+    if target.dtg.is_some() {
+        print_list_file_target(&target.name, level);
+    } else {
+        print_list_target(&target.name, level);
+    }
+    for dep in &target.dependencies {
+        print_list_file_targets(dep, targets, level + 1);
+    }
+}
+
 //--------------------------------------------------------------------------------------------------
 
 #[derive(Debug, Parser)]
 #[command(about, version, max_term_width = 80)]
 struct Cli {
-    /// List available targets
+    /// List targets/dependencies
     #[arg(short = 'l')]
     list_targets: bool,
 
@@ -204,16 +224,27 @@ fn main() -> Result<()> {
 
                 // List targets (`-l`)
                 if cli.list_targets {
-                    for target in cfg.targets.values() {
-                        if target.dtg.is_none()
-                            || !target.dependencies.is_empty()
-                            || !target.commands.is_empty()
-                        {
-                            if target.dtg.is_some() {
-                                print_list_file_target(&target.name);
-                            } else {
-                                print_list_target(&target.name);
+                    if cli.targets.is_empty() {
+                        for target in cfg.targets.values() {
+                            if target.dtg.is_none()
+                                || !target.dependencies.is_empty()
+                                || !target.commands.is_empty()
+                            {
+                                if target.dtg.is_some() {
+                                    print_list_file_target(&target.name, 0);
+                                } else {
+                                    print_list_target(&target.name, 0);
+                                }
                             }
+                        }
+                    } else {
+                        for target in &cli.targets {
+                            if !cfg.targets.contains_key(target) {
+                                error!(5, "ERROR: Invalid target: `{target}`!");
+                            }
+                        }
+                        for target in &cli.targets {
+                            print_list_file_targets(target, &cfg.targets, 0);
                         }
                     }
                     println!();
@@ -240,6 +271,7 @@ fn main() -> Result<()> {
                         &mut processed,
                         cli.force_processing,
                         &cfg.targets,
+                        None,
                     );
                     DepGraph::new(&nodes).into_iter().for_each(|x| {
                         process_target(
@@ -273,9 +305,13 @@ fn add_node_and_deps(
     processed: &mut HashSet<String>,
     force_processing: bool,
     targets: &IndexMap<String, Target>,
+    prev_dep: Option<String>,
 ) {
     let target = target.to_string();
     let mut node = Node::new(target.clone());
+    if let Some(prev_dep) = prev_dep {
+        node.add_dep(prev_dep);
+    }
     if let Some(t) = cfg.targets.get(&target) {
         // If a file target, only add its dependencies if it is needed
         let add_deps = if let Some(ts) = t.dtg.as_ref() {
@@ -285,9 +321,19 @@ fn add_node_and_deps(
             true
         };
         if add_deps {
+            let mut prev_dep = None;
             for dependency in &t.dependencies {
                 node.add_dep(dependency.to_owned());
-                add_node_and_deps(dependency, cfg, nodes, processed, force_processing, targets);
+                add_node_and_deps(
+                    dependency,
+                    cfg,
+                    nodes,
+                    processed,
+                    force_processing,
+                    targets,
+                    prev_dep,
+                );
+                prev_dep = Some(dependency.to_owned());
             }
         }
 
@@ -552,7 +598,9 @@ impl Target {
     }
 
     fn run(&self, dry_run: bool, verbose: u8, script_mode: bool) {
-        self.print_heading();
+        if !self.commands.is_empty() || verbose >= 2 {
+            self.print_heading();
+        }
         if script_mode {
             run_script(&self.commands.join("\n"), dry_run, verbose);
         } else {
