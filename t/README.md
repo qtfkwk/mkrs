@@ -6,18 +6,18 @@ Build automation tool
 * No automatic targets[^one]
 * Minimalist functionality; maximalist readability
 * Configuration is a simple Markdown file named [`Makefile.md`]
-* Output is colorized Markdown
+* Output is colorized Markdown (unless redirected or piped)
 * Processes the target(s) specified or if none, processes the first target
-* Commands are run independently via `sh -c` by default, or if script mode is
-  enabled via `-s`, entire target recipes are run via `bash -eo pipefail`
+* Commands run independently, in script mode, or via a custom command
 * If any command fails (exits with a non-zero code), processing halts
-  immediately
+  immediately (if not using a custom shell that does not provide this
+  functionality)
 * Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
   print up to date targets, `-vvv`: show configuration
 * Generates a [default `Makefile.md` for a Rust project] (`-g`)
 * Lists targets via `-l`; if target(s) is specified, list hierarchical
   dependencies
-* Processes dependencies in the order specified
+* Processes targets and dependencies in the order specified
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
@@ -27,19 +27,27 @@ Build automation tool
 ## Input
 
 * A level 1 heading begins the definition of a **target**.
-* A plain text target name is a "phony" target and will *always run*.[^two]
-* A code span target name is a file target and will only run if any dependency
-  file target's modification time is newer than the target.[^two]
-* An unordered list contains the target's dependencies.
-* A plain text dependency name is a "phony" dependency and will run if the
-  target runs.
+* A plain text target name is a "phony" target and *always runs*.[^two]
+* A code span target name is a file target and will only run if (a) any
+  dependency file target's modification time is newer than the file target's,
+  (b) the file target does not exist and has a recipe, or (c) force processing
+  (`-B`) is enabled.[^two]
+* An unordered list item defines a target **dependency**.
+* A plain text dependency name is a phony dependency and will run if the target
+  runs.
 * A code span dependency name is a file dependency, which either has an
   associated target or not.
-  If not, it is interpreted as a file glob matching existing files.
-  This enables a target to easily depend on any files matching the glob, for
+  If not, it is interpreted as a file glob matching existing files, which
+  enables a target to easily depend on any files matching the glob, for
   instance, the `build` target may depend on `src/**/*.rs`, meaning any `*.rs`
-  file under `src/`
-* A code block contains the commands that are run when the target is processed.
+  file under `src/`.
+* A code block is a **recipe** and contains the commands that are run when the
+  target is processed.
+* Recipe commands run independently via `sh -c` by default,
+  via `bash -eo pipefail` if script mode (`-s`) is enabled,
+  via `bash -xeo pipefail` if script mode and verbose level 1 or greater (`-sv`)
+  are enabled,
+  or by the command given in the code block info string
 * Commands may use the following variables:
     * `{0}`: first dependency
     * `{target}`: target name
@@ -59,9 +67,9 @@ examples.*
     Script Mode | Dry Run | Description
     ------------|---------|------------------------------------------------
     &nbsp;      |         | Each command and output
-    &nbsp;      | X       | Each command
-    X           |         | Each script
-    X           | X       | Each script and output (in separate code block)
+    &nbsp;      | ✔       | Each command
+    ✔           |         | Each script
+    ✔           | ✔       | Each script and output (in separate code block)
 
 # Usage
 
@@ -131,8 +139,15 @@ $ mkrs -g rust
 ## Generate a COCOMO report
 
 ~~~text
-$ mkrs -s cocomo
-!run:../target/release/mkrs -f ../Makefile.md -s cocomo 2>&1
+$ mkrs cocomo
+!run:../target/release/mkrs -f ../Makefile.md cocomo 2>&1
+~~~
+
+## Use a custom shell program
+
+~~~text
+$ mkrs custom
+!run:../target/release/mkrs -f ../Makefile.md custom 2>&1
 ~~~
 
 !inc:../CHANGELOG.md

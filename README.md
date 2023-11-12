@@ -6,18 +6,18 @@ Build automation tool
 * No automatic targets[^one]
 * Minimalist functionality; maximalist readability
 * Configuration is a simple Markdown file named [`Makefile.md`]
-* Output is colorized Markdown
+* Output is colorized Markdown (unless redirected or piped)
 * Processes the target(s) specified or if none, processes the first target
-* Commands are run independently via `sh -c` by default, or if script mode is
-  enabled via `-s`, entire target recipes are run via `bash -eo pipefail`
+* Commands run independently, in script mode, or via a custom command
 * If any command fails (exits with a non-zero code), processing halts
-  immediately
+  immediately (if not using a custom shell that does not provide this
+  functionality)
 * Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
   print up to date targets, `-vvv`: show configuration
 * Generates a [default `Makefile.md` for a Rust project] (`-g`)
 * Lists targets via `-l`; if target(s) is specified, list hierarchical
   dependencies
-* Processes dependencies in the order specified
+* Processes targets and dependencies in the order specified
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
@@ -27,19 +27,27 @@ Build automation tool
 ## Input
 
 * A level 1 heading begins the definition of a **target**.
-* A plain text target name is a "phony" target and will *always run*.[^two]
-* A code span target name is a file target and will only run if any dependency
-  file target's modification time is newer than the target.[^two]
-* An unordered list contains the target's dependencies.
-* A plain text dependency name is a "phony" dependency and will run if the
-  target runs.
+* A plain text target name is a "phony" target and *always runs*.[^two]
+* A code span target name is a file target and will only run if (a) any
+  dependency file target's modification time is newer than the file target's,
+  (b) the file target does not exist and has a recipe, or (c) force processing
+  (`-B`) is enabled.[^two]
+* An unordered list item defines a target **dependency**.
+* A plain text dependency name is a phony dependency and will run if the target
+  runs.
 * A code span dependency name is a file dependency, which either has an
   associated target or not.
-  If not, it is interpreted as a file glob matching existing files.
-  This enables a target to easily depend on any files matching the glob, for
+  If not, it is interpreted as a file glob matching existing files, which
+  enables a target to easily depend on any files matching the glob, for
   instance, the `build` target may depend on `src/**/*.rs`, meaning any `*.rs`
-  file under `src/`
-* A code block contains the commands that are run when the target is processed.
+  file under `src/`.
+* A code block is a **recipe** and contains the commands that are run when the
+  target is processed.
+* Recipe commands run independently via `sh -c` by default,
+  via `bash -eo pipefail` if script mode (`-s`) is enabled,
+  via `bash -xeo pipefail` if script mode and verbose level 1 or greater (`-sv`)
+  are enabled,
+  or by the command given in the code block info string
 * Commands may use the following variables:
     * `{0}`: first dependency
     * `{target}`: target name
@@ -59,15 +67,15 @@ examples.*
     Script Mode | Dry Run | Description
     ------------|---------|------------------------------------------------
     &nbsp;      |         | Each command and output
-    &nbsp;      | X       | Each command
-    X           |         | Each script
-    X           | X       | Each script and output (in separate code block)
+    &nbsp;      | ✔       | Each command
+    ✔           |         | Each script
+    ✔           | ✔       | Each script and output (in separate code block)
 
 # Usage
 
 ~~~text
 $ mkrs -V
-mkrs 0.8.0
+mkrs 0.9.0
 ~~~
 
 ~~~text
@@ -117,6 +125,7 @@ $ mkrs -l
 * full
 * fail
 * `nonexistent`
+* custom
 
 ~~~
 
@@ -181,16 +190,16 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
+    Checking mkrs v0.9.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.30s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.57s
+   Compiling mkrs v0.9.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.52s
 ```
 
 ~~~
@@ -215,7 +224,7 @@ $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
       Loaded 578 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (62 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (63 crate dependencies)
 ```
 
 ~~~
@@ -235,7 +244,7 @@ $ cargo upgrade --incompatible
     Updating 'https://github.com/rust-lang/crates.io-index' index
     Checking mkrs's dependencies
 note: Re-run with `--verbose` to show more dependencies
-  latest: 9 packages
+  latest: 10 packages
 ```
 
 ```text
@@ -255,23 +264,23 @@ $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
       Loaded 578 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (62 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (63 crate dependencies)
 ```
 
 ### clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
+    Checking mkrs v0.9.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.8.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.56s
+   Compiling mkrs v0.9.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.51s
 ```
 
 ~~~
@@ -355,7 +364,7 @@ cargo clean
 
 # cocomo
 
-```
+```bash -eo pipefail
 tokei; echo
 cocomo -o sloccount
 cocomo
@@ -375,14 +384,14 @@ cocomo
 ## Generate a COCOMO report
 
 ~~~text
-$ mkrs -s cocomo
+$ mkrs cocomo
 # mkrs
 
 ## Target(s)
 
 ### cocomo
 
-```bash
+```bash -eo pipefail
 tokei; echo
 cocomo -o sloccount
 cocomo
@@ -392,35 +401,56 @@ cocomo
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- TOML                    1           20           18            0            2
+ TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          765            0          563          202
- |- BASH                 1            3            3            0            0
- (Total)                            768            3          563          202
+ Markdown                5          788            0          582          206
+ |- BASH                 3           16           16            0            0
+ |- Python               1            1            1            0            0
+ (Total)                            805           17          582          206
 -------------------------------------------------------------------------------
- Rust                    1          602          502           34           66
+ Rust                    1          673          556           42           75
  |- Markdown             1           10            0           10            0
- (Total)                            612          502           44           66
+ (Total)                            683          556           52           75
 ===============================================================================
- Total                   7         1387          520          597          270
+ Total                   7         1482          575          624          283
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 520
-Development Effort Estimate, Person-Years (Person-Months)     = 0.10 (1.21)
+Total Physical Source Lines of Code (SLOC)                    = 575
+Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.34)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.22 (2.69)
+Schedule Estimate, Years (Months)                             = 0.23 (2.80)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
-Estimated Average Number of Developers (Effort/Schedule)      = 0.45
-Total Estimated Cost to Develop                               = $13,597
+Estimated Average Number of Developers (Effort/Schedule)      = 0.48
+Total Estimated Cost to Develop                               = $15,111
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 520
-Estimated Cost to Develop  | $13,597.06
-Estimated Schedule Effort  | 2.69 months
-Estimated People Required  | 0.45
+Total Source Lines of Code | 575
+Estimated Cost to Develop  | $15,110.99
+Estimated Schedule Effort  | 2.80 months
+Estimated People Required  | 0.48
 
+```
+
+~~~
+
+## Use a custom shell program
+
+~~~text
+$ mkrs custom
+# mkrs
+
+## Target(s)
+
+### custom
+
+```python
+print("This is a custom recipe in Python.")
+```
+
+```text
+This is a custom recipe in Python.
 ```
 
 ~~~
@@ -455,6 +485,9 @@ Estimated People Required  | 0.45
   `README.md` dependency on `install` target; don't print phony targets without
   commands or `-vv`; fix readme
 * 0.8.0 (2023-11-11): Add `cocomo` target to Makefiles
+* 0.9.0 (2023-11-12): Enable using the code block info string to define a custom
+  shell command; fix issue running multiple targets specified on command line;
+  improve readme; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

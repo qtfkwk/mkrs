@@ -64,10 +64,11 @@ fn print_start_command(command: &str) {
     bunt::println!("{$#555555}```text\n${/$} {$#00ffff+bold}{}{/$}", command);
 }
 
-fn print_start_script(script: &str) {
+fn print_start_script(script: &str, shell: &str) {
     bunt::println!(
-        "{$#555555}```bash{/$}\n{}\n{$#555555}```{/$}\n\n{$#555555}```text{/$}",
-        script
+        "{$#555555}```{}{/$}\n{}\n{$#555555}```{/$}\n\n{$#555555}```text{/$}",
+        shell,
+        script,
     );
 }
 
@@ -228,7 +229,7 @@ fn main() -> Result<()> {
                         for target in cfg.targets.values() {
                             if target.dtg.is_none()
                                 || !target.dependencies.is_empty()
-                                || !target.commands.is_empty()
+                                || !target.recipes.is_empty()
                             {
                                 if target.dtg.is_some() {
                                     print_list_file_target(&target.name, 0);
@@ -273,16 +274,28 @@ fn main() -> Result<()> {
                         &cfg.targets,
                         None,
                     );
-                    DepGraph::new(&nodes).into_iter().for_each(|x| {
+                    let num_nodes = nodes.len();
+                    if num_nodes > 1 {
+                        DepGraph::new(&nodes).into_iter().for_each(|x| {
+                            process_target(
+                                &x,
+                                &cfg.targets,
+                                cli.dry_run,
+                                cli.force_processing,
+                                cli.verbose,
+                                cli.script_mode,
+                            );
+                        });
+                    } else if num_nodes > 0 {
                         process_target(
-                            &x,
+                            nodes[0].id(),
                             &cfg.targets,
                             cli.dry_run,
                             cli.force_processing,
                             cli.verbose,
                             cli.script_mode,
                         );
-                    });
+                    }
                 }
             }
             Err(e) => {
@@ -360,7 +373,7 @@ fn process_target(
     if let Some(ts) = target.dtg.as_ref() {
         // File target...
         let file_does_not_exist = !Path::new(&target.name).exists();
-        if target.commands.is_empty() {
+        if target.recipes.is_empty() {
             if file_does_not_exist {
                 // File dependency (without commands) must exist
                 error!(3, "ERROR: File `{}` does not exist!", target.name);
@@ -399,25 +412,49 @@ fn run(command: &str, dry_run: bool) {
     print_end_fence();
 }
 
-fn run_script(script: &str, dry_run: bool, verbose: u8) {
-    print_start_script(script);
-    let mut args = vec!["-eo", "pipefail"];
-    if verbose >= 1 {
-        args.push("-x");
-    }
+fn run_script(script: &str, dry_run: bool, verbose: u8, shell: Option<String>) {
+    // Parse the shell command into prog/args
+    let (prog, args, shell) = if let Some(shell) = shell {
+        // Shell specified in code block info string
+        if let Some(mut args) = shlex::split(&shell) {
+            let prog = args.remove(0);
+            (prog, args, shell.clone())
+        } else {
+            error!(8, "ERROR: Invalid shell command: `{shell}`");
+        }
+    } else {
+        // Shell not specified in code block info string
+        let prog = String::from("bash");
+        let args = [if verbose >= 1 { "-xeo" } else { "-eo" }, "pipefail"]
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<_>>();
+        let shell = format!("{prog} {}", args.join(" "));
+        (prog, args, shell)
+    };
+
+    print_start_script(script, &shell);
+
     if !dry_run {
-        let mut c = Command::new("bash")
+        // Run the shell
+        let mut c = Command::new(prog)
             .args(args)
             .stdin(Stdio::piped())
             .spawn()
             .unwrap();
         let stdin = c.stdin.as_mut().unwrap();
+
+        // Run the script
         writeln!(stdin, "{script}").unwrap();
-        if !c.wait().unwrap().success() {
+
+        // Wait for the script to finish and get its exit code
+        if c.wait().unwrap().code() != Some(0) {
+            // Script failed
             print_end_fence();
             error!(4, "ERROR: The script failed!");
         }
     }
+
     print_end_fence();
 }
 
@@ -433,21 +470,21 @@ impl Config {
         let mut targets = IndexMap::new();
         let mut in_h1 = false;
         let mut in_dependencies = false;
-        let mut in_commands = false;
+        let mut in_recipe = None;
         let mut is_file = false;
         let mut name: Option<String> = None;
         let mut dependencies = vec![];
-        let mut commands = vec![];
+        let mut recipes = vec![];
         for event in pd::Parser::new_ext(s, pd::Options::all()) {
             match event {
                 pd::Event::Start(pd::Tag::Heading(pd::HeadingLevel::H1, ..)) => {
                     if let Some(n) = name.take() {
-                        let target = Target::new(&n, is_file, &dependencies, &commands);
+                        let target =
+                            Target::new(&n, is_file, &dependencies, std::mem::take(&mut recipes));
                         targets.insert(n, target);
                         name = None;
                         is_file = false;
                         dependencies = vec![];
-                        commands = vec![];
                     }
                     in_h1 = true;
                 }
@@ -474,10 +511,10 @@ impl Config {
                         name = Some(s.to_string());
                     } else if in_dependencies {
                         dependencies.push(s.to_string());
-                    } else if in_commands {
-                        commands.append(
-                            &mut s
-                                .replace("\\\n", "")
+                    } else if let Some(shell) = in_recipe.take() {
+                        recipes.push(Recipe::new(
+                            shell,
+                            s.replace("\\\n", "")
                                 .lines()
                                 .filter_map(|x| {
                                     let command = x
@@ -498,7 +535,7 @@ impl Config {
                                     }
                                 })
                                 .collect(),
-                        );
+                        ));
                     }
                 }
                 pd::Event::End(pd::Tag::Heading(pd::HeadingLevel::H1, ..)) => {
@@ -510,11 +547,16 @@ impl Config {
                 pd::Event::End(pd::Tag::List(None)) => {
                     in_dependencies = false;
                 }
-                pd::Event::Start(pd::Tag::CodeBlock(pd::CodeBlockKind::Fenced(_info))) => {
-                    in_commands = true;
+                pd::Event::Start(pd::Tag::CodeBlock(pd::CodeBlockKind::Fenced(info))) => {
+                    let info = info.to_string();
+                    in_recipe = if info.is_empty() {
+                        Some(None)
+                    } else {
+                        Some(Some(info))
+                    };
                 }
                 pd::Event::End(pd::Tag::CodeBlock(pd::CodeBlockKind::Fenced(_info))) => {
-                    in_commands = false;
+                    in_recipe = None;
                 }
                 _ => {}
             }
@@ -522,7 +564,7 @@ impl Config {
 
         // Add the last target
         if let Some(n) = name.take() {
-            let target = Target::new(&n, is_file, &dependencies, &commands);
+            let target = Target::new(&n, is_file, &dependencies, recipes);
             targets.insert(n, target);
         }
 
@@ -531,8 +573,10 @@ impl Config {
         for target in targets.values() {
             for dependency in &target.dependencies {
                 if !targets.contains_key(dependency) {
-                    file_targets
-                        .push((dependency.clone(), Target::new(dependency, true, &[], &[])));
+                    file_targets.push((
+                        dependency.clone(),
+                        Target::new(dependency, true, &[], vec![]),
+                    ));
                 }
             }
         }
@@ -547,15 +591,46 @@ impl Config {
 //--------------------------------------------------------------------------------------------------
 
 #[derive(Debug)]
+struct Recipe {
+    shell: Option<String>,
+    commands: Vec<String>,
+}
+
+impl Recipe {
+    fn new(shell: Option<String>, commands: Vec<String>) -> Recipe {
+        Recipe { shell, commands }
+    }
+
+    fn run(&self, dry_run: bool, verbose: u8, script_mode: bool) {
+        if let Some(shell) = &self.shell {
+            run_script(
+                &self.commands.join("\n"),
+                dry_run,
+                verbose,
+                Some(shell.clone()),
+            );
+        } else if script_mode {
+            run_script(&self.commands.join("\n"), dry_run, verbose, None);
+        } else {
+            for command in &self.commands {
+                run(command, dry_run);
+            }
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+#[derive(Debug)]
 struct Target {
     name: String,
     dtg: Option<std::time::SystemTime>,
     dependencies: Vec<String>,
-    commands: Vec<String>,
+    recipes: Vec<Recipe>,
 }
 
 impl Target {
-    fn new(name: &str, is_file: bool, dependencies: &[String], commands: &[String]) -> Target {
+    fn new(name: &str, is_file: bool, dependencies: &[String], recipes: Vec<Recipe>) -> Target {
         Target {
             name: name.to_owned(),
             dtg: if is_file {
@@ -567,7 +642,7 @@ impl Target {
                 None
             },
             dependencies: dependencies.to_owned(),
-            commands: commands.to_owned(),
+            recipes,
         }
     }
 
@@ -598,15 +673,11 @@ impl Target {
     }
 
     fn run(&self, dry_run: bool, verbose: u8, script_mode: bool) {
-        if !self.commands.is_empty() || verbose >= 2 {
+        if !self.recipes.is_empty() || verbose >= 2 {
             self.print_heading();
         }
-        if script_mode {
-            run_script(&self.commands.join("\n"), dry_run, verbose);
-        } else {
-            for command in &self.commands {
-                run(command, dry_run);
-            }
+        for recipe in &self.recipes {
+            recipe.run(dry_run, verbose, script_mode);
         }
     }
 }

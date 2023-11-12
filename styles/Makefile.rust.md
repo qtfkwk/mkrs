@@ -73,7 +73,7 @@ cargo clean
 
 # cocomo
 
-```
+```bash -eo pipefail
 tokei; echo
 cocomo -o sloccount
 cocomo

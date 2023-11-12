@@ -28,6 +28,9 @@
   `README.md` dependency on `install` target; don't print phony targets without
   commands or `-vv`; fix readme
 * 0.8.0 (2023-11-11): Add `cocomo` target to Makefiles
+* 0.9.0 (2023-11-12): Enable using the code block info string to define a custom
+  shell command; fix issue running multiple targets specified on command line;
+  improve readme; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

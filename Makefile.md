@@ -73,7 +73,7 @@ cargo clean
 
 # cocomo
 
-```
+```bash -eo pipefail
 tokei; echo
 cocomo -o sloccount
 cocomo
@@ -104,5 +104,11 @@ echo This does not run because the prior command failed
 
 ```
 echo
+```
+
+# custom
+
+```python
+print("This is a custom recipe in Python.")
 ```
   
