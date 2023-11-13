@@ -502,7 +502,6 @@ impl Config {
                                 })
                                 .collect::<Vec<_>>(),
                         );
-                        //dependencies.push(s.to_string());
                     }
                 }
                 pd::Event::Text(s) => {
@@ -512,30 +511,43 @@ impl Config {
                     } else if in_dependencies {
                         dependencies.push(s.to_string());
                     } else if let Some(shell) = in_recipe.take() {
-                        recipes.push(Recipe::new(
-                            shell,
-                            s.replace("\\\n", "")
-                                .lines()
-                                .filter_map(|x| {
-                                    let command = x
-                                        .trim()
-                                        .replace(
-                                            "{0}",
-                                            if dependencies.is_empty() {
-                                                "{0}"
-                                            } else {
-                                                &dependencies[0]
-                                            },
-                                        )
-                                        .replace("{target}", name.as_ref().unwrap());
-                                    if command.is_empty() || command.starts_with('#') {
-                                        None
-                                    } else {
-                                        Some(command)
-                                    }
-                                })
-                                .collect(),
-                        ));
+                        if let Some(shell) = shell {
+                            recipes.push(Recipe::new(
+                                Some(shell),
+                                vec![if dependencies.is_empty() {
+                                    s.trim().replace("{target}", name.as_ref().unwrap())
+                                } else {
+                                    s.trim()
+                                        .replace("{target}", name.as_ref().unwrap())
+                                        .replace("{0}", &dependencies[0])
+                                }],
+                            ));
+                        } else {
+                            recipes.push(Recipe::new(
+                                None,
+                                s.replace("\\\n", "")
+                                    .lines()
+                                    .filter_map(|x| {
+                                        let command = x
+                                            .trim()
+                                            .replace(
+                                                "{0}",
+                                                if dependencies.is_empty() {
+                                                    "{0}"
+                                                } else {
+                                                    &dependencies[0]
+                                                },
+                                            )
+                                            .replace("{target}", name.as_ref().unwrap());
+                                        if command.is_empty() || command.starts_with('#') {
+                                            None
+                                        } else {
+                                            Some(command)
+                                        }
+                                    })
+                                    .collect(),
+                            ));
+                        }
                     }
                 }
                 pd::Event::End(pd::Tag::Heading(pd::HeadingLevel::H1, ..)) => {

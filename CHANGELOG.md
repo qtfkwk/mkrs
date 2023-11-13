@@ -31,6 +31,8 @@
 * 0.9.0 (2023-11-12): Enable using the code block info string to define a custom
   shell command; fix issue running multiple targets specified on command line;
   improve readme; update dependencies
+* 0.10.0 (2023-11-13): Treat recipes with a custom shell command as a script
+  rather than individual commands
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
