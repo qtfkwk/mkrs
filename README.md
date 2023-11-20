@@ -75,7 +75,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.10.0
+mkrs 0.11.0
 ~~~
 
 ~~~text
@@ -190,16 +190,16 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.10.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
+    Checking mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.30s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.10.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.47s
+   Compiling mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.48s
 ```
 
 ~~~
@@ -271,16 +271,16 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.10.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.30s
+    Checking mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.32s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.10.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.47s
+   Compiling mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.50s
 ```
 
 ~~~
@@ -403,32 +403,32 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          790            0          584          206
+ Markdown                5          792            0          586          206
  |- BASH                 3           16           16            0            0
  |- Python               1            1            1            0            0
- (Total)                            807           17          584          206
+ (Total)                            809           17          586          206
 -------------------------------------------------------------------------------
- Rust                    1          685          569           41           75
+ Rust                    1          688          572           41           75
  |- Markdown             1           10            0           10            0
- (Total)                            695          569           51           75
+ (Total)                            698          572           51           75
 ===============================================================================
- Total                   7         1496          588          625          283
+ Total                   7         1501          591          627          283
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 588
-Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.37)
+Total Physical Source Lines of Code (SLOC)                    = 591
+Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.38)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.24 (2.82)
+Schedule Estimate, Years (Months)                             = 0.24 (2.83)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
 Estimated Average Number of Developers (Effort/Schedule)      = 0.49
-Total Estimated Cost to Develop                               = $15,470
+Total Estimated Cost to Develop                               = $15,553
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 588
-Estimated Cost to Develop  | $15,469.91
-Estimated Schedule Effort  | 2.82 months
+Total Source Lines of Code | 591
+Estimated Cost to Develop  | $15,552.80
+Estimated Schedule Effort  | 2.83 months
 Estimated People Required  | 0.49
 
 ```
@@ -490,6 +490,8 @@ This is a custom recipe in Python.
   improve readme; update dependencies
 * 0.10.0 (2023-11-13): Treat recipes with a custom shell command as a script
   rather than individual commands
+* 0.11.0 (2023-11-20): Fix issue with the glob feature (globbing a nonexistent
+  file dependency results in zero dependencies instead of the file)
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

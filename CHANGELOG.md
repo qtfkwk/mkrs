@@ -33,6 +33,8 @@
   improve readme; update dependencies
 * 0.10.0 (2023-11-13): Treat recipes with a custom shell command as a script
   rather than individual commands
+* 0.11.0 (2023-11-20): Fix the globbing a nonexistent file dependency results in
+  zero dependencies issue; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

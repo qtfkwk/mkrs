@@ -493,15 +493,18 @@ impl Config {
                         is_file = true;
                         name = Some(s.to_string());
                     } else if in_dependencies {
-                        dependencies.append(
-                            &mut glob(&s)
-                                .expect("glob")
-                                .filter_map(|x| match x {
-                                    Ok(p) => Some(p.display().to_string()),
-                                    Err(_e) => None,
-                                })
-                                .collect::<Vec<_>>(),
-                        );
+                        let mut globbed = glob(&s)
+                            .expect("glob")
+                            .filter_map(|x| match x {
+                                Ok(p) => Some(p.display().to_string()),
+                                Err(_e) => None,
+                            })
+                            .collect::<Vec<_>>();
+                        if globbed.is_empty() {
+                            dependencies.push(s.to_string());
+                        } else {
+                            dependencies.append(&mut globbed);
+                        }
                     }
                 }
                 pd::Event::Text(s) => {
