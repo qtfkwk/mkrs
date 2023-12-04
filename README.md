@@ -75,7 +75,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.11.0
+mkrs 0.12.0
 ~~~
 
 ~~~text
@@ -120,6 +120,7 @@ $ mkrs -l
 * install
 * uninstall
 * install-deps
+* scaffold
 * clean
 * cocomo
 * full
@@ -190,7 +191,7 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.30s
 ```
 
@@ -198,8 +199,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.48s
+   Compiling mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.47s
 ```
 
 ~~~
@@ -222,9 +223,9 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 578 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 580 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (63 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (72 crate dependencies)
 ```
 
 ~~~
@@ -262,25 +263,25 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 578 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 580 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (63 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (72 crate dependencies)
 ```
 
 ### clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.32s
+    Checking mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.11.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.50s
+   Compiling mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.45s
 ```
 
 ~~~
@@ -353,7 +354,53 @@ cargo uninstall $(toml get -r Cargo.toml package.name)
 # install-deps
 
 ```
-cargo install cargo-audit cargo-edit cargo-outdated cocomo kapow tokei toml-cli
+cargo install cargo-audit cargo-edit cargo-outdated cocomo dtg kapow tokei toml-cli
+```
+
+# scaffold
+
+```bash -eo pipefail
+if ! toml get -r Cargo.toml package.description >/dev/null; then
+toml set Cargo.toml package.description "Insert a description here" >Cargo.toml.new
+mv Cargo.toml.new Cargo.toml
+echo Edit package description in Cargo.toml, then rerun \`mkrs scaffold\`.
+exit 0
+fi
+mkdir -p t
+if [ ! -e t/README.md ]; then
+NAME=$(toml get -r Cargo.toml package.name)
+ABOUT=$(toml get -r Cargo.toml package.description)
+cat <<EOF >t/README.md
+# About
+
+$ABOUT
+
+# Usage
+
+~~~text
+$ mkrs -V
+!run:../target/release/$NAME -V 2>&1
+~~~
+
+~~~text
+$ mkrs -h
+!run:../target/release/$NAME -h 2>&1
+~~~
+
+!inc:../CHANGELOG.md
+
+EOF
+fi
+if [ ! -e CHANGELOG.md ]; then
+VERSION=$(toml get -r Cargo.toml package.version)
+TODAY=$(dtg -n %Y-%m-%d)
+cat <<EOF >CHANGELOG.md
+# Changelog
+
+* $VERSION ($TODAY): Initial release
+
+EOF
+fi
 ```
 
 # clean
@@ -403,16 +450,16 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          792            0          586          206
- |- BASH                 3           16           16            0            0
+ Markdown                5          809            0          597          212
+ |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                            809           17          586          206
+ (Total)                            952          110          606          236
 -------------------------------------------------------------------------------
  Rust                    1          688          572           41           75
  |- Markdown             1           10            0           10            0
  (Total)                            698          572           51           75
 ===============================================================================
- Total                   7         1501          591          627          283
+ Total                   7         1518          591          638          289
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 591
@@ -490,8 +537,9 @@ This is a custom recipe in Python.
   improve readme; update dependencies
 * 0.10.0 (2023-11-13): Treat recipes with a custom shell command as a script
   rather than individual commands
-* 0.11.0 (2023-11-20): Fix issue with the glob feature (globbing a nonexistent
-  file dependency results in zero dependencies instead of the file)
+* 0.11.0 (2023-11-20): Fix the globbing a nonexistent file dependency results in
+  zero dependencies issue; update dependencies
+* 0.12.0 (2023-12-04): Add `scaffold` target; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
