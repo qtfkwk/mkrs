@@ -75,7 +75,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.12.0
+mkrs 0.12.1
 ~~~
 
 ~~~text
@@ -191,7 +191,7 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.30s
 ```
 
@@ -199,7 +199,7 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
+   Compiling mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished release [optimized] target(s) in 1.47s
 ```
 
@@ -272,7 +272,7 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished dev [unoptimized + debuginfo] target(s) in 0.29s
 ```
 
@@ -280,8 +280,8 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.12.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.45s
+   Compiling mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.46s
 ```
 
 ~~~
@@ -378,12 +378,12 @@ $ABOUT
 # Usage
 
 ~~~text
-$ mkrs -V
+\$ $NAME -V
 !run:../target/release/$NAME -V 2>&1
 ~~~
 
 ~~~text
-$ mkrs -h
+\$ $NAME -h
 !run:../target/release/$NAME -h 2>&1
 ~~~
 
@@ -450,16 +450,16 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          809            0          597          212
+ Markdown                5          810            0          598          212
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                            952          110          606          236
+ (Total)                            953          110          607          236
 -------------------------------------------------------------------------------
  Rust                    1          688          572           41           75
  |- Markdown             1           10            0           10            0
  (Total)                            698          572           51           75
 ===============================================================================
- Total                   7         1518          591          638          289
+ Total                   7         1519          591          639          289
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 591
@@ -540,6 +540,7 @@ This is a custom recipe in Python.
 * 0.11.0 (2023-11-20): Fix the globbing a nonexistent file dependency results in
   zero dependencies issue; update dependencies
 * 0.12.0 (2023-12-04): Add `scaffold` target; update dependencies
+* 0.12.1 (2023-12-04): Fix scaffold target; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

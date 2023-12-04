@@ -36,6 +36,7 @@
 * 0.11.0 (2023-11-20): Fix the globbing a nonexistent file dependency results in
   zero dependencies issue; update dependencies
 * 0.12.0 (2023-12-04): Add `scaffold` target; update dependencies
+* 0.12.1 (2023-12-04): Fix scaffold target; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
