@@ -85,15 +85,15 @@ $ABOUT
 
 # Usage
 
-~~~text
+~~~~text
 \$ $NAME -V
 !run:../target/release/$NAME -V 2>&1
-~~~
+~~~~
 
-~~~text
+~~~~text
 \$ $NAME -h
 !run:../target/release/$NAME -h 2>&1
-~~~
+~~~~
 
 !inc:../CHANGELOG.md
 

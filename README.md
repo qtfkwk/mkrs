@@ -75,7 +75,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.12.1
+mkrs 0.13.0
 ~~~
 
 ~~~text
@@ -168,13 +168,13 @@ $ mkrs -n
 ### clippy
 
 ```text
-$ cargo clippy -- -D clippy::all
+cargo clippy -- -D clippy::all
 ```
 
 ### build
 
 ```text
-$ cargo build --release
+cargo build --release
 ```
 
 ~~~
@@ -191,16 +191,16 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.30s
+    Checking mkrs v0.13.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.47s
+   Compiling mkrs v0.13.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.48s
 ```
 
 ~~~
@@ -223,9 +223,9 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 580 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 585 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (72 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
 
 ~~~
@@ -263,25 +263,25 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 580 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 585 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (72 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
 
 ### clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.29s
+    Checking mkrs v0.13.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
 ```
 
 ### build
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.12.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.46s
+   Compiling mkrs v0.13.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished release [optimized] target(s) in 1.44s
 ```
 
 ~~~
@@ -450,33 +450,33 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          810            0          598          212
+ Markdown                5          811            0          599          212
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                            953          110          607          236
+ (Total)                            954          110          608          236
 -------------------------------------------------------------------------------
- Rust                    1          688          572           41           75
+ Rust                    1          641          538           34           69
  |- Markdown             1           10            0           10            0
- (Total)                            698          572           51           75
+ (Total)                            651          538           44           69
 ===============================================================================
- Total                   7         1519          591          639          289
+ Total                   7         1473          557          633          283
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 591
-Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.38)
+Total Physical Source Lines of Code (SLOC)                    = 557
+Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.30)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.24 (2.83)
+Schedule Estimate, Years (Months)                             = 0.23 (2.76)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
-Estimated Average Number of Developers (Effort/Schedule)      = 0.49
-Total Estimated Cost to Develop                               = $15,553
+Estimated Average Number of Developers (Effort/Schedule)      = 0.47
+Total Estimated Cost to Develop                               = $14,615
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 591
-Estimated Cost to Develop  | $15,552.80
-Estimated Schedule Effort  | 2.83 months
-Estimated People Required  | 0.49
+Total Source Lines of Code | 557
+Estimated Cost to Develop  | $14,614.69
+Estimated Schedule Effort  | 2.76 months
+Estimated People Required  | 0.47
 
 ```
 
@@ -505,17 +505,17 @@ This is a custom recipe in Python.
 # Changelog
 
 * 0.1.0 (2023-11-04): Initial release
-* 0.1.1 (2023-11-04): Fix readme
-* 0.1.2 (2023-11-04): Add examples to readme
+    * 0.1.1 (2023-11-04): Fix readme
+    * 0.1.2 (2023-11-04): Add examples to readme
 * 0.2.0 (2023-11-05): Colorized Markdown output; added `-B`, `-C`, `-f`, `-r`
   options; error on invalid target(s); update dependencies
-* 0.2.1 (2023-11-06): Resolved issue [#1]; update dependencies
+    * 0.2.1 (2023-11-06): Resolved issue [#1]; update dependencies
 * 0.3.0 (2023-11-06): Added `-g` option and
   [default `Makefile.md` for a Rust project]; fixed changelog; improved readme
-* 0.3.1 (2023-11-07): Improved readme and changelog
-* 0.3.2 (2023-11-08): Fix error when a target file does not exist; update
-  dependencies
-* 0.3.3 (2023-11-08): Ignore commented commands
+    * 0.3.1 (2023-11-07): Improved readme and changelog
+    * 0.3.2 (2023-11-08): Fix error when a target file does not exist; update
+      dependencies
+    * 0.3.3 (2023-11-08): Ignore commented commands
 * 0.4.0 (2023-11-10): Add `-v` option and don't print up to date targets; move
   bunt calls to functions; improve comments and miscellaneous improvements;
   don't process dependencies for a file target unless needed (forced via `-B`,
@@ -540,7 +540,8 @@ This is a custom recipe in Python.
 * 0.11.0 (2023-11-20): Fix the globbing a nonexistent file dependency results in
   zero dependencies issue; update dependencies
 * 0.12.0 (2023-12-04): Add `scaffold` target; update dependencies
-* 0.12.1 (2023-12-04): Fix scaffold target; update dependencies
+    * 0.12.1 (2023-12-04): Fix scaffold target; update dependencies
+* 0.13.0 (2024-01-05): Use sprint; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

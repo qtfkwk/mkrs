@@ -3,12 +3,13 @@ use clap::{ArgAction::Count, Parser};
 use dep_graph::{DepGraph, Node};
 use glob::glob;
 use indexmap::IndexMap;
-use is_terminal::IsTerminal;
 use pulldown_cmark as pd;
-use std::collections::HashSet;
-use std::io::Write;
-use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
+use sprint::*;
+use std::{
+    collections::HashSet,
+    io::IsTerminal,
+    path::{Path, PathBuf},
+};
 
 #[cfg(unix)]
 use pager::Pager;
@@ -58,18 +59,6 @@ fn print_list_target(name: &str, level: usize) {
 
 fn print_up_to_date() {
     bunt::println!("{$#00ff00+italic}*Up to date*{/$}\n");
-}
-
-fn print_start_command(command: &str) {
-    bunt::println!("{$#555555}```text\n${/$} {$#00ffff+bold}{}{/$}", command);
-}
-
-fn print_start_script(script: &str, shell: &str) {
-    bunt::println!(
-        "{$#555555}```{}{/$}\n{}\n{$#555555}```{/$}\n\n{$#555555}```text{/$}",
-        shell,
-        script,
-    );
 }
 
 fn print_end_fence() {
@@ -395,67 +384,31 @@ fn process_target(
 }
 
 fn run(command: &str, dry_run: bool) {
-    print_start_command(command);
-    if !dry_run
-        && Command::new("sh")
-            .args(["-c", command])
-            .spawn()
-            .unwrap()
-            .wait()
-            .unwrap()
-            .code()
-            != Some(0)
-    {
-        print_end_fence();
-        error!(4, "ERROR: The command failed!");
+    Shell {
+        dry_run,
+        ..Default::default()
     }
-    print_end_fence();
+    .run(&[Command::new(command)]);
 }
 
 fn run_script(script: &str, dry_run: bool, verbose: u8, shell: Option<String>) {
-    // Parse the shell command into prog/args
-    let (prog, args, shell) = if let Some(shell) = shell {
-        // Shell specified in code block info string
-        if let Some(mut args) = shlex::split(&shell) {
-            let prog = args.remove(0);
-            (prog, args, shell.clone())
-        } else {
-            error!(8, "ERROR: Invalid shell command: `{shell}`");
-        }
+    let command = if let Some(command) = &shell {
+        command
+    } else if verbose >= 1 {
+        "bash -xeo pipefail"
     } else {
-        // Shell not specified in code block info string
-        let prog = String::from("bash");
-        let args = [if verbose >= 1 { "-xeo" } else { "-eo" }, "pipefail"]
-            .iter()
-            .map(|x| x.to_string())
-            .collect::<Vec<_>>();
-        let shell = format!("{prog} {}", args.join(" "));
-        (prog, args, shell)
+        "bash -eo pipefail"
     };
 
-    print_start_script(script, &shell);
-
-    if !dry_run {
-        // Run the shell
-        let mut c = Command::new(prog)
-            .args(args)
-            .stdin(Stdio::piped())
-            .spawn()
-            .unwrap();
-        let stdin = c.stdin.as_mut().unwrap();
-
-        // Run the script
-        writeln!(stdin, "{script}").unwrap();
-
-        // Wait for the script to finish and get its exit code
-        if c.wait().unwrap().code() != Some(0) {
-            // Script failed
-            print_end_fence();
-            error!(4, "ERROR: The script failed!");
-        }
+    Shell {
+        dry_run,
+        ..Default::default()
     }
-
-    print_end_fence();
+    .core(&Command {
+        command: command.to_string(),
+        stdin: Pipe::String(Some(script.to_string())),
+        ..Default::default()
+    });
 }
 
 //--------------------------------------------------------------------------------------------------

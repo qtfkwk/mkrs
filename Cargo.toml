@@ -1,21 +1,21 @@
 [package]
 name = "mkrs"
-version = "0.12.1"
+version = "0.13.0"
 edition = "2021"
 description = "Build automation tool"
 repository = "https://github.com/qtfkwk/mkrs"
 license = "MIT"
 
 [dependencies]
-anyhow = "1.0.75"
+anyhow = "1.0.79"
 bunt = "0.2.8"
-clap = { version = "4.4.10", features = ["derive", "wrap_help"] }
+clap = { version = "4.4.13", features = ["derive", "wrap_help"] }
 dep-graph = { version = "0.2.0", default-features = false }
 glob = "0.3.1"
 indexmap = "2.1.0"
-is-terminal = "0.4.9"
 pulldown-cmark = { version = "0.9.3", features = ["simd"] }
 shlex = "1.2.0"
+sprint = "0.6.0"
 
 [target.'cfg(unix)'.dependencies]
 pager = "0.16.1"
