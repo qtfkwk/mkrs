@@ -384,11 +384,15 @@ fn process_target(
 }
 
 fn run(command: &str, dry_run: bool) {
-    Shell {
+    let results = Shell {
         dry_run,
         ..Default::default()
     }
     .run(&[Command::new(command)]);
+
+    for result in &results {
+        exit_if_failed(result, dry_run);
+    }
 }
 
 fn run_script(script: &str, dry_run: bool, verbose: u8, shell: Option<String>) {
@@ -400,7 +404,7 @@ fn run_script(script: &str, dry_run: bool, verbose: u8, shell: Option<String>) {
         "bash -eo pipefail"
     };
 
-    Shell {
+    let result = Shell {
         dry_run,
         ..Default::default()
     }
@@ -409,6 +413,18 @@ fn run_script(script: &str, dry_run: bool, verbose: u8, shell: Option<String>) {
         stdin: Pipe::String(Some(script.to_string())),
         ..Default::default()
     });
+
+    exit_if_failed(&result, dry_run);
+}
+
+fn exit_if_failed(result: &Command, dry_run: bool) {
+    if let Some(code) = &result.code {
+        if !result.codes.contains(code) {
+            std::process::exit(*code);
+        }
+    } else if !dry_run {
+        std::process::exit(1);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

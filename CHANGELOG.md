@@ -38,6 +38,8 @@
 * 0.12.0 (2023-12-04): Add `scaffold` target; update dependencies
     * 0.12.1 (2023-12-04): Fix scaffold target; update dependencies
 * 0.13.0 (2024-01-05): Use sprint; update dependencies
+    * 0.13.1 (2024-01-27): Fix issue where a failed command did not halt
+      processing; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
