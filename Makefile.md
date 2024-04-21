@@ -2,10 +2,7 @@
 
 * clippy
 * `README.md`
-
-```
-cargo build --release
-```
+* `target/release/mkrs`
 
 # `README.md`
 
@@ -19,7 +16,15 @@ cargo build --release
 kapow {0} >{target}
 ```
 
+# `target/release/mkrs`
+
+```
+cargo build --release
+```
+
 # clippy
+
+* `src/**/*.rs`
 
 ```
 cargo clippy -- -D clippy::all

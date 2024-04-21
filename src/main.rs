@@ -4,7 +4,7 @@ use dep_graph::{DepGraph, Node};
 use glob::glob;
 use indexmap::IndexMap;
 use pulldown_cmark as pd;
-use sprint::*;
+use sprint::{Command, Pipe, Shell};
 use std::{
     collections::HashSet,
     io::IsTerminal,
@@ -25,20 +25,12 @@ macro_rules! error {
 
 //--------------------------------------------------------------------------------------------------
 
-fn print_h1(s: &str) {
-    bunt::println!("{$#00ffff+bold}# {}{/$}\n", s);
-}
-
-fn print_h2(s: &str) {
-    bunt::println!("{$#ffff22+bold}## {}{/$}\n", s);
-}
-
 fn print_file_target(name: &str) {
-    bunt::println!("{$#ff22ff+bold}### `{}`{/$}\n", name);
+    bunt::println!("{$#ff22ff+bold}# `{}`{/$}\n", name);
 }
 
 fn print_target(name: &str) {
-    bunt::println!("{$#ff22ff+bold}### {}{/$}\n", name);
+    bunt::println!("{$#ff22ff+bold}# {}{/$}\n", name);
 }
 
 fn print_list_file_target(name: &str, level: usize) {
@@ -182,11 +174,9 @@ fn main() -> Result<()> {
     // Set terminal colors
     set_terminal_colors();
 
-    print_h1("mkrs");
-
     // Print configuration
     if cli.verbose >= 3 {
-        print_h2("Configuration");
+        bunt::println!("{$#ffff22+bold}# Configuration{/$}\n");
         print_fence();
         println!("{cli:#?}");
         print_end_fence();
@@ -209,8 +199,6 @@ fn main() -> Result<()> {
                     println!("{cfg:#?}");
                     print_end_fence();
                 }
-
-                print_h2("Target(s)");
 
                 // List targets (`-l`)
                 if cli.list_targets {
@@ -446,7 +434,10 @@ impl Config {
         let mut recipes = vec![];
         for event in pd::Parser::new_ext(s, pd::Options::all()) {
             match event {
-                pd::Event::Start(pd::Tag::Heading(pd::HeadingLevel::H1, ..)) => {
+                pd::Event::Start(pd::Tag::Heading {
+                    level: pd::HeadingLevel::H1,
+                    ..
+                }) => {
                     if let Some(n) = name.take() {
                         let target =
                             Target::new(&n, is_file, &dependencies, std::mem::take(&mut recipes));
@@ -522,13 +513,13 @@ impl Config {
                         }
                     }
                 }
-                pd::Event::End(pd::Tag::Heading(pd::HeadingLevel::H1, ..)) => {
+                pd::Event::End(pd::TagEnd::Heading(pd::HeadingLevel::H1, ..)) => {
                     in_h1 = false;
                 }
                 pd::Event::Start(pd::Tag::List(None)) => {
                     in_dependencies = true;
                 }
-                pd::Event::End(pd::Tag::List(None)) => {
+                pd::Event::End(pd::TagEnd::List(false)) => {
                     in_dependencies = false;
                 }
                 pd::Event::Start(pd::Tag::CodeBlock(pd::CodeBlockKind::Fenced(info))) => {
@@ -539,7 +530,7 @@ impl Config {
                         Some(Some(info))
                     };
                 }
-                pd::Event::End(pd::Tag::CodeBlock(pd::CodeBlockKind::Fenced(_info))) => {
+                pd::Event::End(pd::TagEnd::CodeBlock) => {
                     in_recipe = None;
                 }
                 _ => {}

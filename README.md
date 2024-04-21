@@ -75,7 +75,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.13.1
+mkrs 0.14.0
 ~~~
 
 ~~~text
@@ -107,12 +107,9 @@ Options:
 
 ~~~text
 $ mkrs -l
-# mkrs
-
-## Target(s)
-
 * build
 * `README.md`
+* `target/release/mkrs`
 * clippy
 * test
 * check
@@ -134,20 +131,18 @@ $ mkrs -l
 
 ~~~text
 $ mkrs -l full
-# mkrs
-
-## Target(s)
-
 * full
     * update
     * check
     * build
         * clippy
+            * `src/main.rs`
         * `README.md`
             * `t/README.md`
             * `Cargo.toml`
             * `CHANGELOG.md`
             * `src/main.rs`
+        * `target/release/mkrs`
     * install
         * `README.md`
             * `t/README.md`
@@ -161,20 +156,10 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
-# mkrs
-
-## Target(s)
-
-### clippy
+# clippy
 
 ```text
 cargo clippy -- -D clippy::all
-```
-
-### build
-
-```text
-cargo build --release
 ```
 
 ~~~
@@ -183,24 +168,12 @@ cargo build --release
 
 ~~~text
 $ mkrs
-# mkrs
-
-## Target(s)
-
-### clippy
+# clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.13.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.27s
-```
-
-### build
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.13.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.46s
+    Checking mkrs v0.14.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.30s
 ```
 
 ~~~
@@ -209,11 +182,7 @@ $ cargo build --release
 
 ~~~text
 $ mkrs check
-# mkrs
-
-## Target(s)
-
-### check
+# check
 
 ```text
 $ cargo outdated --exit-code 1
@@ -223,9 +192,9 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 595 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 621 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (78 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (79 crate dependencies)
 ```
 
 ~~~
@@ -234,11 +203,7 @@ $ cargo audit
 
 ~~~text
 $ mkrs update check build
-# mkrs
-
-## Target(s)
-
-### update
+# update
 
 ```text
 $ cargo upgrade --incompatible
@@ -253,7 +218,7 @@ $ cargo update
     Updating crates.io index
 ```
 
-### check
+# check
 
 ```text
 $ cargo outdated --exit-code 1
@@ -263,25 +228,17 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 595 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 621 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (78 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (79 crate dependencies)
 ```
 
-### clippy
+# clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.13.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.27s
-```
-
-### build
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.13.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished release [optimized] target(s) in 1.48s
+    Checking mkrs v0.14.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.36s
 ```
 
 ~~~
@@ -432,11 +389,7 @@ cocomo
 
 ~~~text
 $ mkrs cocomo
-# mkrs
-
-## Target(s)
-
-### cocomo
+# cocomo
 
 ```bash -eo pipefail
 tokei; echo
@@ -450,33 +403,33 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          813            0          601          212
+ Markdown                5          772            0          578          194
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                            956          110          610          236
+ (Total)                            915          110          587          218
 -------------------------------------------------------------------------------
- Rust                    1          657          551           34           72
+ Rust                    1          648          546           34           68
  |- Markdown             1           10            0           10            0
- (Total)                            667          551           44           72
+ (Total)                            658          546           44           68
 ===============================================================================
- Total                   7         1491          570          635          286
+ Total                   7         1441          565          612          264
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 570
-Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.33)
+Total Physical Source Lines of Code (SLOC)                    = 565
+Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.32)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.23 (2.79)
+Schedule Estimate, Years (Months)                             = 0.23 (2.78)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
-Estimated Average Number of Developers (Effort/Schedule)      = 0.48
-Total Estimated Cost to Develop                               = $14,973
+Estimated Average Number of Developers (Effort/Schedule)      = 0.47
+Total Estimated Cost to Develop                               = $14,835
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 570
-Estimated Cost to Develop  | $14,973.05
-Estimated Schedule Effort  | 2.79 months
-Estimated People Required  | 0.48
+Total Source Lines of Code | 565
+Estimated Cost to Develop  | $14,835.17
+Estimated Schedule Effort  | 2.78 months
+Estimated People Required  | 0.47
 
 ```
 
@@ -486,11 +439,7 @@ Estimated People Required  | 0.48
 
 ~~~text
 $ mkrs custom
-# mkrs
-
-## Target(s)
-
-### custom
+# custom
 
 ```python
 print("This is a custom recipe in Python.")
@@ -544,6 +493,7 @@ This is a custom recipe in Python.
 * 0.13.0 (2024-01-05): Use sprint; update dependencies
     * 0.13.1 (2024-01-27): Fix issue where a failed command did not halt
       processing; update dependencies
+* 0.14.0 (2024-04-21): Remove useless level 1-2 headings; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
