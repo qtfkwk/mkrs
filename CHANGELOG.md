@@ -41,6 +41,7 @@
     * 0.13.1 (2024-01-27): Fix issue where a failed command did not halt
       processing; update dependencies
 * 0.14.0 (2024-04-21): Remove useless level 1-2 headings; update dependencies
+* 0.15.0 (2024-06-19): Add -q option; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

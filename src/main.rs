@@ -114,6 +114,10 @@ struct Cli {
     #[arg(short, action = Count)]
     verbose: u8,
 
+    /// Quiet
+    #[arg(short, conflicts_with = "verbose")]
+    quiet: bool,
+
     /// Change directory
     #[arg(short = 'C', value_name = "PATH")]
     change_directory: Option<PathBuf>,
@@ -260,6 +264,7 @@ fn main() -> Result<()> {
                                 cli.dry_run,
                                 cli.force_processing,
                                 cli.verbose,
+                                cli.quiet,
                                 cli.script_mode,
                             );
                         });
@@ -270,6 +275,7 @@ fn main() -> Result<()> {
                             cli.dry_run,
                             cli.force_processing,
                             cli.verbose,
+                            cli.quiet,
                             cli.script_mode,
                         );
                     }
@@ -343,6 +349,7 @@ fn process_target(
     dry_run: bool,
     force_processing: bool,
     verbose: u8,
+    quiet: bool,
     script_mode: bool,
 ) {
     let target = target.to_owned();
@@ -359,7 +366,7 @@ fn process_target(
         } else if force_processing || file_does_not_exist || target.outdated(ts, targets) {
             // Process the target if `-B`, target has commands & file doesn't exist, or target is
             // outdated
-            target.run(dry_run, verbose, script_mode);
+            target.run(dry_run, verbose, quiet, script_mode);
         } else if verbose >= 2 {
             // Otherwise, don't process the target
             target.print_heading();
@@ -367,13 +374,14 @@ fn process_target(
         }
     } else {
         // "Phony" target
-        target.run(dry_run, verbose, script_mode);
+        target.run(dry_run, verbose, quiet, script_mode);
     }
 }
 
-fn run(command: &str, dry_run: bool) {
+fn run(command: &str, dry_run: bool, quiet: bool) {
     let results = Shell {
         dry_run,
+        print: !quiet,
         ..Default::default()
     }
     .run(&[Command::new(command)]);
@@ -383,7 +391,7 @@ fn run(command: &str, dry_run: bool) {
     }
 }
 
-fn run_script(script: &str, dry_run: bool, verbose: u8, shell: Option<String>) {
+fn run_script(script: &str, dry_run: bool, verbose: u8, quiet: bool, shell: Option<String>) {
     let command = if let Some(command) = &shell {
         command
     } else if verbose >= 1 {
@@ -394,6 +402,7 @@ fn run_script(script: &str, dry_run: bool, verbose: u8, shell: Option<String>) {
 
     let result = Shell {
         dry_run,
+        print: !quiet,
         ..Default::default()
     }
     .core(&Command {
@@ -576,19 +585,20 @@ impl Recipe {
         Recipe { shell, commands }
     }
 
-    fn run(&self, dry_run: bool, verbose: u8, script_mode: bool) {
+    fn run(&self, dry_run: bool, verbose: u8, quiet: bool, script_mode: bool) {
         if let Some(shell) = &self.shell {
             run_script(
                 &self.commands.join("\n"),
                 dry_run,
                 verbose,
+                quiet,
                 Some(shell.clone()),
             );
         } else if script_mode {
-            run_script(&self.commands.join("\n"), dry_run, verbose, None);
+            run_script(&self.commands.join("\n"), dry_run, verbose, quiet, None);
         } else {
             for command in &self.commands {
-                run(command, dry_run);
+                run(command, dry_run, quiet);
             }
         }
     }
@@ -647,12 +657,12 @@ impl Target {
         }
     }
 
-    fn run(&self, dry_run: bool, verbose: u8, script_mode: bool) {
-        if !self.recipes.is_empty() || verbose >= 2 {
+    fn run(&self, dry_run: bool, verbose: u8, quiet: bool, script_mode: bool) {
+        if !quiet && (!self.recipes.is_empty() || verbose >= 2) {
             self.print_heading();
         }
         for recipe in &self.recipes {
-            recipe.run(dry_run, verbose, script_mode);
+            recipe.run(dry_run, verbose, quiet, script_mode);
         }
     }
 }
