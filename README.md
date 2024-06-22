@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.16.0
+mkrs 0.16.1
 ~~~
 
 ~~~text
@@ -109,13 +109,19 @@ Options:
 
 ~~~text
 $ mkrs -l
-* build
-* `README.md`
-* `target/release/{dirname}`
-* clippy
-* test
+* all
 * check
 * update
+* run
+* clippy
+* test
+* build
+* `README.md`
+* doc
+* outdated
+* audit
+* update-toml
+* update-lock
 * install
 * uninstall
 * install-deps
@@ -135,16 +141,30 @@ $ mkrs -l
 $ mkrs -l full
 * full
     * update
+        * update-toml
+        * update-lock
     * check
-    * build
+        * outdated
+        * audit
+    * all
         * clippy
-            * `src/main.rs`
-        * `README.md`
-            * `t/README.md`
+            * `Cargo.lock`
             * `Cargo.toml`
-            * `CHANGELOG.md`
             * `src/main.rs`
-        * `target/release/mkrs`
+        * test
+            * `Cargo.lock`
+            * `Cargo.toml`
+            * `src/main.rs`
+        * build
+            * `Cargo.lock`
+            * `Cargo.toml`
+            * `src/main.rs`
+            * `README.md`
+                * `t/README.md`
+                * `Cargo.toml`
+                * `CHANGELOG.md`
+                * `src/main.rs`
+        * doc
     * install
         * `README.md`
             * `t/README.md`
@@ -164,6 +184,24 @@ $ mkrs -n
 cargo clippy -- -D clippy::all
 ```
 
+# test
+
+```text
+cargo test --release
+```
+
+# build
+
+```text
+cargo build --release
+```
+
+# doc
+
+```text
+cargo doc
+```
+
 ~~~
 
 ## Process default target
@@ -174,8 +212,39 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.16.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
+```
+
+# test
+
+```text
+$ cargo test --release
+   Compiling mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 0.44s
+     Running unittests src/main.rs (target/release/deps/mkrs-0c5fe6eb09ce86ff)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+```
+
+# build
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.39s
+```
+
+# doc
+
+```text
+$ cargo doc
+ Documenting mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+   Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
 ~~~
@@ -184,12 +253,14 @@ $ cargo clippy -- -D clippy::all
 
 ~~~text
 $ mkrs check
-# check
+# outdated
 
 ```text
-$ cargo outdated --exit-code 1
+$ cargo outdated --exit-code=1
 All dependencies are up to date, yay!
 ```
+
+# audit
 
 ```text
 $ cargo audit
@@ -205,15 +276,17 @@ $ cargo audit
 
 ~~~text
 $ mkrs update check build
-# update
+# update-toml
 
 ```text
-$ cargo upgrade --incompatible
+$ cargo upgrade -i
     Updating 'https://github.com/rust-lang/crates.io-index' index
     Checking mkrs's dependencies
 note: Re-run with `--verbose` to show more dependencies
   latest: 10 packages
 ```
+
+# update-lock
 
 ```text
 $ cargo update
@@ -222,12 +295,14 @@ $ cargo update
 note: pass `--verbose` to see 13 unchanged dependencies behind latest
 ```
 
-# check
+# outdated
 
 ```text
-$ cargo outdated --exit-code 1
+$ cargo outdated --exit-code=1
 All dependencies are up to date, yay!
 ```
+
+# audit
 
 ```text
 $ cargo audit
@@ -237,12 +312,12 @@ $ cargo audit
     Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
 
-# clippy
+# build
 
 ```text
-$ cargo clippy -- -D clippy::all
-    Checking mkrs v0.16.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+$ cargo build --release
+   Compiling mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.40s
 ```
 
 ~~~
@@ -251,9 +326,57 @@ $ cargo clippy -- -D clippy::all
 
 ~~~text
 $ mkrs -g rust
-# build
+# all
 
 * clippy
+* test
+* build
+* doc
+
+# check
+
+* outdated
+* audit
+
+# update
+
+* update-toml
+* update-lock
+
+# run
+
+* build
+* `target/release/{dirname}`
+
+```
+target/release/{dirname}
+```
+
+# clippy
+
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
+
+```
+cargo clippy -- -D clippy::all
+```
+
+# test
+
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
+
+```
+cargo test --release
+```
+
+# build
+
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
 * `README.md`
 
 ```
@@ -272,29 +395,33 @@ cargo build --release
 kapow {0} >{target}
 ```
 
-# clippy
+# doc
 
 ```
-cargo clippy -- -D clippy::all
+cargo doc
 ```
 
-# test
+# outdated
 
 ```
-cargo test
+cargo outdated --exit-code=1
 ```
 
-# check
+# audit
 
 ```
-cargo outdated --exit-code 1
 cargo audit
 ```
 
-# update
+# update-toml
 
 ```
-cargo upgrade --incompatible
+cargo upgrade -i
+```
+
+# update-lock
+
+```
 cargo update
 ```
 
@@ -309,7 +436,7 @@ cargo install --path .
 # uninstall
 
 ```
-cargo uninstall $(toml get -r Cargo.toml package.name)
+cargo uninstall {dirname}
 ```
 
 # install-deps
@@ -338,15 +465,15 @@ $ABOUT
 
 # Usage
 
-~~~text
+~~~~text
 \$ $NAME -V
 !run:../target/release/$NAME -V 2>&1
-~~~
+~~~~
 
-~~~text
+~~~~text
 \$ $NAME -h
 !run:../target/release/$NAME -h 2>&1
-~~~
+~~~~
 
 !inc:../CHANGELOG.md
 
@@ -382,7 +509,7 @@ cocomo
 
 * update
 * check
-* build
+* all
 * install
 
 ~~~
@@ -407,16 +534,16 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          779            0          585          194
+ Markdown                5         1007            0          746          261
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                            922          110          594          218
+ (Total)                           1150          110          755          285
 -------------------------------------------------------------------------------
  Rust                    1          654          550           34           70
  |- Markdown             1           11            0           11            0
  (Total)                            665          550           45           70
 ===============================================================================
- Total                   7         1454          569          619          266
+ Total                   7         1682          569          780          333
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 569
@@ -500,6 +627,8 @@ This is a custom recipe in Python.
 * 0.14.0 (2024-04-21): Remove useless level 1-2 headings; update dependencies
 * 0.15.0 (2024-06-19): Add -q option; update dependencies
 * 0.16.0 (2024-06-22): Add `dirname` variable; update dependencies
+    * 0.16.1 (2024-06-22): Make `uninstall` target use `dirname` variable;
+      correct dependency ordering for `README.md` target
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

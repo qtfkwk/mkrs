@@ -43,6 +43,8 @@
 * 0.14.0 (2024-04-21): Remove useless level 1-2 headings; update dependencies
 * 0.15.0 (2024-06-19): Add -q option; update dependencies
 * 0.16.0 (2024-06-22): Add `dirname` variable; update dependencies
+    * 0.16.1 (2024-06-22): Make `uninstall` target use `dirname` variable;
+      correct dependency ordering for `README.md` target
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

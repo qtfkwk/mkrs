@@ -57,10 +57,10 @@ cargo build --release
 
 # `README.md`
 
+* `t/README.md`
 * `Cargo.toml`
 * `CHANGELOG.md`
 * `src/**/*.rs`
-* `t/README.md`
 
 ```
 cargo build --release
@@ -108,7 +108,7 @@ cargo install --path .
 # uninstall
 
 ```
-cargo uninstall $(toml get -r Cargo.toml package.name)
+cargo uninstall {dirname}
 ```
 
 # install-deps
