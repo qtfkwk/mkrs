@@ -51,6 +51,7 @@ Build automation tool
 * Commands may use the following variables:
     * `{0}`: first dependency
     * `{target}`: target name
+    * `{dirname}`: directory name
 
 *See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for
 examples.*
@@ -75,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.15.0
+mkrs 0.16.0
 ~~~
 
 ~~~text
@@ -110,7 +111,7 @@ Options:
 $ mkrs -l
 * build
 * `README.md`
-* `target/release/mkrs`
+* `target/release/{dirname}`
 * clippy
 * test
 * check
@@ -173,8 +174,8 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.15.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
+    Checking mkrs v0.16.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
 ```
 
 ~~~
@@ -240,8 +241,8 @@ $ cargo audit
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.15.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+    Checking mkrs v0.16.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
 ```
 
 ~~~
@@ -406,32 +407,32 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5          776            0          582          194
+ Markdown                5          779            0          585          194
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                            919          110          591          218
+ (Total)                            922          110          594          218
 -------------------------------------------------------------------------------
- Rust                    1          657          554           34           69
+ Rust                    1          654          550           34           70
  |- Markdown             1           11            0           11            0
- (Total)                            668          554           45           69
+ (Total)                            665          550           45           70
 ===============================================================================
- Total                   7         1454          573          616          265
+ Total                   7         1454          569          619          266
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 573
-Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.34)
+Total Physical Source Lines of Code (SLOC)                    = 569
+Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.33)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.23 (2.79)
+Schedule Estimate, Years (Months)                             = 0.23 (2.78)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
 Estimated Average Number of Developers (Effort/Schedule)      = 0.48
-Total Estimated Cost to Develop                               = $15,056
+Total Estimated Cost to Develop                               = $14,945
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 573
-Estimated Cost to Develop  | $15,055.80
-Estimated Schedule Effort  | 2.79 months
+Total Source Lines of Code | 569
+Estimated Cost to Develop  | $14,945.47
+Estimated Schedule Effort  | 2.78 months
 Estimated People Required  | 0.48
 
 ```
@@ -498,6 +499,7 @@ This is a custom recipe in Python.
       processing; update dependencies
 * 0.14.0 (2024-04-21): Remove useless level 1-2 headings; update dependencies
 * 0.15.0 (2024-06-19): Add -q option; update dependencies
+* 0.16.0 (2024-06-22): Add `dirname` variable; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

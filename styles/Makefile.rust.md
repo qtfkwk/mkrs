@@ -1,6 +1,54 @@
-# build
+# all
 
 * clippy
+* test
+* build
+* doc
+
+# check
+
+* outdated
+* audit
+
+# update
+
+* update-toml
+* update-lock
+
+# run
+
+* build
+* `target/release/{dirname}`
+
+```
+target/release/{dirname}
+```
+
+# clippy
+
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
+
+```
+cargo clippy -- -D clippy::all
+```
+
+# test
+
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
+
+```
+cargo test --release
+```
+
+# build
+
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
 * `README.md`
 
 ```
@@ -9,39 +57,43 @@ cargo build --release
 
 # `README.md`
 
-* `t/README.md`
 * `Cargo.toml`
 * `CHANGELOG.md`
 * `src/**/*.rs`
+* `t/README.md`
 
 ```
 cargo build --release
 kapow {0} >{target}
 ```
 
-# clippy
+# doc
 
 ```
-cargo clippy -- -D clippy::all
+cargo doc
 ```
 
-# test
+# outdated
 
 ```
-cargo test
+cargo outdated --exit-code=1
 ```
 
-# check
+# audit
 
 ```
-cargo outdated --exit-code 1
 cargo audit
 ```
 
-# update
+# update-toml
 
 ```
-cargo upgrade --incompatible
+cargo upgrade -i
+```
+
+# update-lock
+
+```
 cargo update
 ```
 
@@ -85,15 +137,15 @@ $ABOUT
 
 # Usage
 
-~~~text
+~~~~text
 \$ $NAME -V
 !run:../target/release/$NAME -V 2>&1
-~~~
+~~~~
 
-~~~text
+~~~~text
 \$ $NAME -h
 !run:../target/release/$NAME -h 2>&1
-~~~
+~~~~
 
 !inc:../CHANGELOG.md
 
@@ -129,6 +181,6 @@ cocomo
 
 * update
 * check
-* build
+* all
 * install
 

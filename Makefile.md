@@ -1,29 +1,33 @@
-# build
+# all
 
 * clippy
-* `README.md`
-* `target/release/mkrs`
+* test
+* build
+* doc
 
-# `README.md`
+# check
 
-* `t/README.md`
-* `Cargo.toml`
-* `CHANGELOG.md`
-* `src/**/*.rs`
+* outdated
+* audit
+
+# update
+
+* update-toml
+* update-lock
+
+# run
+
+* build
+* `target/release/{dirname}`
 
 ```
-cargo build --release
-kapow {0} >{target}
-```
-
-# `target/release/mkrs`
-
-```
-cargo build --release
+target/release/{dirname}
 ```
 
 # clippy
 
+* `Cargo.lock`
+* `Cargo.toml`
 * `src/**/*.rs`
 
 ```
@@ -32,21 +36,64 @@ cargo clippy -- -D clippy::all
 
 # test
 
-```
-cargo test
-```
-
-# check
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
 
 ```
-cargo outdated --exit-code 1
+cargo test --release
+```
+
+# build
+
+* `Cargo.lock`
+* `Cargo.toml`
+* `src/**/*.rs`
+* `README.md`
+
+```
+cargo build --release
+```
+
+# `README.md`
+
+* `Cargo.toml`
+* `CHANGELOG.md`
+* `src/**/*.rs`
+* `t/README.md`
+
+```
+cargo build --release
+kapow {0} >{target}
+```
+
+# doc
+
+```
+cargo doc
+```
+
+# outdated
+
+```
+cargo outdated --exit-code=1
+```
+
+# audit
+
+```
 cargo audit
 ```
 
-# update
+# update-toml
 
 ```
-cargo upgrade --incompatible
+cargo upgrade -i
+```
+
+# update-lock
+
+```
 cargo update
 ```
 
@@ -134,7 +181,7 @@ cocomo
 
 * update
 * check
-* build
+* all
 * install
 
 # fail

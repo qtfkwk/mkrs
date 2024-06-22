@@ -51,6 +51,7 @@ Build automation tool
 * Commands may use the following variables:
     * `{0}`: first dependency
     * `{target}`: target name
+    * `{dirname}`: directory name
 
 *See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for
 examples.*

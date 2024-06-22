@@ -191,12 +191,18 @@ fn main() -> Result<()> {
         match std::fs::read_to_string(&cli.config_file) {
             Ok(s) => {
                 // Change to directory of configuration file
-                std::env::set_current_dir(
-                    cli.config_file.canonicalize().unwrap().parent().unwrap(),
-                )?;
+                let dir = cli
+                    .config_file
+                    .canonicalize()
+                    .unwrap()
+                    .parent()
+                    .unwrap()
+                    .to_owned();
+                std::env::set_current_dir(&dir)?;
+                let dirname = dir.file_name().unwrap().to_str().unwrap().to_string();
 
                 // Parse the content to a `Config`
-                let cfg = Config::from_markdown(&s);
+                let cfg = Config::from_markdown(&s, &dirname);
 
                 if cli.verbose >= 3 {
                     print_fence();
@@ -432,7 +438,7 @@ struct Config {
 }
 
 impl Config {
-    fn from_markdown(s: &str) -> Config {
+    fn from_markdown(s: &str, dirname: &str) -> Config {
         let mut targets = IndexMap::new();
         let mut in_h1 = false;
         let mut in_dependencies = false;
@@ -462,6 +468,7 @@ impl Config {
                         is_file = true;
                         name = Some(s.to_string());
                     } else if in_dependencies {
+                        let s = s.replace("{dirname}", dirname);
                         let mut globbed = glob(&s)
                             .expect("glob")
                             .filter_map(|x| match x {
@@ -483,38 +490,28 @@ impl Config {
                     } else if in_dependencies {
                         dependencies.push(s.to_string());
                     } else if let Some(shell) = in_recipe.take() {
+                        let s = s
+                            .trim()
+                            .replace("{target}", name.as_ref().unwrap())
+                            .replace("{dirname}", dirname);
+                        let s = if dependencies.is_empty() {
+                            s
+                        } else {
+                            s.replace("{0}", &dependencies[0])
+                        };
+
                         if let Some(shell) = shell {
-                            recipes.push(Recipe::new(
-                                Some(shell),
-                                vec![if dependencies.is_empty() {
-                                    s.trim().replace("{target}", name.as_ref().unwrap())
-                                } else {
-                                    s.trim()
-                                        .replace("{target}", name.as_ref().unwrap())
-                                        .replace("{0}", &dependencies[0])
-                                }],
-                            ));
+                            recipes.push(Recipe::new(Some(shell), vec![s]));
                         } else {
                             recipes.push(Recipe::new(
                                 None,
                                 s.replace("\\\n", "")
                                     .lines()
                                     .filter_map(|x| {
-                                        let command = x
-                                            .trim()
-                                            .replace(
-                                                "{0}",
-                                                if dependencies.is_empty() {
-                                                    "{0}"
-                                                } else {
-                                                    &dependencies[0]
-                                                },
-                                            )
-                                            .replace("{target}", name.as_ref().unwrap());
-                                        if command.is_empty() || command.starts_with('#') {
+                                        if x.is_empty() || x.starts_with('#') {
                                             None
                                         } else {
-                                            Some(command)
+                                            Some(x.to_string())
                                         }
                                     })
                                     .collect(),
