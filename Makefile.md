@@ -15,15 +15,6 @@
 * update-toml
 * update-lock
 
-# run
-
-* build
-* `target/release/{dirname}`
-
-```
-target/release/{dirname}
-```
-
 # clippy
 
 * `Cargo.lock`

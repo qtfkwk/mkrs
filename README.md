@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.16.1
+mkrs 0.16.2
 ~~~
 
 ~~~text
@@ -112,7 +112,6 @@ $ mkrs -l
 * all
 * check
 * update
-* run
 * clippy
 * test
 * build
@@ -212,17 +211,17 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
+    Checking mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
 ```
 
 # test
 
 ```text
 $ cargo test --release
-   Compiling mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 0.44s
-     Running unittests src/main.rs (target/release/deps/mkrs-0c5fe6eb09ce86ff)
+   Compiling mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 0.43s
+     Running unittests src/main.rs (target/release/deps/mkrs-d94e4344f096a50b)
 
 running 0 tests
 
@@ -234,15 +233,15 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.39s
+   Compiling mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.42s
 ```
 
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
+ Documenting mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
@@ -316,8 +315,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.40s
+   Compiling mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.41s
 ```
 
 ~~~
@@ -345,12 +344,15 @@ $ mkrs -g rust
 
 # run
 
-* build
 * `target/release/{dirname}`
 
 ```
 target/release/{dirname}
 ```
+
+# `target/release/{dirname}`
+
+* build
 
 # clippy
 
@@ -534,16 +536,16 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1007            0          746          261
+ Markdown                5         1005            0          743          262
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                           1150          110          755          285
+ (Total)                           1148          110          752          286
 -------------------------------------------------------------------------------
  Rust                    1          654          550           34           70
  |- Markdown             1           11            0           11            0
  (Total)                            665          550           45           70
 ===============================================================================
- Total                   7         1682          569          780          333
+ Total                   7         1680          569          777          334
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 569
@@ -629,6 +631,8 @@ This is a custom recipe in Python.
 * 0.16.0 (2024-06-22): Add `dirname` variable; update dependencies
     * 0.16.1 (2024-06-22): Make `uninstall` target use `dirname` variable;
       correct dependency ordering for `README.md` target
+    * 0.16.2 (2024-06-22): Remove `run` target; fix `run` target in generated
+      Rust configuration
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

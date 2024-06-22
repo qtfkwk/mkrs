@@ -17,12 +17,15 @@
 
 # run
 
-* build
 * `target/release/{dirname}`
 
 ```
 target/release/{dirname}
 ```
+
+# `target/release/{dirname}`
+
+* build
 
 # clippy
 

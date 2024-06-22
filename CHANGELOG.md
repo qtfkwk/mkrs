@@ -45,6 +45,8 @@
 * 0.16.0 (2024-06-22): Add `dirname` variable; update dependencies
     * 0.16.1 (2024-06-22): Make `uninstall` target use `dirname` variable;
       correct dependency ordering for `README.md` target
+    * 0.16.2 (2024-06-22): Remove `run` target; fix `run` target in generated
+      Rust configuration
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
