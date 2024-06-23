@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.16.2
+mkrs 0.16.3
 ~~~
 
 ~~~text
@@ -211,17 +211,17 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+    Checking mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
 ```
 
 # test
 
 ```text
 $ cargo test --release
-   Compiling mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 0.43s
-     Running unittests src/main.rs (target/release/deps/mkrs-d94e4344f096a50b)
+   Compiling mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 0.42s
+     Running unittests src/main.rs (target/release/deps/mkrs-1ff939510cfdb9f1)
 
 running 0 tests
 
@@ -233,16 +233,16 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.42s
+   Compiling mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.45s
 ```
 
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+ Documenting mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -315,8 +315,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.41s
+   Compiling mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.42s
 ```
 
 ~~~
@@ -536,16 +536,16 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1005            0          743          262
+ Markdown                5         1007            0          745          262
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                           1148          110          752          286
+ (Total)                           1150          110          754          286
 -------------------------------------------------------------------------------
  Rust                    1          654          550           34           70
  |- Markdown             1           11            0           11            0
  (Total)                            665          550           45           70
 ===============================================================================
- Total                   7         1680          569          777          334
+ Total                   7         1682          569          779          334
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 569
@@ -633,6 +633,8 @@ This is a custom recipe in Python.
       correct dependency ordering for `README.md` target
     * 0.16.2 (2024-06-22): Remove `run` target; fix `run` target in generated
       Rust configuration
+    * 0.16.3 (2024-06-23): Fix issue when using `dirname` variable in file
+      target name; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

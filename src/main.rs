@@ -464,11 +464,11 @@ impl Config {
                     in_h1 = true;
                 }
                 pd::Event::Code(s) => {
+                    let s = s.replace("{dirname}", dirname);
                     if in_h1 {
                         is_file = true;
-                        name = Some(s.to_string());
+                        name = Some(s);
                     } else if in_dependencies {
-                        let s = s.replace("{dirname}", dirname);
                         let mut globbed = glob(&s)
                             .expect("glob")
                             .filter_map(|x| match x {

@@ -47,6 +47,8 @@
       correct dependency ordering for `README.md` target
     * 0.16.2 (2024-06-22): Remove `run` target; fix `run` target in generated
       Rust configuration
+    * 0.16.3 (2024-06-23): Fix issue when using `dirname` variable in file
+      target name; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
