@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.16.3
+mkrs 0.16.4
 ~~~
 
 ~~~text
@@ -211,7 +211,7 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
 ```
 
@@ -219,9 +219,9 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo test --release
-   Compiling mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+   Compiling mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `release` profile [optimized] target(s) in 0.42s
-     Running unittests src/main.rs (target/release/deps/mkrs-1ff939510cfdb9f1)
+     Running unittests src/main.rs (target/release/deps/mkrs-5e3ecbcddcca62ad)
 
 running 0 tests
 
@@ -233,15 +233,15 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.45s
+   Compiling mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.36s
 ```
 
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
+ Documenting mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
@@ -315,8 +315,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.42s
+   Compiling mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.40s
 ```
 
 ~~~
@@ -350,10 +350,6 @@ $ mkrs -g rust
 target/release/{dirname}
 ```
 
-# `target/release/{dirname}`
-
-* build
-
 # clippy
 
 * `Cargo.lock`
@@ -375,6 +371,10 @@ cargo test --release
 ```
 
 # build
+
+* `target/release/{dirname}`
+
+# `target/release/{dirname}`
 
 * `Cargo.lock`
 * `Cargo.toml`
@@ -536,16 +536,16 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1007            0          745          262
+ Markdown                5         1008            0          746          262
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                           1150          110          754          286
+ (Total)                           1151          110          755          286
 -------------------------------------------------------------------------------
  Rust                    1          654          550           34           70
  |- Markdown             1           11            0           11            0
  (Total)                            665          550           45           70
 ===============================================================================
- Total                   7         1682          569          779          334
+ Total                   7         1683          569          780          334
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 569
@@ -635,6 +635,7 @@ This is a custom recipe in Python.
       Rust configuration
     * 0.16.3 (2024-06-23): Fix issue when using `dirname` variable in file
       target name; update dependencies
+    * 0.16.4 (2024-06-23): Fix `build` target in generated Rust configuration
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

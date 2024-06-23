@@ -23,10 +23,6 @@
 target/release/{dirname}
 ```
 
-# `target/release/{dirname}`
-
-* build
-
 # clippy
 
 * `Cargo.lock`
@@ -48,6 +44,10 @@ cargo test --release
 ```
 
 # build
+
+* `target/release/{dirname}`
+
+# `target/release/{dirname}`
 
 * `Cargo.lock`
 * `Cargo.toml`

@@ -1,6 +1,6 @@
 [package]
 name = "mkrs"
-version = "0.16.3"
+version = "0.16.4"
 edition = "2021"
 description = "Build automation tool"
 repository = "https://github.com/qtfkwk/mkrs"
