@@ -50,6 +50,8 @@
     * 0.16.3 (2024-06-23): Fix issue when using `dirname` variable in file
       target name; update dependencies
     * 0.16.4 (2024-06-23): Fix `build` target in generated Rust configuration
+    * 0.16.5 (2024-07-03): Add `.env` / dotenv example to readme; update
+      dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

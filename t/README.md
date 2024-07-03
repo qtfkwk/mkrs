@@ -151,6 +151,13 @@ $ mkrs custom
 !run:../target/release/mkrs -f ../Makefile.md custom 2>&1
 ~~~
 
+## Use with a `.env` file via dotenv
+
+1. Install [`dotenv`]: `cargo install dotenv`.
+2. Create a `.env` file with environment variables.
+3. Prepend command(s) in your `Makefile.md` recipes with `dotenv `.
+4. Run the `mkrs` command.
+
 !inc:../CHANGELOG.md
 
 [^one]: Unlike [make], mkrs does not have any built-in knowledge about how to

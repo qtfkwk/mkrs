@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.16.4
+mkrs 0.16.5
 ~~~
 
 ~~~text
@@ -211,17 +211,17 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
+    Checking mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.49s
 ```
 
 # test
 
 ```text
 $ cargo test --release
-   Compiling mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 0.42s
-     Running unittests src/main.rs (target/release/deps/mkrs-5e3ecbcddcca62ad)
+   Compiling mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 0.43s
+     Running unittests src/main.rs (target/release/deps/mkrs-566301d73f7c4d8c)
 
 running 0 tests
 
@@ -233,16 +233,28 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.36s
+   Compiling mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.48s
 ```
 
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+ Documenting bitflags v2.6.0
+    Checking syn v2.0.68
+ Documenting either v1.13.0
+ Documenting syn v2.0.68
+ Documenting rayon v1.10.0
+ Documenting rustix v0.38.34
+ Documenting pulldown-cmark v0.11.0
+ Documenting terminal_size v0.3.0
+ Documenting clap_builder v4.5.8
+ Documenting clap_derive v4.5.8
+ Documenting clap v4.5.8
+ Documenting sprint v0.6.0
+ Documenting mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.13s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -264,7 +276,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 629 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 630 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
     Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
@@ -306,7 +318,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 629 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 630 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
     Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
@@ -315,8 +327,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.4 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.40s
+   Compiling mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.47s
 ```
 
 ~~~
@@ -536,16 +548,16 @@ cocomo
 ===============================================================================
  TOML                    1           21           19            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1008            0          746          262
+ Markdown                5         1029            0          765          264
  |- BASH                 3          142          109            9           24
  |- Python               1            1            1            0            0
- (Total)                           1151          110          755          286
+ (Total)                           1172          110          774          288
 -------------------------------------------------------------------------------
  Rust                    1          654          550           34           70
  |- Markdown             1           11            0           11            0
  (Total)                            665          550           45           70
 ===============================================================================
- Total                   7         1683          569          780          334
+ Total                   7         1704          569          799          336
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 569
@@ -583,6 +595,13 @@ This is a custom recipe in Python.
 ```
 
 ~~~
+
+## Use with a `.env` file via dotenv
+
+1. Install [`dotenv`]: `cargo install dotenv`.
+2. Create a `.env` file with environment variables.
+3. Prepend command(s) in your `Makefile.md` recipes with `dotenv `.
+4. Run the `mkrs` command.
 
 # Changelog
 
@@ -636,6 +655,8 @@ This is a custom recipe in Python.
     * 0.16.3 (2024-06-23): Fix issue when using `dirname` variable in file
       target name; update dependencies
     * 0.16.4 (2024-06-23): Fix `build` target in generated Rust configuration
+    * 0.16.5 (2024-07-03): Add `.env` / dotenv example to readme; update
+      dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

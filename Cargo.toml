@@ -1,6 +1,6 @@
 [package]
 name = "mkrs"
-version = "0.16.4"
+version = "0.16.5"
 edition = "2021"
 description = "Build automation tool"
 repository = "https://github.com/qtfkwk/mkrs"
@@ -9,7 +9,7 @@ license = "MIT"
 [dependencies]
 anyhow = "1.0.86"
 bunt = "0.2.8"
-clap = { version = "4.5.7", features = ["derive", "wrap_help"] }
+clap = { version = "4.5.8", features = ["derive", "wrap_help"] }
 dep-graph = { version = "0.2.0", default-features = false }
 glob = "0.3.1"
 indexmap = "2.2.6"
