@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.16.5
+mkrs 0.17.0
 ~~~
 
 ~~~text
@@ -89,18 +89,20 @@ Arguments:
   [NAME]...  Target(s)
 
 Options:
-  -l              List targets/dependencies
-  -B              Force processing
-  -n              Dry run
-  -s              Script mode
-  -v...           Verbose
-  -q              Quiet
-  -C <PATH>       Change directory
-  -f <PATH>       Configuration file [default: Makefile.md]
-  -g <STYLE>      Generate Makefile.md content [styles: rust]
-  -r              Print readme
-  -h, --help      Print help
-  -V, --version   Print version
+  -l                   List targets/dependencies
+  -B                   Force processing
+  -n                   Dry run
+  -s                   Script mode
+  -v...                Verbose
+  -q                   Quiet
+  -C <PATH>            Change directory
+  -f <PATH>            Configuration file [default: Makefile.md]
+  -g <STYLE>           Generate Makefile.md content [styles: rust]
+      --color <COLOR>  Force enable/disable terminal colors [default: auto]
+                       [possible values: auto, always, never]
+  -r                   Print readme
+  -h, --help           Print help
+  -V, --version        Print version
 ~~~
 
 # Examples
@@ -112,9 +114,11 @@ $ mkrs -l
 * all
 * check
 * update
+* run
 * clippy
 * test
 * build
+* `target/release/mkrs`
 * `README.md`
 * doc
 * outdated
@@ -124,9 +128,9 @@ $ mkrs -l
 * install
 * uninstall
 * install-deps
-* scaffold
 * clean
 * cocomo
+* publish
 * full
 * fail
 * `nonexistent`
@@ -155,14 +159,15 @@ $ mkrs -l full
             * `Cargo.toml`
             * `src/main.rs`
         * build
-            * `Cargo.lock`
-            * `Cargo.toml`
-            * `src/main.rs`
-            * `README.md`
-                * `t/README.md`
+            * `target/release/mkrs`
+                * `Cargo.lock`
                 * `Cargo.toml`
-                * `CHANGELOG.md`
                 * `src/main.rs`
+                * `README.md`
+                    * `t/README.md`
+                    * `Cargo.toml`
+                    * `CHANGELOG.md`
+                    * `src/main.rs`
         * doc
     * install
         * `README.md`
@@ -177,6 +182,12 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
+# `target/release/mkrs`
+
+```text
+cargo build --release
+```
+
 # clippy
 
 ```text
@@ -186,13 +197,7 @@ cargo clippy -- -D clippy::all
 # test
 
 ```text
-cargo test --release
-```
-
-# build
-
-```text
-cargo build --release
+cargo test
 ```
 
 # doc
@@ -211,17 +216,17 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.49s
+    Checking mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
 ```
 
 # test
 
 ```text
-$ cargo test --release
-   Compiling mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 0.43s
-     Running unittests src/main.rs (target/release/deps/mkrs-566301d73f7c4d8c)
+$ cargo test
+   Compiling mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.47s
+     Running unittests src/main.rs (target/debug/deps/mkrs-23ca57d5a540ee27)
 
 running 0 tests
 
@@ -229,32 +234,20 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
-# build
+# `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.48s
+   Compiling mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.44s
 ```
 
 # doc
 
 ```text
 $ cargo doc
- Documenting bitflags v2.6.0
-    Checking syn v2.0.68
- Documenting either v1.13.0
- Documenting syn v2.0.68
- Documenting rayon v1.10.0
- Documenting rustix v0.38.34
- Documenting pulldown-cmark v0.11.0
- Documenting terminal_size v0.3.0
- Documenting clap_builder v4.5.8
- Documenting clap_derive v4.5.8
- Documenting clap v4.5.8
- Documenting sprint v0.6.0
- Documenting mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.13s
+ Documenting mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -276,9 +269,9 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 630 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 645 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (79 crate dependencies)
 ```
 
 ~~~
@@ -294,7 +287,7 @@ $ cargo upgrade -i
     Updating 'https://github.com/rust-lang/crates.io-index' index
     Checking mkrs's dependencies
 note: Re-run with `--verbose` to show more dependencies
-  latest: 10 packages
+  latest: 11 packages
 ```
 
 # update-lock
@@ -303,7 +296,7 @@ note: Re-run with `--verbose` to show more dependencies
 $ cargo update
     Updating crates.io index
      Locking 0 packages to latest compatible versions
-note: pass `--verbose` to see 13 unchanged dependencies behind latest
+note: pass `--verbose` to see 14 unchanged dependencies behind latest
 ```
 
 # outdated
@@ -318,17 +311,17 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 630 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 645 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (79 crate dependencies)
 ```
 
-# build
+# `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.16.5 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.47s
+   Compiling mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.44s
 ```
 
 ~~~
@@ -366,7 +359,7 @@ target/release/{dirname}
 
 * `Cargo.lock`
 * `Cargo.toml`
-* `src/**/*.rs`
+* `**/*.rs`
 
 ```
 cargo clippy -- -D clippy::all
@@ -376,10 +369,16 @@ cargo clippy -- -D clippy::all
 
 * `Cargo.lock`
 * `Cargo.toml`
-* `src/**/*.rs`
+* `**/*.rs`
 
 ```
-cargo test --release
+cargo test
+```
+
+# bench
+
+```
+cargo bench -q 2>&1 |tee benches/report.txt
 ```
 
 # build
@@ -390,7 +389,7 @@ cargo test --release
 
 * `Cargo.lock`
 * `Cargo.toml`
-* `src/**/*.rs`
+* `**/*.rs`
 * `README.md`
 
 ```
@@ -402,7 +401,7 @@ cargo build --release
 * `t/README.md`
 * `Cargo.toml`
 * `CHANGELOG.md`
-* `src/**/*.rs`
+* `**/*.rs`
 
 ```
 cargo build --release
@@ -519,6 +518,14 @@ cocomo -o sloccount
 cocomo
 ```
 
+# publish
+
+```
+cargo publish
+git push
+git push --tags
+```
+
 # full
 
 * update
@@ -542,39 +549,40 @@ cocomo -o sloccount
 cocomo
 ```
 
-```text
+```
+text
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- TOML                    1           21           19            0            2
+ TOML                    1           22           20            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1029            0          765          264
- |- BASH                 3          142          109            9           24
+ Markdown                5         1070            0          793          277
+ |- BASH                 3          100           78            6           16
  |- Python               1            1            1            0            0
- (Total)                           1172          110          774          288
+ (Total)                           1171           79          799          293
 -------------------------------------------------------------------------------
- Rust                    1          654          550           34           70
- |- Markdown             1           11            0           11            0
- (Total)                            665          550           45           70
+ Rust                    1          680          578           31           71
+ |- Markdown             1           12            0           12            0
+ (Total)                            692          578           43           71
 ===============================================================================
- Total                   7         1704          569          799          336
+ Total                   7         1772          598          824          350
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 569
-Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.33)
+Total Physical Source Lines of Code (SLOC)                    = 598
+Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.40)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.23 (2.78)
+Schedule Estimate, Years (Months)                             = 0.24 (2.84)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
-Estimated Average Number of Developers (Effort/Schedule)      = 0.48
-Total Estimated Cost to Develop                               = $14,945
+Estimated Average Number of Developers (Effort/Schedule)      = 0.49
+Total Estimated Cost to Develop                               = $15,746
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 569
-Estimated Cost to Develop  | $14,945.47
-Estimated Schedule Effort  | 2.78 months
-Estimated People Required  | 0.48
+Total Source Lines of Code | 598
+Estimated Cost to Develop  | $15,746.28
+Estimated Schedule Effort  | 2.84 months
+Estimated People Required  | 0.49
 
 ```
 
@@ -590,7 +598,8 @@ $ mkrs custom
 print("This is a custom recipe in Python.")
 ```
 
-```text
+```
+text
 This is a custom recipe in Python.
 ```
 
@@ -657,10 +666,14 @@ This is a custom recipe in Python.
     * 0.16.4 (2024-06-23): Fix `build` target in generated Rust configuration
     * 0.16.5 (2024-07-03): Add `.env` / dotenv example to readme; update
       dependencies
+* 0.17.0 (2024-08-04): Switch terminal colors from [`bunt`] to [`owo-colors`] ([ref][rain-rust-cli-colors]); add `--color` option; fix makefiles; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
 [`glob`]: https://crates.io/crates/glob
+[`bunt`]: https://crates.io/crates/bunt
+[`owo-colors`]: https://crates.io/crates/owo-colors
+[rain-rust-cli-colors]: https://rust-cli-recommendations.sunshowers.io/managing-colors-in-rust.html
 
 [^one]: Unlike [make], mkrs does not have any built-in knowledge about how to
 *compile* any sort of file; all such commands must be defined in the

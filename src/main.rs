@@ -1,14 +1,17 @@
-use anyhow::Result;
-use clap::{ArgAction::Count, Parser};
-use dep_graph::{DepGraph, Node};
-use glob::glob;
-use indexmap::IndexMap;
-use pulldown_cmark as pd;
-use sprint::{Command, Pipe, Shell};
-use std::{
-    collections::HashSet,
-    io::IsTerminal,
-    path::{Path, PathBuf},
+use {
+    anyhow::Result,
+    clap::{ArgAction::Count, Parser},
+    dep_graph::{DepGraph, Node},
+    glob::glob,
+    indexmap::IndexMap,
+    lazy_static::lazy_static,
+    owo_colors::{OwoColorize, Stream, Style},
+    pulldown_cmark as pd,
+    sprint::{style, ColorOverride, Command, Pipe, Shell},
+    std::{
+        collections::HashSet,
+        path::{Path, PathBuf},
+    },
 };
 
 #[cfg(unix)]
@@ -18,24 +21,51 @@ use pager::Pager;
 
 macro_rules! error {
     ($code:expr, $($x:tt)*) => {
-        bunt::eprintln!("{$red+bold}{}{/$}", format!($($x)*));
+        eprintln!("{}", format!($($x)*).if_supports_color(Stream::Stderr, |x| x.style(*ERROR)));
         std::process::exit($code);
     };
 }
 
 //--------------------------------------------------------------------------------------------------
 
+lazy_static! {
+    static ref BULLET: Style = style("#888888").expect("style");
+    static ref CONFIGURATION: Style = style("#FFFF22+bold").expect("style");
+    static ref ERROR: Style = style("red+bold").expect("style");
+    static ref FENCE: Style = style("#555555").expect("style");
+    static ref FILE_TARGET: Style = style("#44FFFF+bold").expect("style");
+    static ref TARGET: Style = style("#FF22FF+bold").expect("style");
+    static ref UP_TO_DATE: Style = style("#00FF00+italic").expect("style");
+}
+
 fn print_file_target(name: &str) {
-    bunt::println!("{$#ff22ff+bold}# `{}`{/$}\n", name);
+    println!(
+        "{}\n",
+        format!("# `{name}`").if_supports_color(Stream::Stdout, |x| x.style(*TARGET))
+    );
 }
 
 fn print_target(name: &str) {
-    bunt::println!("{$#ff22ff+bold}# {}{/$}\n", name);
+    println!(
+        "{}\n",
+        format!("# {name}").if_supports_color(Stream::Stdout, |x| x.style(*TARGET))
+    );
 }
 
 fn print_list_file_target(name: &str, level: usize) {
+    print_bullet(level);
+    println!(
+        "{}",
+        format!("`{name}`").if_supports_color(Stream::Stdout, |x| x.style(*FILE_TARGET)),
+    );
+}
+
+fn print_bullet(level: usize) {
     print_indent(level);
-    bunt::println!("{$#888888}*{/$} {$#44ffff}`{}`{/$}", name);
+    print!(
+        "{} ",
+        "*".if_supports_color(Stream::Stdout, |x| x.style(*BULLET)),
+    );
 }
 
 fn print_indent(level: usize) {
@@ -45,36 +75,27 @@ fn print_indent(level: usize) {
 }
 
 fn print_list_target(name: &str, level: usize) {
-    print_indent(level);
-    bunt::println!("{$#888888}*{/$} {}", name);
+    print_bullet(level);
+    println!("{name}",);
 }
 
 fn print_up_to_date() {
-    bunt::println!("{$#00ff00+italic}*Up to date*{/$}\n");
-}
-
-fn print_end_fence() {
-    bunt::println!("{$#555555}```{/$}\n");
+    println!(
+        "{}",
+        "*Up to date*".if_supports_color(Stream::Stdout, |x| x.style(*UP_TO_DATE))
+    );
 }
 
 fn print_fence() {
-    bunt::println!("{$#555555}```{/$}");
+    print!(
+        "{}",
+        "```".if_supports_color(Stream::Stdout, |x| x.style(*FENCE))
+    );
 }
 
-fn set_terminal_colors() {
-    // stdout
-    bunt::set_stdout_color_choice(if std::io::stdout().is_terminal() {
-        bunt::termcolor::ColorChoice::Always
-    } else {
-        bunt::termcolor::ColorChoice::Never
-    });
-
-    // stderr
-    bunt::set_stderr_color_choice(if std::io::stderr().is_terminal() {
-        bunt::termcolor::ColorChoice::Always
-    } else {
-        bunt::termcolor::ColorChoice::Never
-    });
+fn print_end_fence() {
+    print_fence();
+    println!("\n");
 }
 
 fn print_list_file_targets(target: &str, targets: &IndexMap<String, Target>, level: usize) {
@@ -130,6 +151,10 @@ struct Cli {
     #[arg(short = 'g', value_name = "STYLE")]
     generate: Option<String>,
 
+    /// Force enable/disable terminal colors
+    #[arg(long, value_enum, global = true, default_value = "auto")]
+    color: ColorOverride,
+
     /// Print readme
     #[arg(short)]
     readme: bool,
@@ -147,6 +172,8 @@ fn main() -> Result<()> {
     }
 
     let cli = Cli::parse();
+
+    cli.color.init();
 
     // Print the readme (`-r`)
     if cli.readme {
@@ -175,14 +202,14 @@ fn main() -> Result<()> {
         std::env::set_current_dir(dir)?;
     }
 
-    // Set terminal colors
-    set_terminal_colors();
-
     // Print configuration
     if cli.verbose >= 3 {
-        bunt::println!("{$#ffff22+bold}# Configuration{/$}\n");
+        println!(
+            "{}\n",
+            "# Configuration".if_supports_color(Stream::Stdout, |x| x.style(*CONFIGURATION))
+        );
         print_fence();
-        println!("{cli:#?}");
+        println!("\n{cli:#?}");
         print_end_fence();
     }
 
@@ -206,7 +233,7 @@ fn main() -> Result<()> {
 
                 if cli.verbose >= 3 {
                     print_fence();
-                    println!("{cfg:#?}");
+                    println!("\n{cfg:#?}");
                     print_end_fence();
                 }
 

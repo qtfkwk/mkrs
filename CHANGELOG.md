@@ -52,8 +52,12 @@
     * 0.16.4 (2024-06-23): Fix `build` target in generated Rust configuration
     * 0.16.5 (2024-07-03): Add `.env` / dotenv example to readme; update
       dependencies
+* 0.17.0 (2024-08-04): Switch terminal colors from [`bunt`] to [`owo-colors`] ([ref][rain-rust-cli-colors]); add `--color` option; fix makefiles; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
 [`glob`]: https://crates.io/crates/glob
+[`bunt`]: https://crates.io/crates/bunt
+[`owo-colors`]: https://crates.io/crates/owo-colors
+[rain-rust-cli-colors]: https://rust-cli-recommendations.sunshowers.io/managing-colors-in-rust.html
 
