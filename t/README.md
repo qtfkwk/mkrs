@@ -158,7 +158,12 @@ $ mkrs custom
 3. Prepend command(s) in your `Makefile.md` recipes with `dotenv `.
 4. Run the `mkrs` command.
 
-!inc:../CHANGELOG.md
+# Changelog
+
+See [`CHANGELOG.md`] in the [repository].
+
+[`CHANGELOG.md`]: https://github.com/qtfkwk/mkrs/blob/main/CHANGELOG.md
+[repository]: https://github.com/qtfkwk/mkrs
 
 [^one]: Unlike [make], mkrs does not have any built-in knowledge about how to
 *compile* any sort of file; all such commands must be defined in the

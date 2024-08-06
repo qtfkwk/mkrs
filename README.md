@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.17.0
+mkrs 0.17.1
 ~~~
 
 ~~~text
@@ -182,12 +182,6 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
-# `target/release/mkrs`
-
-```text
-cargo build --release
-```
-
 # clippy
 
 ```text
@@ -198,6 +192,12 @@ cargo clippy -- -D clippy::all
 
 ```text
 cargo test
+```
+
+# `target/release/mkrs`
+
+```text
+cargo build --release
 ```
 
 # doc
@@ -212,21 +212,29 @@ cargo doc
 
 ~~~text
 $ mkrs
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.44s
+```
+
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.37s
+    Checking mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.47s
-     Running unittests src/main.rs (target/debug/deps/mkrs-23ca57d5a540ee27)
+   Compiling mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running unittests src/main.rs (target/debug/deps/mkrs-44fc0414093bcaa2)
 
 running 0 tests
 
@@ -234,20 +242,12 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.44s
-```
-
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.38s
+ Documenting mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -320,8 +320,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.17.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.44s
+   Compiling mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.46s
 ```
 
 ~~~
@@ -556,32 +556,32 @@ text
 ===============================================================================
  TOML                    1           22           20            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1070            0          793          277
+ Markdown                5         1076            0          797          279
  |- BASH                 3          100           78            6           16
  |- Python               1            1            1            0            0
- (Total)                           1171           79          799          293
+ (Total)                           1177           79          803          295
 -------------------------------------------------------------------------------
- Rust                    1          680          578           31           71
+ Rust                    1          671          567           31           73
  |- Markdown             1           12            0           12            0
- (Total)                            692          578           43           71
+ (Total)                            683          567           43           73
 ===============================================================================
- Total                   7         1772          598          824          350
+ Total                   7         1769          587          828          354
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 598
-Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.40)
+Total Physical Source Lines of Code (SLOC)                    = 587
+Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.37)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.24 (2.84)
+Schedule Estimate, Years (Months)                             = 0.23 (2.82)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
 Estimated Average Number of Developers (Effort/Schedule)      = 0.49
-Total Estimated Cost to Develop                               = $15,746
+Total Estimated Cost to Develop                               = $15,442
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 598
-Estimated Cost to Develop  | $15,746.28
-Estimated Schedule Effort  | 2.84 months
+Total Source Lines of Code | 587
+Estimated Cost to Develop  | $15,442.29
+Estimated Schedule Effort  | 2.82 months
 Estimated People Required  | 0.49
 
 ```
@@ -614,66 +614,10 @@ This is a custom recipe in Python.
 
 # Changelog
 
-* 0.1.0 (2023-11-04): Initial release
-    * 0.1.1 (2023-11-04): Fix readme
-    * 0.1.2 (2023-11-04): Add examples to readme
-* 0.2.0 (2023-11-05): Colorized Markdown output; added `-B`, `-C`, `-f`, `-r`
-  options; error on invalid target(s); update dependencies
-    * 0.2.1 (2023-11-06): Resolved issue [#1]; update dependencies
-* 0.3.0 (2023-11-06): Added `-g` option and
-  [default `Makefile.md` for a Rust project]; fixed changelog; improved readme
-    * 0.3.1 (2023-11-07): Improved readme and changelog
-    * 0.3.2 (2023-11-08): Fix error when a target file does not exist; update
-      dependencies
-    * 0.3.3 (2023-11-08): Ignore commented commands
-* 0.4.0 (2023-11-10): Add `-v` option and don't print up to date targets; move
-  bunt calls to functions; improve comments and miscellaneous improvements;
-  don't process dependencies for a file target unless needed (forced via `-B`,
-  doesn't exist, or outdated); change default outdated response to false to
-  avoid processing a file target unnecessarily
-* 0.5.0 (2023-11-10): Fail to run on Windows; ignore leading/trailing whitespace
-  in commands; append commands instead of replacing them; improve readme; add
-  `-s` (script mode)
-* 0.6.0 (2023-11-11): Use [`glob`] crate to process file dependencies without
-  targets; `-vvv`: print `Config`; fix changelog; improve readme; add `clean`
-  target to Makefiles; update dependencies
-* 0.7.0 (2023-11-11): Make dependency ordering significant; trace dependencies
-  for specified targets for `-l`; add `full` target to Makefiles; add
-  `README.md` dependency on `install` target; don't print phony targets without
-  commands or `-vv`; fix readme
-* 0.8.0 (2023-11-11): Add `cocomo` target to Makefiles
-* 0.9.0 (2023-11-12): Enable using the code block info string to define a custom
-  shell command; fix issue running multiple targets specified on command line;
-  improve readme; update dependencies
-* 0.10.0 (2023-11-13): Treat recipes with a custom shell command as a script
-  rather than individual commands
-* 0.11.0 (2023-11-20): Fix the globbing a nonexistent file dependency results in
-  zero dependencies issue; update dependencies
-* 0.12.0 (2023-12-04): Add `scaffold` target; update dependencies
-    * 0.12.1 (2023-12-04): Fix scaffold target; update dependencies
-* 0.13.0 (2024-01-05): Use sprint; update dependencies
-    * 0.13.1 (2024-01-27): Fix issue where a failed command did not halt
-      processing; update dependencies
-* 0.14.0 (2024-04-21): Remove useless level 1-2 headings; update dependencies
-* 0.15.0 (2024-06-19): Add -q option; update dependencies
-* 0.16.0 (2024-06-22): Add `dirname` variable; update dependencies
-    * 0.16.1 (2024-06-22): Make `uninstall` target use `dirname` variable;
-      correct dependency ordering for `README.md` target
-    * 0.16.2 (2024-06-22): Remove `run` target; fix `run` target in generated
-      Rust configuration
-    * 0.16.3 (2024-06-23): Fix issue when using `dirname` variable in file
-      target name; update dependencies
-    * 0.16.4 (2024-06-23): Fix `build` target in generated Rust configuration
-    * 0.16.5 (2024-07-03): Add `.env` / dotenv example to readme; update
-      dependencies
-* 0.17.0 (2024-08-04): Switch terminal colors from [`bunt`] to [`owo-colors`] ([ref][rain-rust-cli-colors]); add `--color` option; fix makefiles; update dependencies
+See [`CHANGELOG.md`] in the [repository].
 
-[default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
-[#1]: https://github.com/qtfkwk/mkrs/issues/1
-[`glob`]: https://crates.io/crates/glob
-[`bunt`]: https://crates.io/crates/bunt
-[`owo-colors`]: https://crates.io/crates/owo-colors
-[rain-rust-cli-colors]: https://rust-cli-recommendations.sunshowers.io/managing-colors-in-rust.html
+[`CHANGELOG.md`]: https://github.com/qtfkwk/mkrs/blob/main/CHANGELOG.md
+[repository]: https://github.com/qtfkwk/mkrs
 
 [^one]: Unlike [make], mkrs does not have any built-in knowledge about how to
 *compile* any sort of file; all such commands must be defined in the

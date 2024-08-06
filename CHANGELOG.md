@@ -53,6 +53,7 @@
     * 0.16.5 (2024-07-03): Add `.env` / dotenv example to readme; update
       dependencies
 * 0.17.0 (2024-08-04): Switch terminal colors from [`bunt`] to [`owo-colors`] ([ref][rain-rust-cli-colors]); add `--color` option; fix makefiles; update dependencies
+    * 0.17.1 (2024-08-06): Add `cprint`, `ecprint` macros; don't include changelog in the readme
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

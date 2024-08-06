@@ -19,9 +19,21 @@ use pager::Pager;
 
 //--------------------------------------------------------------------------------------------------
 
+macro_rules! cprint {
+    ($style:expr, $($x:tt)*) => {
+        print!("{}", format!($($x)*).if_supports_color(Stream::Stdout, |x| x.style($style)));
+    };
+}
+
+macro_rules! ecprint {
+    ($style:expr, $($x:tt)*) => {
+        eprint!("{}", format!($($x)*).if_supports_color(Stream::Stderr, |x| x.style($style)));
+    };
+}
+
 macro_rules! error {
     ($code:expr, $($x:tt)*) => {
-        eprintln!("{}", format!($($x)*).if_supports_color(Stream::Stderr, |x| x.style(*ERROR)));
+        ecprint!(*ERROR, $($x)*);
         std::process::exit($code);
     };
 }
@@ -39,33 +51,21 @@ lazy_static! {
 }
 
 fn print_file_target(name: &str) {
-    println!(
-        "{}\n",
-        format!("# `{name}`").if_supports_color(Stream::Stdout, |x| x.style(*TARGET))
-    );
+    cprint!(*TARGET, "# `{name}`\n\n");
 }
 
 fn print_target(name: &str) {
-    println!(
-        "{}\n",
-        format!("# {name}").if_supports_color(Stream::Stdout, |x| x.style(*TARGET))
-    );
+    cprint!(*TARGET, "# {name}\n\n");
 }
 
 fn print_list_file_target(name: &str, level: usize) {
     print_bullet(level);
-    println!(
-        "{}",
-        format!("`{name}`").if_supports_color(Stream::Stdout, |x| x.style(*FILE_TARGET)),
-    );
+    cprint!(*FILE_TARGET, "`{name}`\n");
 }
 
 fn print_bullet(level: usize) {
     print_indent(level);
-    print!(
-        "{} ",
-        "*".if_supports_color(Stream::Stdout, |x| x.style(*BULLET)),
-    );
+    cprint!(*BULLET, "* ");
 }
 
 fn print_indent(level: usize) {
@@ -76,21 +76,15 @@ fn print_indent(level: usize) {
 
 fn print_list_target(name: &str, level: usize) {
     print_bullet(level);
-    println!("{name}",);
+    println!("{name}");
 }
 
 fn print_up_to_date() {
-    println!(
-        "{}",
-        "*Up to date*".if_supports_color(Stream::Stdout, |x| x.style(*UP_TO_DATE))
-    );
+    cprint!(*UP_TO_DATE, "*Up to date*\n");
 }
 
 fn print_fence() {
-    print!(
-        "{}",
-        "```".if_supports_color(Stream::Stdout, |x| x.style(*FENCE))
-    );
+    cprint!(*FENCE, "```");
 }
 
 fn print_end_fence() {
@@ -204,10 +198,7 @@ fn main() -> Result<()> {
 
     // Print configuration
     if cli.verbose >= 3 {
-        println!(
-            "{}\n",
-            "# Configuration".if_supports_color(Stream::Stdout, |x| x.style(*CONFIGURATION))
-        );
+        cprint!(*CONFIGURATION, "# Configuration\n\n");
         print_fence();
         println!("\n{cli:#?}");
         print_end_fence();
