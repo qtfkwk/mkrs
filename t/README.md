@@ -5,7 +5,7 @@ Build automation tool
 * Inspired by [make]
 * No automatic targets[^one]
 * Minimalist functionality; maximalist readability
-* Configuration is a simple Markdown file named [`Makefile.md`]
+* Configuration is one or more simple Markdown files (`Makefile.md` by default)
 * Output is colorized Markdown (unless redirected or piped)
 * Processes the target(s) specified or if none, processes the first target
 * Commands run independently, in script mode, or via a custom command
@@ -76,12 +76,12 @@ examples.*
 
 ~~~text
 $ mkrs -V
-!run:../target/release/mkrs -f ../Makefile.md -V 2>&1
+!run:../target/release/mkrs -C .. -V 2>&1
 ~~~
 
 ~~~text
 $ mkrs -h
-!run:../target/release/mkrs -f ../Makefile.md -h 2>&1
+!run:../target/release/mkrs -C .. -h 2>&1
 ~~~
 
 # Examples
@@ -104,35 +104,35 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
-!run:../target/release/mkrs -f ../Makefile.md -n 2>&1
+!run:../target/release/mkrs -C .. -n 2>&1
 ~~~
 
 ## Process default target
 
 ~~~text
 $ mkrs
-!run:../target/release/mkrs -f ../Makefile.md 2>&1
+!run:../target/release/mkrs -C .. 2>&1
 ~~~
 
 ## Process `check` target
 
 ~~~text
 $ mkrs check
-!run:../target/release/mkrs -f ../Makefile.md check 2>&1
+!run:../target/release/mkrs -C .. check 2>&1
 ~~~
 
 ## Process `update`, `check`, and `build` targets
 
 ~~~text
 $ mkrs update check build
-!run:../target/release/mkrs -f ../Makefile.md update check build 2>&1
+!run:../target/release/mkrs -C .. update check build 2>&1
 ~~~
 
 ## Generate a default Makefile.md for a Rust project
 
 ~~~text
 $ mkrs -g rust
-!run:../target/release/mkrs -f ../Makefile.md -g rust 2>&1
+!run:../target/release/mkrs -C .. -g rust 2>&1
 ~~~
 
 **Note:** Save to `Makefile.md` via redirection: `mkrs -g rust >Makefile.md`
@@ -141,14 +141,14 @@ $ mkrs -g rust
 
 ~~~text
 $ mkrs cocomo
-!run:../target/release/mkrs -f ../Makefile.md cocomo 2>&1
+!run:../target/release/mkrs -C .. cocomo 2>&1
 ~~~
 
 ## Use a custom shell program
 
 ~~~text
 $ mkrs custom
-!run:../target/release/mkrs -f ../Makefile.md custom 2>&1
+!run:../target/release/mkrs -C .. custom 2>&1
 ~~~
 
 ## Use with a `.env` file via dotenv

@@ -5,7 +5,7 @@ Build automation tool
 * Inspired by [make]
 * No automatic targets[^one]
 * Minimalist functionality; maximalist readability
-* Configuration is a simple Markdown file named [`Makefile.md`]
+* Configuration is one or more simple Markdown files (`Makefile.md` by default)
 * Output is colorized Markdown (unless redirected or piped)
 * Processes the target(s) specified or if none, processes the first target
 * Commands run independently, in script mode, or via a custom command
@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.17.1
+mkrs 0.18.0
 ~~~
 
 ~~~text
@@ -96,7 +96,7 @@ Options:
   -v...                Verbose
   -q                   Quiet
   -C <PATH>            Change directory
-  -f <PATH>            Configuration file [default: Makefile.md]
+  -f <PATH>            Configuration file(s) [default: Makefile.md]
   -g <STYLE>           Generate Makefile.md content [styles: rust]
       --color <COLOR>  Force enable/disable terminal colors [default: auto]
                        [possible values: auto, always, never]
@@ -182,6 +182,12 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
+# `target/release/mkrs`
+
+```text
+cargo build --release
+```
+
 # clippy
 
 ```text
@@ -192,12 +198,6 @@ cargo clippy -- -D clippy::all
 
 ```text
 cargo test
-```
-
-# `target/release/mkrs`
-
-```text
-cargo build --release
 ```
 
 # doc
@@ -216,25 +216,25 @@ $ mkrs
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.44s
+   Compiling mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.53s
 ```
 
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s
+    Checking mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
-     Running unittests src/main.rs (target/debug/deps/mkrs-44fc0414093bcaa2)
+   Compiling mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running unittests src/main.rs (target/debug/deps/mkrs-563a99c5b54523eb)
 
 running 0 tests
 
@@ -246,8 +246,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo doc
- Documenting mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
+ Documenting mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -269,9 +269,9 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 645 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 647 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (79 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
 
 ~~~
@@ -311,17 +311,17 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 645 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 647 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (79 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
 
 # `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.17.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.46s
+   Compiling mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.55s
 ```
 
 ~~~
@@ -556,33 +556,33 @@ text
 ===============================================================================
  TOML                    1           22           20            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1076            0          797          279
+ Markdown                5         1054            0          775          279
  |- BASH                 3          100           78            6           16
  |- Python               1            1            1            0            0
- (Total)                           1177           79          803          295
+ (Total)                           1155           79          781          295
 -------------------------------------------------------------------------------
- Rust                    1          671          567           31           73
+ Rust                    1          688          584           29           75
  |- Markdown             1           12            0           12            0
- (Total)                            683          567           43           73
+ (Total)                            700          584           41           75
 ===============================================================================
- Total                   7         1769          587          828          354
+ Total                   7         1764          604          804          356
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 587
-Development Effort Estimate, Person-Years (Person-Months)     = 0.11 (1.37)
+Total Physical Source Lines of Code (SLOC)                    = 604
+Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.41)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.23 (2.82)
+Schedule Estimate, Years (Months)                             = 0.24 (2.85)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
-Estimated Average Number of Developers (Effort/Schedule)      = 0.49
-Total Estimated Cost to Develop                               = $15,442
+Estimated Average Number of Developers (Effort/Schedule)      = 0.50
+Total Estimated Cost to Develop                               = $15,912
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 587
-Estimated Cost to Develop  | $15,442.29
-Estimated Schedule Effort  | 2.82 months
-Estimated People Required  | 0.49
+Total Source Lines of Code | 604
+Estimated Cost to Develop  | $15,912.21
+Estimated Schedule Effort  | 2.85 months
+Estimated People Required  | 0.50
 
 ```
 

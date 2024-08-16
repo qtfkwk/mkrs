@@ -1,5 +1,5 @@
 use {
-    anyhow::Result,
+    anyhow::{anyhow, Result},
     clap::{ArgAction::Count, Parser},
     dep_graph::{DepGraph, Node},
     glob::glob,
@@ -137,9 +137,9 @@ struct Cli {
     #[arg(short = 'C', value_name = "PATH")]
     change_directory: Option<PathBuf>,
 
-    /// Configuration file
+    /// Configuration file(s)
     #[arg(short = 'f', default_value = "Makefile.md", value_name = "PATH")]
-    config_file: PathBuf,
+    config_files: Vec<PathBuf>,
 
     /// Generate Makefile.md content [styles: rust]
     #[arg(short = 'g', value_name = "STYLE")]
@@ -196,7 +196,7 @@ fn main() -> Result<()> {
         std::env::set_current_dir(dir)?;
     }
 
-    // Print configuration
+    // Print CLI configuration
     if cli.verbose >= 3 {
         cprint!(*CONFIGURATION, "# Configuration\n\n");
         print_fence();
@@ -204,114 +204,8 @@ fn main() -> Result<()> {
         print_end_fence();
     }
 
-    // Process the configuration file (`Makefile.md` or `-f PATH`)
-    if cli.config_file.exists() {
-        match std::fs::read_to_string(&cli.config_file) {
-            Ok(s) => {
-                // Change to directory of configuration file
-                let dir = cli
-                    .config_file
-                    .canonicalize()
-                    .unwrap()
-                    .parent()
-                    .unwrap()
-                    .to_owned();
-                std::env::set_current_dir(&dir)?;
-                let dirname = dir.file_name().unwrap().to_str().unwrap().to_string();
-
-                // Parse the content to a `Config`
-                let cfg = Config::from_markdown(&s, &dirname);
-
-                if cli.verbose >= 3 {
-                    print_fence();
-                    println!("\n{cfg:#?}");
-                    print_end_fence();
-                }
-
-                // List targets (`-l`)
-                if cli.list_targets {
-                    if cli.targets.is_empty() {
-                        for target in cfg.targets.values() {
-                            if target.dtg.is_none()
-                                || !target.dependencies.is_empty()
-                                || !target.recipes.is_empty()
-                            {
-                                if target.dtg.is_some() {
-                                    print_list_file_target(&target.name, 0);
-                                } else {
-                                    print_list_target(&target.name, 0);
-                                }
-                            }
-                        }
-                    } else {
-                        for target in &cli.targets {
-                            if !cfg.targets.contains_key(target) {
-                                error!(5, "ERROR: Invalid target: `{target}`!");
-                            }
-                        }
-                        for target in &cli.targets {
-                            print_list_file_targets(target, &cfg.targets, 0);
-                        }
-                    }
-                    println!();
-                    return Ok(());
-                }
-
-                // Which target(s) are we processing?
-                let targets = if cli.targets.is_empty() {
-                    // First target in `Makefile.md`
-                    vec![cfg.targets[0].name.clone()]
-                } else {
-                    // Target(s) specified on the command line
-                    cli.targets.clone()
-                };
-
-                // Process the target(s)
-                let mut processed = HashSet::new();
-                for target in &targets {
-                    let mut nodes = vec![];
-                    add_node_and_deps(
-                        target,
-                        &cfg,
-                        &mut nodes,
-                        &mut processed,
-                        cli.force_processing,
-                        &cfg.targets,
-                        None,
-                    );
-                    let num_nodes = nodes.len();
-                    if num_nodes > 1 {
-                        DepGraph::new(&nodes).into_iter().for_each(|x| {
-                            process_target(
-                                &x,
-                                &cfg.targets,
-                                cli.dry_run,
-                                cli.force_processing,
-                                cli.verbose,
-                                cli.quiet,
-                                cli.script_mode,
-                            );
-                        });
-                    } else if num_nodes > 0 {
-                        process_target(
-                            nodes[0].id(),
-                            &cfg.targets,
-                            cli.dry_run,
-                            cli.force_processing,
-                            cli.verbose,
-                            cli.quiet,
-                            cli.script_mode,
-                        );
-                    }
-                }
-            }
-            Err(e) => {
-                error!(2, "ERROR: {e}!");
-            }
-        }
-    } else {
-        error!(1, "ERROR: Please create a `{}`!", cli.config_file.display());
-    }
+    // Process targets
+    Config::from(&cli.config_files)?.process(&cli)?;
 
     Ok(())
 }
@@ -455,9 +349,47 @@ struct Config {
     targets: IndexMap<String, Target>,
 }
 
+impl Default for Config {
+    fn default() -> Config {
+        Config {
+            targets: IndexMap::new(),
+        }
+    }
+}
+
 impl Config {
-    fn from_markdown(s: &str, dirname: &str) -> Config {
-        let mut targets = IndexMap::new();
+    fn from(config_files: &[PathBuf]) -> Result<Config> {
+        let mut r = Config::default();
+        let dirname = std::env::current_dir()?
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+        for config_file in config_files {
+            r.load(config_file, &dirname)?;
+        }
+        Ok(r)
+    }
+
+    fn load(&mut self, config_file: &Path, dirname: &str) -> Result<()> {
+        if config_file.exists() {
+            match std::fs::read_to_string(config_file) {
+                Ok(s) => {
+                    self.load_markdown(&s, dirname);
+                    Ok(())
+                }
+                Err(e) => Err(anyhow!("{e}")),
+            }
+        } else {
+            Err(anyhow!(
+                "Configuration file `{}` does not exist!",
+                config_file.display(),
+            ))
+        }
+    }
+
+    fn load_markdown(&mut self, s: &str, dirname: &str) {
         let mut in_h1 = false;
         let mut in_dependencies = false;
         let mut in_recipe = None;
@@ -474,7 +406,7 @@ impl Config {
                     if let Some(n) = name.take() {
                         let target =
                             Target::new(&n, is_file, &dependencies, std::mem::take(&mut recipes));
-                        targets.insert(n, target);
+                        self.targets.insert(n, target);
                         name = None;
                         is_file = false;
                         dependencies = vec![];
@@ -564,14 +496,14 @@ impl Config {
         // Add the last target
         if let Some(n) = name.take() {
             let target = Target::new(&n, is_file, &dependencies, recipes);
-            targets.insert(n, target);
+            self.targets.insert(n, target);
         }
 
         // Add files mentioned as dependencies but not targets in configuration
         let mut file_targets = vec![];
-        for target in targets.values() {
+        for target in self.targets.values() {
             for dependency in &target.dependencies {
-                if !targets.contains_key(dependency) {
+                if !self.targets.contains_key(dependency) {
                     file_targets.push((
                         dependency.clone(),
                         Target::new(dependency, true, &[], vec![]),
@@ -580,10 +512,95 @@ impl Config {
             }
         }
         for (name, target) in file_targets {
-            targets.insert(name, target);
+            self.targets.insert(name, target);
+        }
+    }
+
+    fn process(&mut self, cli: &Cli) -> Result<()> {
+        if cli.verbose >= 3 {
+            print_fence();
+            println!("\n{self:#?}");
+            print_end_fence();
         }
 
-        Config { targets }
+        // List targets (`-l`)
+        if cli.list_targets {
+            if cli.targets.is_empty() {
+                for target in self.targets.values() {
+                    if target.dtg.is_none()
+                        || !target.dependencies.is_empty()
+                        || !target.recipes.is_empty()
+                    {
+                        if target.dtg.is_some() {
+                            print_list_file_target(&target.name, 0);
+                        } else {
+                            print_list_target(&target.name, 0);
+                        }
+                    }
+                }
+            } else {
+                for target in &cli.targets {
+                    if !self.targets.contains_key(target) {
+                        error!(5, "ERROR: Invalid target: `{target}`!");
+                    }
+                }
+                for target in &cli.targets {
+                    print_list_file_targets(target, &self.targets, 0);
+                }
+            }
+            println!();
+            return Ok(());
+        }
+
+        // Which target(s) are we processing?
+        let targets = if cli.targets.is_empty() {
+            // First target in `Makefile.md`
+            vec![self.targets[0].name.clone()]
+        } else {
+            // Target(s) specified on the command line
+            cli.targets.clone()
+        };
+
+        // Process the target(s)
+        let mut processed = HashSet::new();
+        for target in &targets {
+            let mut nodes = vec![];
+            add_node_and_deps(
+                target,
+                self,
+                &mut nodes,
+                &mut processed,
+                cli.force_processing,
+                &self.targets,
+                None,
+            );
+            let num_nodes = nodes.len();
+            if num_nodes > 1 {
+                DepGraph::new(&nodes).into_iter().for_each(|x| {
+                    process_target(
+                        &x,
+                        &self.targets,
+                        cli.dry_run,
+                        cli.force_processing,
+                        cli.verbose,
+                        cli.quiet,
+                        cli.script_mode,
+                    );
+                });
+            } else if num_nodes > 0 {
+                process_target(
+                    nodes[0].id(),
+                    &self.targets,
+                    cli.dry_run,
+                    cli.force_processing,
+                    cli.verbose,
+                    cli.quiet,
+                    cli.script_mode,
+                );
+            }
+        }
+
+        Ok(())
     }
 }
 
