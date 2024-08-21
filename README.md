@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.18.0
+mkrs 0.18.1
 ~~~
 
 ~~~text
@@ -182,12 +182,6 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
-# `target/release/mkrs`
-
-```text
-cargo build --release
-```
-
 # clippy
 
 ```text
@@ -198,6 +192,12 @@ cargo clippy -- -D clippy::all
 
 ```text
 cargo test
+```
+
+# `target/release/mkrs`
+
+```text
+cargo build --release
 ```
 
 # doc
@@ -216,25 +216,25 @@ $ mkrs
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.53s
+   Compiling mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.67s
 ```
 
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s
+    Checking mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
+   Compiling mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s
-     Running unittests src/main.rs (target/debug/deps/mkrs-563a99c5b54523eb)
+     Running unittests src/main.rs (target/debug/deps/mkrs-61583a162c10cb19)
 
 running 0 tests
 
@@ -246,7 +246,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo doc
- Documenting mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
+ Documenting mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
@@ -269,7 +269,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 647 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 648 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
     Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
@@ -311,7 +311,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 647 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 648 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
     Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
 ```
@@ -320,8 +320,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.18.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.55s
+   Compiling mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.48s
 ```
 
 ~~~
@@ -556,16 +556,16 @@ text
 ===============================================================================
  TOML                    1           22           20            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1054            0          775          279
+ Markdown                5         1129            0          833          296
  |- BASH                 3          100           78            6           16
- |- Python               1            1            1            0            0
- (Total)                           1155           79          781          295
+ |- Python               2            2            2            0            0
+ (Total)                           1231           80          839          312
 -------------------------------------------------------------------------------
  Rust                    1          688          584           29           75
  |- Markdown             1           12            0           12            0
  (Total)                            700          584           41           75
 ===============================================================================
- Total                   7         1764          604          804          356
+ Total                   7         1839          604          862          373
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 604

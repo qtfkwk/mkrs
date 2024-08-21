@@ -32,6 +32,7 @@
 * 0.17.0 (2024-08-04): Switch terminal colors from [`bunt`] to [`owo-colors`] ([ref][rain-rust-cli-colors]); add `--color` option; fix makefiles; update dependencies
     * 0.17.1 (2024-08-06): Add `cprint`, `ecprint` macros; don't include changelog in the readme
 * 0.18.0 (2024-08-16): Enable multiple configuration files; use `-C` to change directories instead of changing to configuration file parent directory; fix changelog; update dependencies
+    * 0.18.1 (2024-08-21): Update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
