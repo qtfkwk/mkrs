@@ -33,6 +33,7 @@
     * 0.17.1 (2024-08-06): Add `cprint`, `ecprint` macros; don't include changelog in the readme
 * 0.18.0 (2024-08-16): Enable multiple configuration files; use `-C` to change directories instead of changing to configuration file parent directory; fix changelog; update dependencies
     * 0.18.1 (2024-08-21): Update dependencies
+    * 0.18.2 (2024-08-22): Add `commit` target to makefiles; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

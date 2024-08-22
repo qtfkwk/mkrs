@@ -294,7 +294,7 @@ checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
 
 [[package]]
 name = "mkrs"
-version = "0.18.1"
+version = "0.18.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -416,9 +416,9 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
 name = "sprint"
-version = "0.7.2"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76ac03af024510de77e7b82e49246acb79363e8726f25a15a57fe9e7c48695f6"
+checksum = "5156fbcd60700f5865532d93c68fc16b1dc3a43f1676d8105105ddc25f02a737"
 dependencies = [
  "anyhow",
  "clap",

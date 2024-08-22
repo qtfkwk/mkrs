@@ -76,7 +76,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.18.1
+mkrs 0.18.2
 ~~~
 
 ~~~text
@@ -130,6 +130,7 @@ $ mkrs -l
 * install-deps
 * clean
 * cocomo
+* commit
 * publish
 * full
 * fail
@@ -212,19 +213,11 @@ cargo doc
 
 ~~~text
 $ mkrs
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.67s
-```
-
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
 ```
 
@@ -232,9 +225,9 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo test
-   Compiling mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s
-     Running unittests src/main.rs (target/debug/deps/mkrs-61583a162c10cb19)
+   Compiling mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running unittests src/main.rs (target/debug/deps/mkrs-1319d8fc4c6c108b)
 
 running 0 tests
 
@@ -242,12 +235,20 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.49s
+```
+
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+ Documenting mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -320,8 +321,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.18.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.48s
+   Compiling mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.55s
 ```
 
 ~~~
@@ -518,6 +519,15 @@ cocomo -o sloccount
 cocomo
 ```
 
+# commit
+
+```bash
+set -xeo pipefail
+V=$(toml get -r Cargo.toml package.version)
+git commit -m "$V"
+git tag -a "$V" -m "$V"
+```
+
 # publish
 
 ```
@@ -556,16 +566,16 @@ text
 ===============================================================================
  TOML                    1           22           20            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1129            0          833          296
- |- BASH                 3          100           78            6           16
- |- Python               2            2            2            0            0
- (Total)                           1231           80          839          312
+ Markdown                5         1072            0          787          285
+ |- BASH                 3          112           90            6           16
+ |- Python               1            1            1            0            0
+ (Total)                           1185           91          793          301
 -------------------------------------------------------------------------------
  Rust                    1          688          584           29           75
  |- Markdown             1           12            0           12            0
  (Total)                            700          584           41           75
 ===============================================================================
- Total                   7         1839          604          862          373
+ Total                   7         1782          604          816          362
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 604
