@@ -9,15 +9,16 @@ Build automation tool
 * Output is colorized Markdown (unless redirected or piped)
 * Processes the target(s) specified or if none, processes the first target
 * Commands run independently, in script mode, or via a custom command
-* If any command fails (exits with a non-zero code), processing halts
-  immediately (if not using a custom shell that does not provide this
-  functionality)
-* Verbosity levels: `-v`: add `-x` to `bash` command in script mode, `-vv`:
-  print up to date targets, `-vvv`: show configuration
-* Generates a [default `Makefile.md` for a Rust project] (`-g`)
-* Lists targets via `-l`; if target(s) is specified, list hierarchical
-  dependencies
+* If any command fails (exits with a non-zero code), processing halts immediately (if not using a
+  custom shell that does not provide this functionality)
+* Verbosity levels:
+    * `-v`: add `-x` to `bash` command in script mode
+    * `-vv`: print up to date targets
+    * `-vvv`: show configuration
+* Generates a default `Makefile.md` for a Rust project via `-g rust`
+* Lists targets via `-l`; if target(s) is specified, list hierarchical dependencies
 * Processes targets and dependencies in the order specified
+* Designed to work flexibly with other shells, scripting languages, and utilities like [`dotenv`]
 
 [make]: https://en.wikipedia.org/wiki/Make_(software)
 [`Makefile.md`]: Makefile.md
@@ -28,41 +29,35 @@ Build automation tool
 
 * A level 1 heading begins the definition of a **target**.
 * A plain text target name is a "phony" target and *always runs*.[^two]
-* A code span target name is a file target and will only run if (a) any
-  dependency file target's modification time is newer than the file target's,
-  (b) the file target does not exist and has a recipe, or (c) force processing
-  (`-B`) is enabled.[^two]
+* A code span target name is a file target and will only run if
+  (a) any dependency file target's modification time is newer than the file target's,
+  (b) the file target does not exist and has a recipe, or
+  (c) force processing (`-B`) is enabled.[^two]
 * An unordered list item defines a target **dependency**.
-* A plain text dependency name is a phony dependency and will run if the target
-  runs.
-* A code span dependency name is a file dependency, which either has an
-  associated target or not.
-  If not, it is interpreted as a file glob matching existing files, which
-  enables a target to easily depend on any files matching the glob, for
-  instance, the `build` target may depend on `src/**/*.rs`, meaning any `*.rs`
-  file under `src/`.
-* A code block is a **recipe** and contains the commands that are run when the
-  target is processed.
+* A plain text dependency name is a phony dependency and will run if the target runs.
+* A code span dependency name is a file dependency, which either has an associated target or not.
+  If not, it is interpreted as a file glob matching existing files, which enables a target to easily
+  depend on any files matching the glob, for instance, the `build` target may depend on `**/*.rs`,
+  meaning any `*.rs` file under `./`.
+* A code block is a **recipe** and contains the commands that are run when the target is processed.
 * Recipe commands run independently via `sh -c` by default,
   via `bash -eo pipefail` if script mode (`-s`) is enabled,
-  via `bash -xeo pipefail` if script mode and verbose level 1 or greater (`-sv`)
-  are enabled,
+  via `bash -xeo pipefail` if script mode and verbose level 1 or greater (`-sv`) are enabled,
   or by the command given in the code block info string
 * Commands may use the following variables:
     * `{0}`: first dependency
     * `{target}`: target name
     * `{dirname}`: directory name
 
-*See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for
-examples.*
+*See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for examples.*
 
 [`styles/Makefile.rust.md`]: styles/Makefile.rust.md
 
 ## Output
 
 * A level 2 heading is the output section: "Configuration", "Target(s)".
-* A Level 3 heading in the Target(s) section is each target, either as plain
-  text "phony" target or a code span file target.
+* A Level 3 heading in the Target(s) section is each target, either as plain text "phony" target or
+  a code span file target.
 * Code blocks:
 
     Script Mode | Dry Run | Description
@@ -76,7 +71,7 @@ examples.*
 
 ~~~text
 $ mkrs -V
-mkrs 0.18.2
+mkrs 0.18.3
 ~~~
 
 ~~~text
@@ -217,7 +212,7 @@ $ mkrs
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
 ```
 
@@ -225,9 +220,9 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo test
-   Compiling mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
-     Running unittests src/main.rs (target/debug/deps/mkrs-1319d8fc4c6c108b)
+   Compiling mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s
+     Running unittests src/main.rs (target/debug/deps/mkrs-96462eddf39ca675)
 
 running 0 tests
 
@@ -239,16 +234,16 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.49s
+   Compiling mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.57s
 ```
 
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.41s
+ Documenting mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -270,9 +265,9 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 648 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 654 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (120 crate dependencies)
 ```
 
 ~~~
@@ -297,7 +292,7 @@ note: Re-run with `--verbose` to show more dependencies
 $ cargo update
     Updating crates.io index
      Locking 0 packages to latest compatible versions
-note: pass `--verbose` to see 14 unchanged dependencies behind latest
+note: pass `--verbose` to see 19 unchanged dependencies behind latest
 ```
 
 # outdated
@@ -312,17 +307,17 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 648 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 654 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (80 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (120 crate dependencies)
 ```
 
 # `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.18.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.55s
+   Compiling mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.57s
 ```
 
 ~~~
@@ -566,16 +561,16 @@ text
 ===============================================================================
  TOML                    1           22           20            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1072            0          787          285
+ Markdown                5         1062            0          777          285
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1185           91          793          301
+ (Total)                           1175           91          783          301
 -------------------------------------------------------------------------------
  Rust                    1          688          584           29           75
  |- Markdown             1           12            0           12            0
  (Total)                            700          584           41           75
 ===============================================================================
- Total                   7         1782          604          816          362
+ Total                   7         1772          604          806          362
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 604
@@ -629,10 +624,9 @@ See [`CHANGELOG.md`] in the [repository].
 [`CHANGELOG.md`]: https://github.com/qtfkwk/mkrs/blob/main/CHANGELOG.md
 [repository]: https://github.com/qtfkwk/mkrs
 
-[^one]: Unlike [make], mkrs does not have any built-in knowledge about how to
-*compile* any sort of file; all such commands must be defined in the
-configuration file.
+[^one]: Unlike [make], mkrs does not have any built-in knowledge about how to *compile* any sort of
+file; all such commands must be defined in the configuration file.
 
-[^two]: A target of either sort is only processed if it is a dependency of the
-target(s) that are being processed.
+[^two]: A target of either sort is only processed if it is a dependency of the target(s) that are
+being processed.
 
