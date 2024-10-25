@@ -71,7 +71,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.18.3
+mkrs 0.19.0
 ~~~
 
 ~~~text
@@ -178,6 +178,12 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
+# `target/release/mkrs`
+
+```text
+cargo build --release
+```
+
 # clippy
 
 ```text
@@ -188,12 +194,6 @@ cargo clippy -- -D clippy::all
 
 ```text
 cargo test
-```
-
-# `target/release/mkrs`
-
-```text
-cargo build --release
 ```
 
 # doc
@@ -208,21 +208,29 @@ cargo doc
 
 ~~~text
 $ mkrs
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.82s
+```
+
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.40s
+    Checking mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s
-     Running unittests src/main.rs (target/debug/deps/mkrs-96462eddf39ca675)
+   Compiling mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
+     Running unittests src/main.rs (target/debug/deps/mkrs-f70053ee7914fc2b)
 
 running 0 tests
 
@@ -230,20 +238,12 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.57s
-```
-
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+ Documenting mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -265,9 +265,9 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 654 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 664 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (120 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (117 crate dependencies)
 ```
 
 ~~~
@@ -280,10 +280,9 @@ $ mkrs update check build
 
 ```text
 $ cargo upgrade -i
-    Updating 'https://github.com/rust-lang/crates.io-index' index
     Checking mkrs's dependencies
 note: Re-run with `--verbose` to show more dependencies
-  latest: 11 packages
+  latest: 13 packages
 ```
 
 # update-lock
@@ -292,7 +291,7 @@ note: Re-run with `--verbose` to show more dependencies
 $ cargo update
     Updating crates.io index
      Locking 0 packages to latest compatible versions
-note: pass `--verbose` to see 19 unchanged dependencies behind latest
+note: pass `--verbose` to see 20 unchanged dependencies behind latest
 ```
 
 # outdated
@@ -307,17 +306,17 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 654 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 664 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (120 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (117 crate dependencies)
 ```
 
 # `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.18.3 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.57s
+   Compiling mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.75s
 ```
 
 ~~~
@@ -559,34 +558,34 @@ text
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- TOML                    1           22           20            0            2
+ TOML                    1           24           22            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1062            0          777          285
+ Markdown                5         1063            0          778          285
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1175           91          783          301
+ (Total)                           1176           91          784          301
 -------------------------------------------------------------------------------
- Rust                    1          688          584           29           75
+ Rust                    1          689          585           29           75
  |- Markdown             1           12            0           12            0
- (Total)                            700          584           41           75
+ (Total)                            701          585           41           75
 ===============================================================================
- Total                   7         1772          604          806          362
+ Total                   7         1776          607          807          362
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 604
-Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.41)
+Total Physical Source Lines of Code (SLOC)                    = 607
+Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.42)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.24 (2.85)
+Schedule Estimate, Years (Months)                             = 0.24 (2.86)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
 Estimated Average Number of Developers (Effort/Schedule)      = 0.50
-Total Estimated Cost to Develop                               = $15,912
+Total Estimated Cost to Develop                               = $15,995
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 604
-Estimated Cost to Develop  | $15,912.21
-Estimated Schedule Effort  | 2.85 months
+Total Source Lines of Code | 607
+Estimated Cost to Develop  | $15,995.20
+Estimated Schedule Effort  | 2.86 months
 Estimated People Required  | 0.50
 
 ```

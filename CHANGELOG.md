@@ -35,9 +35,11 @@
     * 0.18.1 (2024-08-21): Update dependencies
     * 0.18.2 (2024-08-22): Add `commit` target to makefiles; update dependencies
     * 0.18.3 (2024-09-05): Fix readme; update dependencies
+* 0.19.0 (2024-10-25): Add clap color; switch from owo-colors' support-colors feature to [`anstream`]; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
+[`anstream`]: https://crates.io/crates/anstream
 [`glob`]: https://crates.io/crates/glob
 [`bunt`]: https://crates.io/crates/bunt
 [`owo-colors`]: https://crates.io/crates/owo-colors

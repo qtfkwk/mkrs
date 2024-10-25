@@ -1,11 +1,12 @@
 use {
+    anstream::{eprint, print},
     anyhow::{anyhow, Result},
     clap::{ArgAction::Count, Parser},
     dep_graph::{DepGraph, Node},
     glob::glob,
     indexmap::IndexMap,
     lazy_static::lazy_static,
-    owo_colors::{OwoColorize, Stream, Style},
+    owo_colors::{OwoColorize, Style},
     pulldown_cmark as pd,
     sprint::{style, ColorOverride, Command, Pipe, Shell},
     std::{
@@ -21,13 +22,13 @@ use pager::Pager;
 
 macro_rules! cprint {
     ($style:expr, $($x:tt)*) => {
-        print!("{}", format!($($x)*).if_supports_color(Stream::Stdout, |x| x.style($style)));
+        print!("{}", format!($($x)*).style($style));
     };
 }
 
 macro_rules! ecprint {
     ($style:expr, $($x:tt)*) => {
-        eprint!("{}", format!($($x)*).if_supports_color(Stream::Stderr, |x| x.style($style)));
+        eprint!("{}", format!($($x)*).style($style));
     };
 }
 
