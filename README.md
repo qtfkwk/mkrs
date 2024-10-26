@@ -71,7 +71,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.19.0
+mkrs 0.19.1
 ~~~
 
 ~~~text
@@ -212,25 +212,25 @@ $ mkrs
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.82s
+   Compiling mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.74s
 ```
 
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s
+    Checking mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.55s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
-     Running unittests src/main.rs (target/debug/deps/mkrs-f70053ee7914fc2b)
+   Compiling mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
+     Running unittests src/main.rs (target/debug/deps/mkrs-fa95270962d9f1ab)
 
 running 0 tests
 
@@ -242,8 +242,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo doc
- Documenting mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.48s
+ Documenting mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.49s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -315,8 +315,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.19.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.75s
+   Compiling mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.97s
 ```
 
 ~~~
@@ -560,32 +560,32 @@ text
 ===============================================================================
  TOML                    1           24           22            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1063            0          778          285
+ Markdown                5         1064            0          779          285
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1176           91          784          301
+ (Total)                           1177           91          785          301
 -------------------------------------------------------------------------------
- Rust                    1          689          585           29           75
+ Rust                    1          698          593           29           76
  |- Markdown             1           12            0           12            0
- (Total)                            701          585           41           75
+ (Total)                            710          593           41           76
 ===============================================================================
- Total                   7         1776          607          807          362
+ Total                   7         1786          615          808          363
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 607
-Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.42)
+Total Physical Source Lines of Code (SLOC)                    = 615
+Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.44)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.24 (2.86)
+Schedule Estimate, Years (Months)                             = 0.24 (2.87)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
 Estimated Average Number of Developers (Effort/Schedule)      = 0.50
-Total Estimated Cost to Develop                               = $15,995
+Total Estimated Cost to Develop                               = $16,217
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 607
-Estimated Cost to Develop  | $15,995.20
-Estimated Schedule Effort  | 2.86 months
+Total Source Lines of Code | 615
+Estimated Cost to Develop  | $16,216.63
+Estimated Schedule Effort  | 2.87 months
 Estimated People Required  | 0.50
 
 ```

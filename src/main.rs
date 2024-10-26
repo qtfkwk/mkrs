@@ -1,7 +1,7 @@
 use {
     anstream::{eprint, print},
     anyhow::{anyhow, Result},
-    clap::{ArgAction::Count, Parser},
+    clap::{builder::Styles, ArgAction::Count, Parser},
     dep_graph::{DepGraph, Node},
     glob::glob,
     indexmap::IndexMap,
@@ -107,8 +107,17 @@ fn print_list_file_targets(target: &str, targets: &IndexMap<String, Target>, lev
 
 //--------------------------------------------------------------------------------------------------
 
+const STYLES: Styles = Styles::styled()
+    .header(clap_cargo::style::HEADER)
+    .usage(clap_cargo::style::USAGE)
+    .literal(clap_cargo::style::LITERAL)
+    .placeholder(clap_cargo::style::PLACEHOLDER)
+    .error(clap_cargo::style::ERROR)
+    .valid(clap_cargo::style::VALID)
+    .invalid(clap_cargo::style::INVALID);
+
 #[derive(Debug, Parser)]
-#[command(about, version, max_term_width = 80)]
+#[command(about, version, max_term_width = 80, styles = STYLES)]
 struct Cli {
     /// List targets/dependencies
     #[arg(short = 'l')]
