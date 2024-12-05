@@ -71,7 +71,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.19.1
+mkrs 0.19.2
 ~~~
 
 ~~~text
@@ -208,29 +208,21 @@ cargo doc
 
 ~~~text
 $ mkrs
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.74s
-```
-
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.55s
+    Checking mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.57s
-     Running unittests src/main.rs (target/debug/deps/mkrs-fa95270962d9f1ab)
+   Compiling mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
+     Running unittests src/main.rs (target/debug/deps/mkrs-dc1947b5f31cff40)
 
 running 0 tests
 
@@ -238,12 +230,20 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.59s
+```
+
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.49s
+ Documenting mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -265,9 +265,25 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 664 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 698 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (117 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (109 crate dependencies)
+Crate:     instant
+Version:   0.1.13
+Warning:   unmaintained
+Title:     `instant` is unmaintained
+Date:      2024-09-01
+ID:        RUSTSEC-2024-0384
+URL:       https://rustsec.org/advisories/RUSTSEC-2024-0384
+Dependency tree:
+instant 0.1.13
+└── notify-types 1.0.0
+    └── notify 7.0.0
+        └── sprint 0.11.2
+            └── mkrs 0.19.2
+
+warning: 1 allowed warning found
+
 ```
 
 ~~~
@@ -291,7 +307,6 @@ note: Re-run with `--verbose` to show more dependencies
 $ cargo update
     Updating crates.io index
      Locking 0 packages to latest compatible versions
-note: pass `--verbose` to see 20 unchanged dependencies behind latest
 ```
 
 # outdated
@@ -306,17 +321,32 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 664 security advisories (from /home/nick/.cargo/advisory-db)
+      Loaded 698 security advisories (from /home/nick/.cargo/advisory-db)
     Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (117 crate dependencies)
+    Scanning Cargo.lock for vulnerabilities (109 crate dependencies)
+Crate:     instant
+Version:   0.1.13
+Warning:   unmaintained
+Title:     `instant` is unmaintained
+Date:      2024-09-01
+ID:        RUSTSEC-2024-0384
+URL:       https://rustsec.org/advisories/RUSTSEC-2024-0384
+Dependency tree:
+instant 0.1.13
+└── notify-types 1.0.0
+    └── notify 7.0.0
+        └── sprint 0.11.2
+            └── mkrs 0.19.2
+
+warning: 1 allowed warning found
 ```
 
 # `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.19.1 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.97s
+   Compiling mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.58s
 ```
 
 ~~~
@@ -560,16 +590,16 @@ text
 ===============================================================================
  TOML                    1           24           22            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1064            0          779          285
+ Markdown                5         1094            0          807          287
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1177           91          785          301
+ (Total)                           1207           91          813          303
 -------------------------------------------------------------------------------
  Rust                    1          698          593           29           76
  |- Markdown             1           12            0           12            0
  (Total)                            710          593           41           76
 ===============================================================================
- Total                   7         1786          615          808          363
+ Total                   7         1816          615          836          365
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 615

@@ -37,6 +37,7 @@
     * 0.18.3 (2024-09-05): Fix readme; update dependencies
 * 0.19.0 (2024-10-25): Add clap color; switch from owo-colors' support-colors feature to [`anstream`]; update dependencies
     * 0.19.1 (2024-10-26): Fix clap color
+    * 0.19.2 (2024-12-04): Update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
