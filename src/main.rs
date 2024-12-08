@@ -3,6 +3,7 @@ use {
     anyhow::{anyhow, Result},
     clap::{builder::Styles, ArgAction::Count, Parser},
     dep_graph::{DepGraph, Node},
+    expanduser::expanduser,
     glob::glob,
     indexmap::IndexMap,
     lazy_static::lazy_static,
@@ -429,6 +430,7 @@ impl Config {
                         is_file = true;
                         name = Some(s);
                     } else if in_dependencies {
+                        let s = expanduser(&s).unwrap().display().to_string();
                         let mut globbed = glob(&s)
                             .expect("glob")
                             .filter_map(|x| match x {

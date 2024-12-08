@@ -71,7 +71,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.19.2
+mkrs 0.20.0
 ~~~
 
 ~~~text
@@ -208,11 +208,19 @@ cargo doc
 
 ~~~text
 $ mkrs
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.62s
+```
+
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
 ```
 
@@ -220,9 +228,9 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo test
-   Compiling mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.44s
-     Running unittests src/main.rs (target/debug/deps/mkrs-dc1947b5f31cff40)
+   Compiling mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.46s
+     Running unittests src/main.rs (target/debug/deps/mkrs-0dcf2cd08dd05929)
 
 running 0 tests
 
@@ -230,19 +238,11 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.59s
-```
-
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
+ Documenting mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
@@ -264,26 +264,25 @@ All dependencies are up to date, yay!
 
 ```text
 $ cargo audit
-    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 698 security advisories (from /home/nick/.cargo/advisory-db)
-    Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (109 crate dependencies)
-Crate:     instant
-Version:   0.1.13
-Warning:   unmaintained
-Title:     `instant` is unmaintained
-Date:      2024-09-01
-ID:        RUSTSEC-2024-0384
-URL:       https://rustsec.org/advisories/RUSTSEC-2024-0384
-Dependency tree:
-instant 0.1.13
+[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
+[0m[0m[1m[32m      Loaded[0m 700 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m    Updating[0m crates.io index
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (123 crate dependencies)
+[0m[0m[1m[33mCrate:    [0m instant
+[0m[0m[1m[33mVersion:  [0m 0.1.13
+[0m[0m[1m[33mWarning:  [0m unmaintained
+[0m[0m[1m[33mTitle:    [0m `instant` is unmaintained
+[0m[0m[1m[33mDate:     [0m 2024-09-01
+[0m[0m[1m[33mID:       [0m RUSTSEC-2024-0384
+[0m[0m[1m[33mURL:      [0m https://rustsec.org/advisories/RUSTSEC-2024-0384
+[0m[0m[1m[33mDependency tree:
+[0minstant 0.1.13
 └── notify-types 1.0.0
     └── notify 7.0.0
         └── sprint 0.11.2
-            └── mkrs 0.19.2
+            └── mkrs 0.20.0
 
-warning: 1 allowed warning found
-
+[0m[0m[1m[33mwarning:[0m 1 allowed warning found
 ```
 
 ~~~
@@ -298,7 +297,7 @@ $ mkrs update check build
 $ cargo upgrade -i
     Checking mkrs's dependencies
 note: Re-run with `--verbose` to show more dependencies
-  latest: 13 packages
+  latest: 14 packages
 ```
 
 # update-lock
@@ -320,33 +319,33 @@ All dependencies are up to date, yay!
 
 ```text
 $ cargo audit
-    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
-      Loaded 698 security advisories (from /home/nick/.cargo/advisory-db)
-    Updating crates.io index
-    Scanning Cargo.lock for vulnerabilities (109 crate dependencies)
-Crate:     instant
-Version:   0.1.13
-Warning:   unmaintained
-Title:     `instant` is unmaintained
-Date:      2024-09-01
-ID:        RUSTSEC-2024-0384
-URL:       https://rustsec.org/advisories/RUSTSEC-2024-0384
-Dependency tree:
-instant 0.1.13
+[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
+[0m[0m[1m[32m      Loaded[0m 700 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m    Updating[0m crates.io index
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (123 crate dependencies)
+[0m[0m[1m[33mCrate:    [0m instant
+[0m[0m[1m[33mVersion:  [0m 0.1.13
+[0m[0m[1m[33mWarning:  [0m unmaintained
+[0m[0m[1m[33mTitle:    [0m `instant` is unmaintained
+[0m[0m[1m[33mDate:     [0m 2024-09-01
+[0m[0m[1m[33mID:       [0m RUSTSEC-2024-0384
+[0m[0m[1m[33mURL:      [0m https://rustsec.org/advisories/RUSTSEC-2024-0384
+[0m[0m[1m[33mDependency tree:
+[0minstant 0.1.13
 └── notify-types 1.0.0
     └── notify 7.0.0
         └── sprint 0.11.2
-            └── mkrs 0.19.2
+            └── mkrs 0.20.0
 
-warning: 1 allowed warning found
+[0m[0m[1m[33mwarning:[0m 1 allowed warning found
 ```
 
 # `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.19.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.58s
+   Compiling mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.60s
 ```
 
 ~~~
@@ -588,34 +587,34 @@ text
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- TOML                    1           24           22            0            2
+ TOML                    1           25           23            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1094            0          807          287
+ Markdown                5         1096            0          809          287
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1207           91          813          303
+ (Total)                           1209           91          815          303
 -------------------------------------------------------------------------------
- Rust                    1          698          593           29           76
+ Rust                    1          700          595           29           76
  |- Markdown             1           12            0           12            0
- (Total)                            710          593           41           76
+ (Total)                            712          595           41           76
 ===============================================================================
- Total                   7         1816          615          836          365
+ Total                   7         1821          618          838          365
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 615
-Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.44)
+Total Physical Source Lines of Code (SLOC)                    = 618
+Development Effort Estimate, Person-Years (Person-Months)     = 0.12 (1.45)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.24 (2.87)
+Schedule Estimate, Years (Months)                             = 0.24 (2.88)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
 Estimated Average Number of Developers (Effort/Schedule)      = 0.50
-Total Estimated Cost to Develop                               = $16,217
+Total Estimated Cost to Develop                               = $16,300
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 615
-Estimated Cost to Develop  | $16,216.63
-Estimated Schedule Effort  | 2.87 months
+Total Source Lines of Code | 618
+Estimated Cost to Develop  | $16,299.70
+Estimated Schedule Effort  | 2.88 months
 Estimated People Required  | 0.50
 
 ```
