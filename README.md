@@ -71,7 +71,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.20.0
+mkrs 0.20.1
 ~~~
 
 ~~~text
@@ -178,12 +178,6 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
-# `target/release/mkrs`
-
-```text
-cargo build --release
-```
-
 # clippy
 
 ```text
@@ -194,6 +188,12 @@ cargo clippy -- -D clippy::all
 
 ```text
 cargo test
+```
+
+# `target/release/mkrs`
+
+```text
+cargo build --release
 ```
 
 # doc
@@ -212,25 +212,27 @@ $ mkrs
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.62s
+   Compiling mkrs v0.20.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.59s
 ```
 
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.39s
+    Checking sprint v0.11.3
+    Checking mkrs v0.20.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.46s
-     Running unittests src/main.rs (target/debug/deps/mkrs-0dcf2cd08dd05929)
+   Compiling sprint v0.11.3
+   Compiling mkrs v0.20.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
+     Running unittests src/main.rs (target/debug/deps/mkrs-b68f497a1a68ed26)
 
 running 0 tests
 
@@ -242,8 +244,9 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo doc
- Documenting mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s
+ Documenting sprint v0.11.3
+ Documenting mkrs v0.20.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.73s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -265,7 +268,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 700 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m      Loaded[0m 714 security advisories (from /home/nick/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
 [0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (123 crate dependencies)
 [0m[0m[1m[33mCrate:    [0m instant
@@ -277,10 +280,10 @@ $ cargo audit
 [0m[0m[1m[33mURL:      [0m https://rustsec.org/advisories/RUSTSEC-2024-0384
 [0m[0m[1m[33mDependency tree:
 [0minstant 0.1.13
-└── notify-types 1.0.0
+└── notify-types 1.0.1
     └── notify 7.0.0
-        └── sprint 0.11.2
-            └── mkrs 0.20.0
+        └── sprint 0.11.3
+            └── mkrs 0.20.1
 
 [0m[0m[1m[33mwarning:[0m 1 allowed warning found
 ```
@@ -320,7 +323,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 700 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m      Loaded[0m 714 security advisories (from /home/nick/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
 [0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (123 crate dependencies)
 [0m[0m[1m[33mCrate:    [0m instant
@@ -332,10 +335,10 @@ $ cargo audit
 [0m[0m[1m[33mURL:      [0m https://rustsec.org/advisories/RUSTSEC-2024-0384
 [0m[0m[1m[33mDependency tree:
 [0minstant 0.1.13
-└── notify-types 1.0.0
+└── notify-types 1.0.1
     └── notify 7.0.0
-        └── sprint 0.11.2
-            └── mkrs 0.20.0
+        └── sprint 0.11.3
+            └── mkrs 0.20.1
 
 [0m[0m[1m[33mwarning:[0m 1 allowed warning found
 ```
@@ -344,8 +347,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.20.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.60s
+   Compiling mkrs v0.20.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.59s
 ```
 
 ~~~
@@ -582,23 +585,22 @@ cocomo -o sloccount
 cocomo
 ```
 
-```
-text
+```text
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
  TOML                    1           25           23            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1096            0          809          287
+ Markdown                5         1099            0          812          287
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1209           91          815          303
+ (Total)                           1212           91          818          303
 -------------------------------------------------------------------------------
  Rust                    1          700          595           29           76
  |- Markdown             1           12            0           12            0
  (Total)                            712          595           41           76
 ===============================================================================
- Total                   7         1821          618          838          365
+ Total                   7         1824          618          841          365
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 618
@@ -631,8 +633,7 @@ $ mkrs custom
 print("This is a custom recipe in Python.")
 ```
 
-```
-text
+```text
 This is a custom recipe in Python.
 ```
 
