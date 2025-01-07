@@ -5,10 +5,12 @@ use {
     dep_graph::{DepGraph, Node},
     expanduser::expanduser,
     glob::glob,
+    globset::{Glob, GlobMatcher},
     indexmap::IndexMap,
     lazy_static::lazy_static,
     owo_colors::{OwoColorize, Style},
     pulldown_cmark as pd,
+    regex::Regex,
     sprint::{style, ColorOverride, Command, Pipe, Shell},
     std::{
         collections::HashSet,
@@ -229,7 +231,6 @@ fn add_node_and_deps(
     nodes: &mut Vec<Node<String>>,
     processed: &mut HashSet<String>,
     force_processing: bool,
-    targets: &IndexMap<String, Target>,
     prev_dep: Option<String>,
 ) {
     let target = target.to_string();
@@ -241,7 +242,7 @@ fn add_node_and_deps(
         // If a file target, only add its dependencies if it is needed
         let add_deps = if let Some(ts) = t.dtg.as_ref() {
             let file_does_not_exist = !Path::new(&t.name).exists();
-            force_processing || file_does_not_exist || t.outdated(ts, targets)
+            force_processing || file_does_not_exist || t.outdated(ts, &cfg.targets)
         } else {
             true
         };
@@ -255,7 +256,6 @@ fn add_node_and_deps(
                     nodes,
                     processed,
                     force_processing,
-                    targets,
                     prev_dep,
                 );
                 prev_dep = Some(dependency.to_owned());
@@ -287,6 +287,35 @@ fn process_target(
         // File target...
         let file_does_not_exist = !Path::new(&target.name).exists();
         if target.recipes.is_empty() {
+            // Try wildcard target
+            for t in targets.values() {
+                if let Some(glob) = t.glob.as_ref() {
+                    if glob.is_match(&target.name) {
+                        let re = Regex::new(&format!("{}$", &t.name[2..])).expect("regex");
+                        let extension = &t.dependencies[0][2..];
+                        let dependency = re.replace(&target.name, extension).to_string();
+                        let target_does_not_exist = !Path::new(&target.name).exists();
+                        if force_processing
+                            || target_does_not_exist
+                            || outdated(&dependency, &target.name)
+                        {
+                            Target::new(
+                                &target.name,
+                                true,
+                                None,
+                                &[dependency.clone()],
+                                t.recipes
+                                    .iter()
+                                    .map(|x| x.fix(&target.name, &dependency))
+                                    .collect(),
+                            )
+                            .run(dry_run, verbose, quiet, script_mode);
+                            return;
+                        }
+                    }
+                }
+            }
+
             if file_does_not_exist {
                 // File dependency (without commands) must exist
                 error!(3, "ERROR: File `{}` does not exist!", target.name);
@@ -405,6 +434,7 @@ impl Config {
         let mut in_dependencies = false;
         let mut in_recipe = None;
         let mut is_file = false;
+        let mut is_glob = false;
         let mut name: Option<String> = None;
         let mut dependencies = vec![];
         let mut recipes = vec![];
@@ -415,11 +445,20 @@ impl Config {
                     ..
                 }) => {
                     if let Some(n) = name.take() {
-                        let target =
-                            Target::new(&n, is_file, &dependencies, std::mem::take(&mut recipes));
+                        // Push staged target
+                        let target = Target::new(
+                            &n,
+                            is_file,
+                            glob_matcher(&n, is_glob),
+                            &dependencies,
+                            std::mem::take(&mut recipes),
+                        );
                         self.targets.insert(n, target);
+
+                        // Reset
                         name = None;
                         is_file = false;
+                        is_glob = false;
                         dependencies = vec![];
                     }
                     in_h1 = true;
@@ -427,18 +466,20 @@ impl Config {
                 pd::Event::Code(s) => {
                     let s = s.replace("{dirname}", dirname);
                     if in_h1 {
-                        is_file = true;
-                        name = Some(s);
+                        if s.starts_with("*.") && s.len() > 2 {
+                            is_glob = true;
+                            name = Some(s);
+                        } else {
+                            is_file = true;
+                            name = Some(s);
+                        }
                     } else if in_dependencies {
                         let s = expanduser(&s).unwrap().display().to_string();
                         let mut globbed = glob(&s)
                             .expect("glob")
-                            .filter_map(|x| match x {
-                                Ok(p) => Some(p.display().to_string()),
-                                Err(_e) => None,
-                            })
+                            .filter_map(|x| x.map(|x| x.display().to_string()).ok())
                             .collect::<Vec<_>>();
-                        if globbed.is_empty() {
+                        if globbed.is_empty() || is_glob {
                             dependencies.push(s.to_string());
                         } else {
                             dependencies.append(&mut globbed);
@@ -452,11 +493,15 @@ impl Config {
                     } else if in_dependencies {
                         dependencies.push(s.to_string());
                     } else if let Some(shell) = in_recipe.take() {
-                        let s = s
-                            .trim()
-                            .replace("{target}", name.as_ref().unwrap())
-                            .replace("{dirname}", dirname);
-                        let s = if dependencies.is_empty() {
+                        let s = if is_glob {
+                            s.trim().to_string()
+                        } else {
+                            s.trim()
+                                .replace("{target}", name.as_ref().unwrap())
+                                .replace("{dirname}", dirname)
+                        };
+
+                        let s = if dependencies.is_empty() || is_glob {
                             s
                         } else {
                             s.replace("{0}", &dependencies[0])
@@ -507,7 +552,13 @@ impl Config {
 
         // Add the last target
         if let Some(n) = name.take() {
-            let target = Target::new(&n, is_file, &dependencies, recipes);
+            let target = Target::new(
+                &n,
+                is_file,
+                glob_matcher(&n, is_glob),
+                &dependencies,
+                recipes,
+            );
             self.targets.insert(n, target);
         }
 
@@ -518,7 +569,7 @@ impl Config {
                 if !self.targets.contains_key(dependency) {
                     file_targets.push((
                         dependency.clone(),
-                        Target::new(dependency, true, &[], vec![]),
+                        Target::new(dependency, true, None, &[], vec![]),
                     ));
                 }
             }
@@ -576,6 +627,37 @@ impl Config {
         // Process the target(s)
         let mut processed = HashSet::new();
         for target in &targets {
+            // Generate target from wildcard/glob target
+            if !self.targets.contains_key(target) {
+                for (_, t) in &self.targets {
+                    if let Some(glob) = t.glob.as_ref() {
+                        if glob.is_match(target) {
+                            let re = Regex::new(&format!("{}$", &t.name[2..])).expect("regex");
+                            let extension = &t.dependencies[0][2..];
+                            let dependency = re.replace(target, extension).to_string();
+                            let target_does_not_exist = !Path::new(target).exists();
+                            if cli.force_processing
+                                || target_does_not_exist
+                                || outdated(&dependency, target)
+                            {
+                                let t = Target::new(
+                                    target,
+                                    true,
+                                    None,
+                                    &[dependency.clone()],
+                                    t.recipes
+                                        .iter()
+                                        .map(|x| x.fix(target, &dependency))
+                                        .collect(),
+                                );
+                                self.targets.insert(target.clone(), t);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
             let mut nodes = vec![];
             add_node_and_deps(
                 target,
@@ -583,7 +665,6 @@ impl Config {
                 &mut nodes,
                 &mut processed,
                 cli.force_processing,
-                &self.targets,
                 None,
             );
             let num_nodes = nodes.len();
@@ -646,6 +727,17 @@ impl Recipe {
             }
         }
     }
+
+    fn fix(&self, target: &str, dependency: &str) -> Recipe {
+        Recipe {
+            shell: self.shell.clone(),
+            commands: self
+                .commands
+                .iter()
+                .map(|x| x.replace("{0}", dependency).replace("{target}", target))
+                .collect(),
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -653,23 +745,24 @@ impl Recipe {
 #[derive(Debug)]
 struct Target {
     name: String,
+    glob: Option<GlobMatcher>,
     dtg: Option<std::time::SystemTime>,
     dependencies: Vec<String>,
     recipes: Vec<Recipe>,
 }
 
 impl Target {
-    fn new(name: &str, is_file: bool, dependencies: &[String], recipes: Vec<Recipe>) -> Target {
+    fn new(
+        name: &str,
+        is_file: bool,
+        glob: Option<GlobMatcher>,
+        dependencies: &[String],
+        recipes: Vec<Recipe>,
+    ) -> Target {
         Target {
             name: name.to_owned(),
-            dtg: if is_file {
-                match std::fs::metadata(name) {
-                    Ok(m) => m.modified().ok(),
-                    Err(_e) => Some(std::time::SystemTime::UNIX_EPOCH),
-                }
-            } else {
-                None
-            },
+            glob,
+            dtg: is_file.then(|| mtime(name)),
             dependencies: dependencies.to_owned(),
             recipes,
         }
@@ -709,4 +802,23 @@ impl Target {
             recipe.run(dry_run, verbose, quiet, script_mode);
         }
     }
+}
+
+//--------------------------------------------------------------------------------------------------
+
+fn glob_matcher(n: &str, is_glob: bool) -> Option<GlobMatcher> {
+    is_glob.then(|| Glob::new(n).expect("glob").compile_matcher())
+}
+
+/// Get the modified time of a file
+fn mtime(file: &str) -> std::time::SystemTime {
+    match std::fs::metadata(file) {
+        Ok(m) => m.modified().expect("modified"),
+        Err(_e) => std::time::SystemTime::UNIX_EPOCH,
+    }
+}
+
+/// Return true if the reference file is newer than the file
+fn outdated(ref_file: &str, file: &str) -> bool {
+    mtime(ref_file) > mtime(file)
 }

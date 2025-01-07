@@ -1,0 +1,18 @@
+digraph {
+	mkrs -> anstream;
+	mkrs -> anyhow;
+	mkrs -> clap;
+	mkrs -> clap_cargo;
+	mkrs -> dep_graph;
+	mkrs -> expanduser;
+	mkrs -> glob;
+	mkrs -> globset;
+	mkrs -> indexmap;
+	mkrs -> lazy_static;
+	mkrs -> owo_colors;
+	mkrs -> pulldown_cmark;
+	mkrs -> regex;
+	mkrs -> shlex;
+	mkrs -> sprint;
+	mkrs -> pager;
+}

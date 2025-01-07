@@ -29,7 +29,7 @@ Build automation tool
 
 * A level 1 heading begins the definition of a **target**.
 * A plain text target name is a "phony" target and *always runs*.[^two]
-* A code span target name is a file target and will only run if
+* A code span target name is a **file target** and will only run if
   (a) any dependency file target's modification time is newer than the file target's,
   (b) the file target does not exist and has a recipe, or
   (c) force processing (`-B`) is enabled.[^two]
@@ -43,11 +43,14 @@ Build automation tool
 * Recipe commands run independently via `sh -c` by default,
   via `bash -eo pipefail` if script mode (`-s`) is enabled,
   via `bash -xeo pipefail` if script mode and verbose level 1 or greater (`-sv`) are enabled,
-  or by the command given in the code block info string
+  or by the command given in the code block info string.
 * Commands may use the following variables:
     * `{0}`: first dependency
     * `{target}`: target name
     * `{dirname}`: directory name
+* A **file target** that is a `*.ext` glob is a **wildcard target** whose **recipe** is used for any
+  matching **dependency** in the `Makefile.md` or **target** on the command line that does not have
+  its own **recipe**.
 
 *See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for examples.*
 

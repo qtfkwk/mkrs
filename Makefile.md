@@ -64,6 +64,7 @@ cargo build --release
 * `Cargo.toml`
 * `CHANGELOG.md`
 * `src/**/*.rs`
+* `img/crates.png`
 
 ```
 cargo build --release
@@ -182,5 +183,13 @@ echo
 
 ```python
 print("This is a custom recipe in Python.")
+```
+
+# `*.png`
+
+* `*.gv`
+
+```
+dot -Tpng {0} >{target}
 ```
   
