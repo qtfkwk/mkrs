@@ -41,6 +41,7 @@
 * 0.20.0 (2024-12-08): Enable tilde expansion user home directory via [`expanduser`] in file dependencies; update dependencies
     * 0.20.1 (2024-12-19): Update dependencies
 * 0.21.0 (2025-01-04): Enable wildcard / glob targets; update dependencies
+* 0.22.0 (2025-01-12): Print wildcard targets as code spans; enumerate dependencies built via wildcard target; resolve wildcard targets after loading markdown versus when processing targets; renumber errors; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

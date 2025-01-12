@@ -42,11 +42,18 @@ macro_rules! error {
     };
 }
 
+macro_rules! print_code_block {
+    ($info:expr, $($x:tt)*) => {
+        cprint!(*FENCE, "```$info\n");
+        println!($($x)*);
+        cprint!(*FENCE, "```\n\n");
+    };
+}
+
 //--------------------------------------------------------------------------------------------------
 
 lazy_static! {
     static ref BULLET: Style = style("#888888").expect("style");
-    static ref CONFIGURATION: Style = style("#FFFF22+bold").expect("style");
     static ref ERROR: Style = style("red+bold").expect("style");
     static ref FENCE: Style = style("#555555").expect("style");
     static ref FILE_TARGET: Style = style("#44FFFF+bold").expect("style");
@@ -87,18 +94,9 @@ fn print_up_to_date() {
     cprint!(*UP_TO_DATE, "*Up to date*\n");
 }
 
-fn print_fence() {
-    cprint!(*FENCE, "```");
-}
-
-fn print_end_fence() {
-    print_fence();
-    println!("\n");
-}
-
 fn print_list_file_targets(target: &str, targets: &IndexMap<String, Target>, level: usize) {
     let target = targets.get(target).unwrap();
-    if target.dtg.is_some() {
+    if target.dtg.is_some() || target.glob.is_some() {
         print_list_file_target(&target.name, level);
     } else {
         print_list_target(&target.name, level);
@@ -175,7 +173,7 @@ struct Cli {
 
 fn main() -> Result<()> {
     if cfg!(windows) {
-        error!(255, "ERROR: Windows is not a supported operating system!");
+        error!(1, "ERROR: Windows is not a supported operating system!");
     }
 
     let cli = Cli::parse();
@@ -198,7 +196,7 @@ fn main() -> Result<()> {
                 print!("{}", include_str!("../styles/Makefile.rust.md"));
             }
             _ => {
-                error!(6, "ERROR: Invalid style: `{style}`!");
+                error!(2, "ERROR: Invalid style: `{style}`!");
             }
         }
         std::process::exit(0);
@@ -211,10 +209,7 @@ fn main() -> Result<()> {
 
     // Print CLI configuration
     if cli.verbose >= 3 {
-        cprint!(*CONFIGURATION, "# Configuration\n\n");
-        print_fence();
-        println!("\n{cli:#?}");
-        print_end_fence();
+        print_code_block!("rust", "{cli:#?}");
     }
 
     // Process targets
@@ -268,7 +263,7 @@ fn add_node_and_deps(
             processed.insert(target);
         }
     } else {
-        error!(5, "ERROR: Invalid target: `{target}`!");
+        error!(3, "ERROR: Invalid target: `{target}`!");
     }
 }
 
@@ -287,38 +282,9 @@ fn process_target(
         // File target...
         let file_does_not_exist = !Path::new(&target.name).exists();
         if target.recipes.is_empty() {
-            // Try wildcard target
-            for t in targets.values() {
-                if let Some(glob) = t.glob.as_ref() {
-                    if glob.is_match(&target.name) {
-                        let re = Regex::new(&format!("{}$", &t.name[2..])).expect("regex");
-                        let extension = &t.dependencies[0][2..];
-                        let dependency = re.replace(&target.name, extension).to_string();
-                        let target_does_not_exist = !Path::new(&target.name).exists();
-                        if force_processing
-                            || target_does_not_exist
-                            || outdated(&dependency, &target.name)
-                        {
-                            Target::new(
-                                &target.name,
-                                true,
-                                None,
-                                &[dependency.clone()],
-                                t.recipes
-                                    .iter()
-                                    .map(|x| x.fix(&target.name, &dependency))
-                                    .collect(),
-                            )
-                            .run(dry_run, verbose, quiet, script_mode);
-                            return;
-                        }
-                    }
-                }
-            }
-
             if file_does_not_exist {
                 // File dependency (without commands) must exist
-                error!(3, "ERROR: File `{}` does not exist!", target.name);
+                error!(4, "ERROR: File `{}` does not exist!", target.name);
             }
             // Otherwise, file dependency exists so don't print or do anything
         } else if force_processing || file_does_not_exist || target.outdated(ts, targets) {
@@ -563,38 +529,49 @@ impl Config {
         }
 
         // Add files mentioned as dependencies but not targets in configuration
-        let mut file_targets = vec![];
+        let mut files = IndexMap::new();
         for target in self.targets.values() {
             for dependency in &target.dependencies {
                 if !self.targets.contains_key(dependency) {
-                    file_targets.push((
-                        dependency.clone(),
-                        Target::new(dependency, true, None, &[], vec![]),
-                    ));
+                    if let Some((name, t)) = generate_wildcard_target(dependency, &self.targets) {
+                        // It's a wildcard dependency
+                        for dependency in &t.dependencies {
+                            if !self.targets.contains_key(dependency) {
+                                files.insert(
+                                    dependency.clone(),
+                                    Target::new(dependency, true, None, &[], vec![]),
+                                );
+                            }
+                        }
+                        files.insert(name, t);
+                    } else if !dependency.starts_with("*.") {
+                        // It's a regular file dependency
+                        files.insert(
+                            dependency.clone(),
+                            Target::new(dependency, true, None, &[], vec![]),
+                        );
+                    }
                 }
             }
         }
-        for (name, target) in file_targets {
-            self.targets.insert(name, target);
-        }
+        self.targets.append(&mut files);
     }
 
     fn process(&mut self, cli: &Cli) -> Result<()> {
         if cli.verbose >= 3 {
-            print_fence();
-            println!("\n{self:#?}");
-            print_end_fence();
+            print_code_block!("rust", "{self:#?}");
         }
 
         // List targets (`-l`)
         if cli.list_targets {
             if cli.targets.is_empty() {
+                // List all targets
                 for target in self.targets.values() {
                     if target.dtg.is_none()
                         || !target.dependencies.is_empty()
                         || !target.recipes.is_empty()
                     {
-                        if target.dtg.is_some() {
+                        if target.dtg.is_some() || target.glob.is_some() {
                             print_list_file_target(&target.name, 0);
                         } else {
                             print_list_target(&target.name, 0);
@@ -602,6 +579,7 @@ impl Config {
                     }
                 }
             } else {
+                // Enumerate each target mentioned as argument
                 for target in &cli.targets {
                     if !self.targets.contains_key(target) {
                         error!(5, "ERROR: Invalid target: `{target}`!");
@@ -627,37 +605,6 @@ impl Config {
         // Process the target(s)
         let mut processed = HashSet::new();
         for target in &targets {
-            // Generate target from wildcard/glob target
-            if !self.targets.contains_key(target) {
-                for (_, t) in &self.targets {
-                    if let Some(glob) = t.glob.as_ref() {
-                        if glob.is_match(target) {
-                            let re = Regex::new(&format!("{}$", &t.name[2..])).expect("regex");
-                            let extension = &t.dependencies[0][2..];
-                            let dependency = re.replace(target, extension).to_string();
-                            let target_does_not_exist = !Path::new(target).exists();
-                            if cli.force_processing
-                                || target_does_not_exist
-                                || outdated(&dependency, target)
-                            {
-                                let t = Target::new(
-                                    target,
-                                    true,
-                                    None,
-                                    &[dependency.clone()],
-                                    t.recipes
-                                        .iter()
-                                        .map(|x| x.fix(target, &dependency))
-                                        .collect(),
-                                );
-                                self.targets.insert(target.clone(), t);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-
             let mut nodes = vec![];
             add_node_and_deps(
                 target,
@@ -806,6 +753,7 @@ impl Target {
 
 //--------------------------------------------------------------------------------------------------
 
+/// Conditionally create a [`GlobMatcher`] from a [`&str`]
 fn glob_matcher(n: &str, is_glob: bool) -> Option<GlobMatcher> {
     is_glob.then(|| Glob::new(n).expect("glob").compile_matcher())
 }
@@ -818,7 +766,29 @@ fn mtime(file: &str) -> std::time::SystemTime {
     }
 }
 
-/// Return true if the reference file is newer than the file
-fn outdated(ref_file: &str, file: &str) -> bool {
-    mtime(ref_file) > mtime(file)
+/// Resolve a wildcard dependency
+fn generate_wildcard_target(
+    name: &str,
+    targets: &IndexMap<String, Target>,
+) -> Option<(String, Target)> {
+    for t in targets.values() {
+        if let Some(glob) = t.glob.as_ref() {
+            if glob.is_match(name) {
+                let re = Regex::new(&format!("{}$", &t.name[2..])).expect("regex");
+                let extension = &t.dependencies[0][2..];
+                let dependency = re.replace(name, extension).to_string();
+                return Some((
+                    name.to_string(),
+                    Target::new(
+                        name,
+                        true,
+                        None,
+                        &[dependency.clone()],
+                        t.recipes.iter().map(|x| x.fix(name, &dependency)).collect(),
+                    ),
+                ));
+            }
+        }
+    }
+    None
 }

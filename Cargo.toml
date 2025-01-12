@@ -1,6 +1,6 @@
 [package]
 name = "mkrs"
-version = "0.21.0"
+version = "0.22.0"
 edition = "2021"
 description = "Build automation tool"
 repository = "https://github.com/qtfkwk/mkrs"
@@ -9,7 +9,7 @@ license = "MIT"
 [dependencies]
 anstream = "0.6.18"
 anyhow = "1.0.95"
-clap = { version = "4.5.24", features = ["derive", "wrap_help"] }
+clap = { version = "4.5.26", features = ["derive", "wrap_help"] }
 clap-cargo = "0.15.1"
 dep-graph = { version = "0.2.0", default-features = false }
 expanduser = "1.2.2"
