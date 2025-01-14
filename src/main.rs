@@ -44,7 +44,7 @@ macro_rules! error {
 
 macro_rules! print_code_block {
     ($info:expr, $($x:tt)*) => {
-        cprint!(*FENCE, "```$info\n");
+        cprint!(*FENCE, "```{}\n", $info);
         println!($($x)*);
         cprint!(*FENCE, "```\n\n");
     };

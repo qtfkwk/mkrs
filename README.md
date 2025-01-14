@@ -51,6 +51,8 @@ Build automation tool
 * A **file target** that is a `*.ext` glob is a **wildcard target** whose **recipe** is used for any
   matching **dependency** in the `Makefile.md` or **target** on the command line that does not have
   its own **recipe**.
+* If a **file target**'s first dependency is a `*.ext` glob, it is interpreted as being the same
+  path as the **file target** except with the given extension.
 
 *See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for examples.*
 
@@ -65,16 +67,16 @@ Build automation tool
 
     Script Mode | Dry Run | Description
     ------------|---------|------------------------------------------------
-    &nbsp;      |         | Each command and output
+    &nbsp;      | &nbsp;  | Each command and output
     &nbsp;      | ✔       | Each command
-    ✔           |         | Each script
-    ✔           | ✔       | Each script and output (in separate code block)
+    ✔           | &nbsp;  | Each script and output (in separate code blocks)
+    ✔           | ✔       | Each script
 
 # Usage
 
 ~~~text
 $ mkrs -V
-mkrs 0.22.0
+mkrs 0.22.1
 ~~~
 
 ~~~text
@@ -221,15 +223,15 @@ $ mkrs
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.22.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 2.00s
+   Compiling mkrs v0.22.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 2.03s
 ```
 
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.22.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Checking mkrs v0.22.1 (/home/nick/github.com/qtfkwk/mkrs)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
 ```
 
@@ -237,9 +239,9 @@ $ cargo clippy -- -D clippy::all
 
 ```text
 $ cargo test
-   Compiling mkrs v0.22.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.49s
-     Running unittests src/main.rs (target/debug/deps/mkrs-130d1e3b16418d0c)
+   Compiling mkrs v0.22.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.50s
+     Running unittests src/main.rs (target/debug/deps/mkrs-ca9481981a347641)
 
 running 0 tests
 
@@ -251,8 +253,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo doc
- Documenting mkrs v0.22.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
+ Documenting mkrs v0.22.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.46s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -276,7 +278,7 @@ $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
 [0m[0m[1m[32m      Loaded[0m 724 security advisories (from /home/nick/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (125 crate dependencies)
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (126 crate dependencies)
 [0m[0m[1m[33mCrate:    [0m instant
 [0m[0m[1m[33mVersion:  [0m 0.1.13
 [0m[0m[1m[33mWarning:  [0m unmaintained
@@ -289,7 +291,7 @@ $ cargo audit
 └── notify-types 1.0.1
     └── notify 7.0.0
         └── sprint 0.11.3
-            └── mkrs 0.22.0
+            └── mkrs 0.22.1
 
 [0m[0m[1m[33mwarning:[0m 1 allowed warning found
 ```
@@ -331,7 +333,7 @@ $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
 [0m[0m[1m[32m      Loaded[0m 724 security advisories (from /home/nick/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (125 crate dependencies)
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (126 crate dependencies)
 [0m[0m[1m[33mCrate:    [0m instant
 [0m[0m[1m[33mVersion:  [0m 0.1.13
 [0m[0m[1m[33mWarning:  [0m unmaintained
@@ -344,7 +346,7 @@ $ cargo audit
 └── notify-types 1.0.1
     └── notify 7.0.0
         └── sprint 0.11.3
-            └── mkrs 0.22.0
+            └── mkrs 0.22.1
 
 [0m[0m[1m[33mwarning:[0m 1 allowed warning found
 ```
@@ -353,8 +355,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.22.0 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 2.02s
+   Compiling mkrs v0.22.1 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.99s
 ```
 
 ~~~
@@ -597,16 +599,16 @@ cocomo
 ===============================================================================
  TOML                    1           27           25            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1119            0          829          290
+ Markdown                5         1124            0          834          290
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1232           91          835          306
+ (Total)                           1237           91          840          306
 -------------------------------------------------------------------------------
  Rust                    1          779          661           36           82
  |- Markdown             1           15            0           15            0
  (Total)                            794          661           51           82
 ===============================================================================
- Total                   7         1925          686          865          374
+ Total                   7         1930          686          870          374
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 686

@@ -51,6 +51,8 @@ Build automation tool
 * A **file target** that is a `*.ext` glob is a **wildcard target** whose **recipe** is used for any
   matching **dependency** in the `Makefile.md` or **target** on the command line that does not have
   its own **recipe**.
+* If a **file target**'s first dependency is a `*.ext` glob, it is interpreted as being the same
+  path as the **file target** except with the given extension.
 
 *See [`Makefile.md`], [`styles/Makefile.rust.md`] and/or the `-g` option for examples.*
 
@@ -65,10 +67,10 @@ Build automation tool
 
     Script Mode | Dry Run | Description
     ------------|---------|------------------------------------------------
-    &nbsp;      |         | Each command and output
+    &nbsp;      | &nbsp;  | Each command and output
     &nbsp;      | ✔       | Each command
-    ✔           |         | Each script
-    ✔           | ✔       | Each script and output (in separate code block)
+    ✔           | &nbsp;  | Each script and output (in separate code blocks)
+    ✔           | ✔       | Each script
 
 # Usage
 
