@@ -43,6 +43,7 @@
 * 0.21.0 (2025-01-04): Enable wildcard / glob targets; update dependencies
 * 0.22.0 (2025-01-12): Print wildcard targets as code spans; enumerate dependencies built via wildcard target; resolve wildcard targets after loading markdown versus when processing targets; renumber errors; update dependencies
     * 0.22.1 (2025-01-14): Fix documentation; fix print_code_block macro; update dependencies
+    * 0.22.2 (2025-02-21): Update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
