@@ -77,6 +77,12 @@ kapow {0} >{target}
 cargo doc
 ```
 
+# serve-doc
+
+```
+miniserve -p 8080 target/doc
+```
+
 # outdated
 
 ```
@@ -118,7 +124,7 @@ cargo uninstall {dirname}
 # install-deps
 
 ```
-cargo install cargo-audit cargo-edit cargo-outdated cocomo dtg kapow tokei toml-cli
+cargo install cargo-audit cargo-edit cargo-outdated cocomo dtg kapow miniserve tokei toml-cli
 ```
 
 # clean

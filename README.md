@@ -76,7 +76,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.22.2
+mkrs 0.23.0
 ~~~
 
 ~~~text
@@ -121,6 +121,7 @@ $ mkrs -l
 * `target/release/mkrs`
 * `README.md`
 * doc
+* serve-doc
 * outdated
 * audit
 * update-toml
@@ -223,25 +224,25 @@ $ mkrs
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.22.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 2.02s
+   Compiling mkrs v0.23.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 2.01s
 ```
 
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.22.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.32s
+    Checking mkrs v0.23.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.35s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.22.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.41s
-     Running unittests src/main.rs (target/debug/deps/mkrs-fad0036e17a6340f)
+   Compiling mkrs v0.23.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.46s
+     Running unittests src/main.rs (target/debug/deps/mkrs-e61e672708823edd)
 
 running 0 tests
 
@@ -253,8 +254,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```text
 $ cargo doc
- Documenting mkrs v0.22.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+ Documenting mkrs v0.23.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.45s
    Generated /home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -276,7 +277,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 732 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m      Loaded[0m 733 security advisories (from /home/nick/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
 [0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (125 crate dependencies)
 ```
@@ -316,7 +317,7 @@ All dependencies are up to date, yay!
 ```text
 $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 732 security advisories (from /home/nick/.cargo/advisory-db)
+[0m[0m[1m[32m      Loaded[0m 733 security advisories (from /home/nick/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
 [0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (125 crate dependencies)
 ```
@@ -325,10 +326,32 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.22.2 (/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.99s
+   Compiling mkrs v0.23.0 (/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 2.02s
 ```
 
+~~~
+
+## Serve the documentation
+
+Run `mkrs serve-doc` then open a browser and navigate to <http://localhost:8080>.
+
+~~~text
+$ mkrs serve-doc
+# serve-doc
+
+```text
+$ miniserve -p 8080 target/doc
+miniserve v0.29.0
+Bound to [::]:8080, 0.0.0.0:8080
+Serving path /home/qtfkwk/github.com/qtfkwk/mkrs/target/doc
+Available at (non-exhaustive list):
+    http://127.0.0.1:8080
+    http://192.168.18.14:8080
+    http://192.168.122.1:8080
+    http://[::1]:8080
+
+Quit by pressing CTRL-C
 ~~~
 
 ## Generate a default Makefile.md for a Rust project
@@ -419,6 +442,12 @@ kapow {0} >{target}
 cargo doc
 ```
 
+# serve-doc
+
+```
+miniserve -p 8080 target/doc
+```
+
 # outdated
 
 ```
@@ -460,7 +489,7 @@ cargo uninstall {dirname}
 # install-deps
 
 ```
-cargo install cargo-audit cargo-edit cargo-outdated cocomo dtg kapow tokei toml-cli
+cargo install cargo-audit cargo-edit cargo-outdated cocomo dtg kapow miniserve tokei toml-cli
 ```
 
 # scaffold
@@ -569,16 +598,16 @@ cocomo
 ===============================================================================
  TOML                    1           27           25            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1095            0          807          288
+ Markdown                5         1159            0          855          304
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1208           91          813          304
+ (Total)                           1272           91          861          320
 -------------------------------------------------------------------------------
  Rust                    1          779          661           36           82
  |- Markdown             1           15            0           15            0
  (Total)                            794          661           51           82
 ===============================================================================
- Total                   7         1901          686          843          372
+ Total                   7         1965          686          891          388
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 686

@@ -128,6 +128,28 @@ $ mkrs update check build
 !run:../target/release/mkrs -C .. update check build 2>&1
 ~~~
 
+## Serve the documentation
+
+Run `mkrs serve-doc` then open a browser and navigate to <http://localhost:8080>.
+
+~~~text
+$ mkrs serve-doc
+# serve-doc
+
+```text
+$ miniserve -p 8080 target/doc
+miniserve v0.29.0
+Bound to [::]:8080, 0.0.0.0:8080
+Serving path /home/qtfkwk/github.com/qtfkwk/mkrs/target/doc
+Available at (non-exhaustive list):
+    http://127.0.0.1:8080
+    http://192.168.18.14:8080
+    http://192.168.122.1:8080
+    http://[::1]:8080
+
+Quit by pressing CTRL-C
+~~~
+
 ## Generate a default Makefile.md for a Rust project
 
 ~~~text
