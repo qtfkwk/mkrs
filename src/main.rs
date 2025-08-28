@@ -1,7 +1,7 @@
 use {
     anstream::{eprint, print},
-    anyhow::{anyhow, Result},
-    clap::{builder::Styles, ArgAction::Count, Parser},
+    anyhow::{Result, anyhow},
+    clap::{ArgAction::Count, Parser, builder::Styles},
     dep_graph::{DepGraph, Node},
     expanduser::expanduser,
     glob::glob,
@@ -11,7 +11,7 @@ use {
     owo_colors::{OwoColorize, Style},
     pulldown_cmark as pd,
     regex::Regex,
-    sprint::{style, ColorOverride, Command, Pipe, Shell},
+    sprint::{ColorOverride, Command, Pipe, Shell, style},
     std::{
         collections::HashSet,
         path::{Path, PathBuf},
@@ -772,22 +772,22 @@ fn generate_wildcard_target(
     targets: &IndexMap<String, Target>,
 ) -> Option<(String, Target)> {
     for t in targets.values() {
-        if let Some(glob) = t.glob.as_ref() {
-            if glob.is_match(name) {
-                let re = Regex::new(&format!("{}$", &t.name[2..])).expect("regex");
-                let extension = &t.dependencies[0][2..];
-                let dependency = re.replace(name, extension).to_string();
-                return Some((
-                    name.to_string(),
-                    Target::new(
-                        name,
-                        true,
-                        None,
-                        &[dependency.clone()],
-                        t.recipes.iter().map(|x| x.fix(name, &dependency)).collect(),
-                    ),
-                ));
-            }
+        if let Some(glob) = t.glob.as_ref()
+            && glob.is_match(name)
+        {
+            let re = Regex::new(&format!("{}$", &t.name[2..])).expect("regex");
+            let extension = &t.dependencies[0][2..];
+            let dependency = re.replace(name, extension).to_string();
+            return Some((
+                name.to_string(),
+                Target::new(
+                    name,
+                    true,
+                    None,
+                    std::slice::from_ref(&dependency),
+                    t.recipes.iter().map(|x| x.fix(name, &dependency)).collect(),
+                ),
+            ));
         }
     }
     None
