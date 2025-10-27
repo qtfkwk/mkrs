@@ -47,6 +47,7 @@
 * 0.23.0 (2025-02-22): Add `serve-doc` target; updated dependencies
     * 0.23.1 (2025-04-16): Update dependencies
 * 0.24.0 (2025-08-28): Update dependencies; 2024 edition
+    * 0.24.1 (2025-10-27): Update dependencies; use `pager2`
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
