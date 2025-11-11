@@ -560,7 +560,7 @@ dependencies = [
 
 [[package]]
 name = "mkrs"
-version = "0.24.2"
+version = "0.24.3"
 dependencies = [
  "anstream",
  "anyhow",
@@ -627,9 +627,9 @@ checksum = "9c6901729fa79e91a0913333229e9ca5dc725089d1c363b2f4b4760709dc4a52"
 
 [[package]]
 name = "pager2"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea424d21d324b6f933d787047a9e52156374eece50df6ade65a7f497c0338a69"
+checksum = "eaeafae65a76f573d4d7450ae718cee60bc9180ce213062b0dedc3837e80d24b"
 dependencies = [
  "errno",
  "libc",

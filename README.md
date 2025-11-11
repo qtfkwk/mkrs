@@ -76,7 +76,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.24.2
+mkrs 0.24.3
 ~~~
 
 ~~~text
@@ -220,21 +220,29 @@ cargo doc
 
 ~~~text
 $ mkrs
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.24.3 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.59s
+```
+
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all
-    Checking mkrs v0.24.2 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s
+    Checking mkrs v0.24.3 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.24.2 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.36s
-     Running unittests src/main.rs (target/debug/deps/mkrs-02c9335df6e31c1e)
+   Compiling mkrs v0.24.3 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.27s
+     Running unittests src/main.rs (target/debug/deps/mkrs-98506e00f21fc58a)
 
 running 0 tests
 
@@ -242,20 +250,13 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.24.2 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.57s
-```
-
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.24.2 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.88s
+ Documenting pager2 v0.6.2
+ Documenting mkrs v0.24.3 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.60s
    Generated /media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -326,8 +327,8 @@ $ cargo audit
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.24.2 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.58s
+   Compiling mkrs v0.24.3 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.57s
 ```
 
 ~~~
@@ -598,16 +599,16 @@ cocomo
 ===============================================================================
  TOML                    1           26           24            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1165            0          861          304
+ Markdown                5         1167            0          863          304
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1278           91          867          320
+ (Total)                           1280           91          869          320
 -------------------------------------------------------------------------------
  Rust                    1          767          651           36           80
  |- Markdown             1           15            0           15            0
  (Total)                            782          651           51           80
 ===============================================================================
- Total                   7         1958          675          897          386
+ Total                   7         1960          675          899          386
 ===============================================================================
 
 Total Physical Source Lines of Code (SLOC)                    = 675
