@@ -1,13 +1,13 @@
 use {
     anstream::{eprint, print},
     anyhow::{Result, anyhow},
-    clap::{ArgAction::Count, Parser, builder::Styles},
+    clap::{ArgAction::Count, Parser},
+    clap_cargo::style::CLAP_STYLING,
     dep_graph::{DepGraph, Node},
     expanduser::expanduser,
     glob::glob,
     globset::{Glob, GlobMatcher},
     indexmap::IndexMap,
-    lazy_static::lazy_static,
     owo_colors::{OwoColorize, Style},
     pulldown_cmark as pd,
     regex::Regex,
@@ -15,6 +15,7 @@ use {
     std::{
         collections::HashSet,
         path::{Path, PathBuf},
+        sync::LazyLock,
     },
 };
 
@@ -52,14 +53,12 @@ macro_rules! print_code_block {
 
 //--------------------------------------------------------------------------------------------------
 
-lazy_static! {
-    static ref BULLET: Style = style("#888888").expect("style");
-    static ref ERROR: Style = style("red+bold").expect("style");
-    static ref FENCE: Style = style("#555555").expect("style");
-    static ref FILE_TARGET: Style = style("#44FFFF+bold").expect("style");
-    static ref TARGET: Style = style("#FF22FF+bold").expect("style");
-    static ref UP_TO_DATE: Style = style("#00FF00+italic").expect("style");
-}
+static BULLET: LazyLock<Style> = LazyLock::new(|| style("#888888").expect("style"));
+static ERROR: LazyLock<Style> = LazyLock::new(|| style("red+bold").expect("style"));
+static FENCE: LazyLock<Style> = LazyLock::new(|| style("#555555").expect("style"));
+static FILE_TARGET: LazyLock<Style> = LazyLock::new(|| style("#44FFFF+bold").expect("style"));
+static TARGET: LazyLock<Style> = LazyLock::new(|| style("#FF22FF+bold").expect("style"));
+static UP_TO_DATE: LazyLock<Style> = LazyLock::new(|| style("#00FF00+italic").expect("style"));
 
 fn print_file_target(name: &str) {
     cprint!(*TARGET, "# `{name}`\n\n");
@@ -108,17 +107,9 @@ fn print_list_file_targets(target: &str, targets: &IndexMap<String, Target>, lev
 
 //--------------------------------------------------------------------------------------------------
 
-const STYLES: Styles = Styles::styled()
-    .header(clap_cargo::style::HEADER)
-    .usage(clap_cargo::style::USAGE)
-    .literal(clap_cargo::style::LITERAL)
-    .placeholder(clap_cargo::style::PLACEHOLDER)
-    .error(clap_cargo::style::ERROR)
-    .valid(clap_cargo::style::VALID)
-    .invalid(clap_cargo::style::INVALID);
-
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Parser)]
-#[command(about, version, max_term_width = 80, styles = STYLES)]
+#[command(about, version, max_term_width = 80, styles = CLAP_STYLING)]
 struct Cli {
     /// List targets/dependencies
     #[arg(short = 'l')]
@@ -191,13 +182,10 @@ fn main() -> Result<()> {
 
     // Generate default Makefile.md content (`-g STYLE`)
     if let Some(style) = cli.generate {
-        match style.as_str() {
-            "rust" => {
-                print!("{}", include_str!("../styles/Makefile.rust.md"));
-            }
-            _ => {
-                error!(2, "ERROR: Invalid style: `{style}`!");
-            }
+        if style.as_str() == "rust" {
+            print!("{}", include_str!("../styles/Makefile.rust.md"));
+        } else {
+            error!(2, "ERROR: Invalid style: `{style}`!");
         }
         std::process::exit(0);
     }
@@ -213,7 +201,7 @@ fn main() -> Result<()> {
     }
 
     // Process targets
-    Config::from(&cli.config_files)?.process(&cli)?;
+    Config::from(&cli.config_files)?.process(&cli);
 
     Ok(())
 }
@@ -267,6 +255,7 @@ fn add_node_and_deps(
     }
 }
 
+#[allow(clippy::fn_params_excessive_bools)]
 fn process_target(
     target: &str,
     targets: &IndexMap<String, Target>,
@@ -315,7 +304,7 @@ fn run(command: &str, dry_run: bool, quiet: bool) {
     }
 }
 
-fn run_script(script: &str, dry_run: bool, verbose: u8, quiet: bool, shell: Option<String>) {
+fn run_script(script: &str, dry_run: bool, verbose: u8, quiet: bool, shell: Option<&String>) {
     let command = if let Some(command) = &shell {
         command
     } else if verbose >= 1 {
@@ -395,6 +384,7 @@ impl Config {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn load_markdown(&mut self, s: &str, dirname: &str) {
         let mut in_h1 = false;
         let mut in_dependencies = false;
@@ -446,7 +436,7 @@ impl Config {
                             .filter_map(|x| x.map(|x| x.display().to_string()).ok())
                             .collect::<Vec<_>>();
                         if globbed.is_empty() || is_glob {
-                            dependencies.push(s.to_string());
+                            dependencies.push(s.clone());
                         } else {
                             dependencies.append(&mut globbed);
                         }
@@ -557,7 +547,7 @@ impl Config {
         self.targets.append(&mut files);
     }
 
-    fn process(&mut self, cli: &Cli) -> Result<()> {
+    fn process(&mut self, cli: &Cli) {
         if cli.verbose >= 3 {
             print_code_block!("rust", "{self:#?}");
         }
@@ -590,7 +580,7 @@ impl Config {
                 }
             }
             println!();
-            return Ok(());
+            return;
         }
 
         // Which target(s) are we processing?
@@ -639,8 +629,6 @@ impl Config {
                 );
             }
         }
-
-        Ok(())
     }
 }
 
@@ -664,7 +652,7 @@ impl Recipe {
                 dry_run,
                 verbose,
                 quiet,
-                Some(shell.clone()),
+                Some(shell),
             );
         } else if script_mode {
             run_script(&self.commands.join("\n"), dry_run, verbose, quiet, None);
