@@ -1,6 +1,6 @@
 [package]
 name = "mkrs"
-version = "0.24.3"
+version = "0.24.4"
 edition = "2024"
 description = "Build automation tool"
 repository = "https://github.com/qtfkwk/mkrs"
@@ -20,7 +20,7 @@ owo-colors = "4.2.3"
 pulldown-cmark = { version = "0.13.0", features = ["simd"] }
 regex = "1.12.2"
 shlex = "1.3.0"
-sprint = "0.12.2"
+sprint = "0.12.3"
 
 [target.'cfg(unix)'.dependencies]
 pager2 = "0.6.2"
