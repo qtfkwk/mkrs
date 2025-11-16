@@ -46,8 +46,12 @@ Build automation tool
   or by the command given in the code block info string.
 * Commands may use the following variables:
     * `{0}`: first dependency
-    * `{target}`: target name
     * `{dirname}`: directory name
+    * `{name}`: package name from `Cargo.toml`
+    * `{target}`: target name
+* Targets may use the following variables:
+    * `{dirname}`: directory name
+    * `{name}`: package name from `Cargo.toml`
 * A **file target** that is a `*.ext` glob is a **wildcard target** whose **recipe** is used for any
   matching **dependency** in the `Makefile.md` or **target** on the command line that does not have
   its own **recipe**.
@@ -76,7 +80,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.24.4
+mkrs 0.25.0
 ~~~
 
 ~~~text
@@ -220,21 +224,29 @@ cargo doc
 
 ~~~text
 $ mkrs
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.63s
+```
+
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all -D clippy::pedantic
-    Checking mkrs v0.24.4 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s
+    Checking mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.24.4 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.27s
-     Running unittests src/main.rs (target/debug/deps/mkrs-c67726f3ce25ee07)
+   Compiling mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.30s
+     Running unittests src/main.rs (target/debug/deps/mkrs-6d9ea7eb615b243d)
 
 running 0 tests
 
@@ -242,20 +254,12 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.24.4 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.66s
-```
-
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.24.4 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.86s
+ Documenting mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s
    Generated /media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -279,7 +283,7 @@ $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
 [0m[0m[1m[32m      Loaded[0m 867 security advisories (from /home/qtfkwk/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (122 crate dependencies)
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (128 crate dependencies)
 ```
 
 ~~~
@@ -294,7 +298,7 @@ $ mkrs update check build
 $ cargo upgrade -i
     Checking mkrs's dependencies
 note: Re-run with `--verbose` to show more dependencies
-  latest: 15 packages
+  latest: 16 packages
 ```
 
 # update-lock
@@ -302,7 +306,7 @@ note: Re-run with `--verbose` to show more dependencies
 ```text
 $ cargo update
     Updating crates.io index
-     Locking 0 packages to latest Rust 1.91.0 compatible versions
+     Locking 0 packages to latest Rust 1.91.1 compatible versions
 note: pass `--verbose` to see 1 unchanged dependencies behind latest
 ```
 
@@ -320,15 +324,15 @@ $ cargo audit
 [0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
 [0m[0m[1m[32m      Loaded[0m 867 security advisories (from /home/qtfkwk/.cargo/advisory-db)
 [0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (122 crate dependencies)
+[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (128 crate dependencies)
 ```
 
 # `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.24.4 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.55s
+   Compiling mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.67s
 ```
 
 ~~~
@@ -597,35 +601,35 @@ cocomo
 ===============================================================================
  Language            Files        Lines         Code     Comments       Blanks
 ===============================================================================
- TOML                    1           26           24            0            2
+ TOML                    1           27           25            0            2
 -------------------------------------------------------------------------------
- Markdown                5         1168            0          864          304
+ Markdown                5         1177            0          873          304
  |- BASH                 3          112           90            6           16
  |- Python               1            1            1            0            0
- (Total)                           1281           91          870          320
+ (Total)                           1290           91          879          320
 -------------------------------------------------------------------------------
- Rust                    1          767          651           36           80
- |- Markdown             1           15            0           15            0
- (Total)                            782          651           51           80
+ Rust                    1          801          670           48           83
+ |- Markdown             1           16            0           16            0
+ (Total)                            817          670           64           83
 ===============================================================================
- Total                   7         1961          675          900          386
+ Total                   7         2005          695          921          389
 ===============================================================================
 
-Total Physical Source Lines of Code (SLOC)                    = 675
-Development Effort Estimate, Person-Years (Person-Months)     = 0.13 (1.59)
+Total Physical Source Lines of Code (SLOC)                    = 695
+Development Effort Estimate, Person-Years (Person-Months)     = 0.14 (1.64)
   (Basic COCOMO model, Person-Months = 2.40*(KSLOC**1.05)*1.00)
-Schedule Estimate, Years (Months)                             = 0.25 (2.98)
+Schedule Estimate, Years (Months)                             = 0.25 (3.02)
   (Basic COCOMO model, Months = 2.50*(person-months**0.38))
-Estimated Average Number of Developers (Effort/Schedule)      = 0.53
-Total Estimated Cost to Develop                               = $17,882
+Estimated Average Number of Developers (Effort/Schedule)      = 0.54
+Total Estimated Cost to Develop                               = $18,439
   (average salary = $56,286/year, overhead = 2.40)
 
 Description                | Value
 ---------------------------|---------------------------------
-Total Source Lines of Code | 675
-Estimated Cost to Develop  | $17,881.77
-Estimated Schedule Effort  | 2.98 months
-Estimated People Required  | 0.53
+Total Source Lines of Code | 695
+Estimated Cost to Develop  | $18,438.50
+Estimated Schedule Effort  | 3.02 months
+Estimated People Required  | 0.54
 
 ```
 

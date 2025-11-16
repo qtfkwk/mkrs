@@ -51,6 +51,7 @@
     * 0.24.2 (2025-11-11): Update dependencies; use [`clap-cargo`] `CLAP_STYLING`; replace lazy_static with LazyLock; clippy pedantic fixes; cargo fmt
     * 0.24.3 (2025-11-11): Update dependencies
     * 0.24.4 (2025-11-13): Update dependencies
+* 0.25.0 (2025-11-16): Add `{name}` variable; update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1

@@ -46,8 +46,12 @@ Build automation tool
   or by the command given in the code block info string.
 * Commands may use the following variables:
     * `{0}`: first dependency
-    * `{target}`: target name
     * `{dirname}`: directory name
+    * `{name}`: package name from `Cargo.toml`
+    * `{target}`: target name
+* Targets may use the following variables:
+    * `{dirname}`: directory name
+    * `{name}`: package name from `Cargo.toml`
 * A **file target** that is a `*.ext` glob is a **wildcard target** whose **recipe** is used for any
   matching **dependency** in the `Makefile.md` or **target** on the command line that does not have
   its own **recipe**.

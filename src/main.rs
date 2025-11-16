@@ -1,3 +1,6 @@
+//--------------------------------------------------------------------------------------------------
+// Crates
+
 use {
     anstream::{eprint, print},
     anyhow::{Result, anyhow},
@@ -23,6 +26,12 @@ use {
 use pager2::Pager;
 
 //--------------------------------------------------------------------------------------------------
+// Lazy statics
+
+static NAME_VARIABLE: LazyLock<String> = LazyLock::new(|| String::from("{name}"));
+
+//--------------------------------------------------------------------------------------------------
+// Terminal colors
 
 macro_rules! cprint {
     ($style:expr, $($x:tt)*) => {
@@ -50,8 +59,6 @@ macro_rules! print_code_block {
         cprint!(*FENCE, "```\n\n");
     };
 }
-
-//--------------------------------------------------------------------------------------------------
 
 static BULLET: LazyLock<Style> = LazyLock::new(|| style("#888888").expect("style"));
 static ERROR: LazyLock<Style> = LazyLock::new(|| style("red+bold").expect("style"));
@@ -106,6 +113,7 @@ fn print_list_file_targets(target: &str, targets: &IndexMap<String, Target>, lev
 }
 
 //--------------------------------------------------------------------------------------------------
+// CLI
 
 #[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Parser)]
@@ -160,8 +168,6 @@ struct Cli {
     targets: Vec<String>,
 }
 
-//--------------------------------------------------------------------------------------------------
-
 fn main() -> Result<()> {
     if cfg!(windows) {
         error!(1, "ERROR: Windows is not a supported operating system!");
@@ -205,8 +211,6 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-
-//--------------------------------------------------------------------------------------------------
 
 fn add_node_and_deps(
     target: &str,
@@ -338,6 +342,7 @@ fn exit_if_failed(result: &Command, dry_run: bool) {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Structs
 
 #[derive(Debug)]
 struct Config {
@@ -361,17 +366,18 @@ impl Config {
             .to_str()
             .unwrap()
             .to_string();
+        let name = cargo_toml_package_name();
         for config_file in config_files {
-            r.load(config_file, &dirname)?;
+            r.load(config_file, &dirname, &name)?;
         }
         Ok(r)
     }
 
-    fn load(&mut self, config_file: &Path, dirname: &str) -> Result<()> {
+    fn load(&mut self, config_file: &Path, dirname: &str, name: &str) -> Result<()> {
         if config_file.exists() {
             match std::fs::read_to_string(config_file) {
                 Ok(s) => {
-                    self.load_markdown(&s, dirname);
+                    self.load_markdown(&s, dirname, name);
                     Ok(())
                 }
                 Err(e) => Err(anyhow!("{e}")),
@@ -385,13 +391,13 @@ impl Config {
     }
 
     #[allow(clippy::too_many_lines)]
-    fn load_markdown(&mut self, s: &str, dirname: &str) {
+    fn load_markdown(&mut self, s: &str, dirname: &str, name: &str) {
         let mut in_h1 = false;
         let mut in_dependencies = false;
         let mut in_recipe = None;
         let mut is_file = false;
         let mut is_glob = false;
-        let mut name: Option<String> = None;
+        let mut target: Option<String> = None;
         let mut dependencies = vec![];
         let mut recipes = vec![];
         for event in pd::Parser::new_ext(s, pd::Options::all()) {
@@ -400,19 +406,19 @@ impl Config {
                     level: pd::HeadingLevel::H1,
                     ..
                 }) => {
-                    if let Some(n) = name.take() {
+                    if let Some(n) = target.take() {
                         // Push staged target
-                        let target = Target::new(
+                        let t = Target::new(
                             &n,
                             is_file,
                             glob_matcher(&n, is_glob),
                             &dependencies,
                             std::mem::take(&mut recipes),
                         );
-                        self.targets.insert(n, target);
+                        self.targets.insert(n, t);
 
                         // Reset
-                        name = None;
+                        target = None;
                         is_file = false;
                         is_glob = false;
                         dependencies = vec![];
@@ -420,14 +426,15 @@ impl Config {
                     in_h1 = true;
                 }
                 pd::Event::Code(s) => {
-                    let s = s.replace("{dirname}", dirname);
+                    let s = s.replace("{dirname}", dirname).replace("{name}", name);
+
                     if in_h1 {
                         if s.starts_with("*.") && s.len() > 2 {
                             is_glob = true;
-                            name = Some(s);
+                            target = Some(s);
                         } else {
                             is_file = true;
-                            name = Some(s);
+                            target = Some(s);
                         }
                     } else if in_dependencies {
                         let s = expanduser(&s).unwrap().display().to_string();
@@ -445,7 +452,7 @@ impl Config {
                 pd::Event::Text(s) => {
                     if in_h1 {
                         is_file = false;
-                        name = Some(s.to_string());
+                        target = Some(s.to_string());
                     } else if in_dependencies {
                         dependencies.push(s.to_string());
                     } else if let Some(shell) = in_recipe.take() {
@@ -453,8 +460,9 @@ impl Config {
                             s.trim().to_string()
                         } else {
                             s.trim()
-                                .replace("{target}", name.as_ref().unwrap())
+                                .replace("{target}", target.as_ref().unwrap())
                                 .replace("{dirname}", dirname)
+                                .replace("{name}", name)
                         };
 
                         let s = if dependencies.is_empty() || is_glob {
@@ -507,7 +515,7 @@ impl Config {
         }
 
         // Add the last target
-        if let Some(n) = name.take() {
+        if let Some(n) = target.take() {
             let target = Target::new(
                 &n,
                 is_file,
@@ -632,7 +640,7 @@ impl Config {
     }
 }
 
-//--------------------------------------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #[derive(Debug)]
 struct Recipe {
@@ -675,7 +683,7 @@ impl Recipe {
     }
 }
 
-//--------------------------------------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 #[derive(Debug)]
 struct Target {
@@ -740,6 +748,7 @@ impl Target {
 }
 
 //--------------------------------------------------------------------------------------------------
+// Helper functions
 
 /// Conditionally create a [`GlobMatcher`] from a [`&str`]
 fn glob_matcher(n: &str, is_glob: bool) -> Option<GlobMatcher> {
@@ -779,4 +788,30 @@ fn generate_wildcard_target(
         }
     }
     None
+}
+
+/// Get the package name from the `Cargo.toml` file
+fn cargo_toml_package_name() -> String {
+    if let Ok(content) = std::fs::read_to_string("Cargo.toml") {
+        // Cargo.toml exists and read contents as a string
+        if let Ok(table) = content.parse::<toml::Table>() {
+            // Content was parsed as a TOML table
+            if let Some(v) = table.get("package") {
+                // Root table has `package` key/value
+                if let Some(m) = v.as_table() {
+                    // Package value is a table
+                    if let Some(v) = m.get("name") {
+                        // Package table has `name` key/value
+                        if let Some(name) = v.as_str() {
+                            // Name value is a string
+                            return name.to_string();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // If any of the above fails, return the unresolved name variable string
+    NAME_VARIABLE.clone()
 }

@@ -17,10 +17,10 @@
 
 # run
 
-* `target/release/{dirname}`
+* `target/release/{name}`
 
 ```
-target/release/{dirname}
+target/release/{name}
 ```
 
 # clippy
@@ -45,9 +45,9 @@ cargo test
 
 # build
 
-* `target/release/{dirname}`
+* `target/release/{name}`
 
-# `target/release/{dirname}`
+# `target/release/{name}`
 
 * `Cargo.lock`
 * `Cargo.toml`
@@ -118,7 +118,7 @@ cargo install --path .
 # uninstall
 
 ```
-cargo uninstall {dirname}
+cargo uninstall {name}
 ```
 
 # install-deps
