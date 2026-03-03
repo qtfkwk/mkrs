@@ -80,7 +80,7 @@ Build automation tool
 
 ~~~text
 $ mkrs -V
-mkrs 0.25.0
+mkrs 0.25.1
 ~~~
 
 ~~~text
@@ -194,6 +194,12 @@ $ mkrs -l full
 
 ~~~text
 $ mkrs -n
+# `target/release/mkrs`
+
+```text
+cargo build --release
+```
+
 # clippy
 
 ```text
@@ -204,12 +210,6 @@ cargo clippy -- -D clippy::all -D clippy::pedantic
 
 ```text
 cargo test
-```
-
-# `target/release/mkrs`
-
-```text
-cargo build --release
 ```
 
 # doc
@@ -224,29 +224,21 @@ cargo doc
 
 ~~~text
 $ mkrs
-# `target/release/mkrs`
-
-```text
-$ cargo build --release
-   Compiling mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.63s
-```
-
 # clippy
 
 ```text
 $ cargo clippy -- -D clippy::all -D clippy::pedantic
-    Checking mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s
+    Checking mkrs v0.25.1 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s
 ```
 
 # test
 
 ```text
 $ cargo test
-   Compiling mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+   Compiling mkrs v0.25.1 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.30s
-     Running unittests src/main.rs (target/debug/deps/mkrs-6d9ea7eb615b243d)
+     Running unittests src/main.rs (target/debug/deps/mkrs-691fb40b2c6b7352)
 
 running 0 tests
 
@@ -254,12 +246,114 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
 ```
 
+# `target/release/mkrs`
+
+```text
+$ cargo build --release
+   Compiling mkrs v0.25.1 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.54s
+```
+
 # doc
 
 ```text
 $ cargo doc
- Documenting mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s
+    Checking unicode-ident v1.0.24
+ Documenting unicode-ident v1.0.24
+ Documenting bitflags v2.11.0
+ Documenting memchr v2.8.0
+ Documenting libc v0.2.182
+ Documenting linux-raw-sys v0.12.1
+ Documenting regex-syntax v0.8.10
+ Documenting log v0.4.29
+ Documenting anstyle v1.0.13
+ Documenting clap_lex v1.0.0
+    Checking heck v0.5.0
+ Documenting same-file v1.0.6
+ Documenting heck v0.5.0
+ Documenting strsim v0.11.1
+ Documenting crossbeam-utils v0.8.21
+ Documenting typenum v1.19.0
+ Documenting cfg-if v1.0.4
+ Documenting cpufeatures v0.2.17
+ Documenting anyhow v1.0.102
+ Documenting serde_core v1.0.228
+ Documenting either v1.15.0
+ Documenting constant_time_eq v0.4.2
+ Documenting utf8parse v0.2.2
+ Documenting arrayref v0.3.9
+ Documenting arrayvec v0.7.6
+ Documenting unicode-width v0.2.2
+ Documenting winnow v0.7.14
+ Documenting anstyle-query v1.1.5
+ Documenting colorchoice v1.0.4
+ Documenting is_terminal_polyfill v1.70.2
+ Documenting owo-colors v4.3.0
+ Documenting hashbrown v0.16.1
+ Documenting pulldown-cmark-escape v0.11.0
+ Documenting equivalent v1.0.2
+ Documenting shlex v1.3.0
+ Documenting toml_writer v1.0.6+spec-1.1.0
+    Checking proc-macro2 v1.0.106
+ Documenting unicase v2.9.0
+ Documenting lazy_static v1.5.0
+ Documenting proc-macro2 v1.0.106
+ Documenting glob v0.3.3
+    Checking quote v1.0.44
+ Documenting anstyle-parse v1.0.0
+    Checking syn v2.0.117
+ Documenting walkdir v2.5.0
+ Documenting notify-types v2.1.0
+ Documenting blake3 v1.8.3
+ Documenting rustix v1.1.4
+ Documenting crossbeam-epoch v0.9.18
+ Documenting getopts v0.2.24
+ Documenting aho-corasick v1.1.4
+ Documenting bstr v1.12.1
+ Documenting indexmap v2.13.0
+ Documenting quote v1.0.44
+ Documenting anstream v1.0.0
+ Documenting toml_parser v1.0.9+spec-1.1.0
+ Documenting inotify-sys v0.1.5
+ Documenting mio v1.1.1
+ Documenting errno v0.3.14
+ Documenting dirs v1.0.5
+ Documenting num_cpus v1.17.0
+ Documenting generic-array v0.14.7
+ Documenting serde_spanned v1.0.4
+ Documenting toml_datetime v1.0.0+spec-1.1.0
+ Documenting terminal_size v0.4.3
+ Documenting crossbeam-deque v0.8.6
+ Documenting pulldown-cmark v0.13.1
+ Documenting regex-automata v0.4.14
+ Documenting syn v2.0.117
+ Documenting inotify v0.11.0
+ Documenting pager2 v0.6.4
+ Documenting dep-graph v0.2.0
+ Documenting block-buffer v0.10.4
+ Documenting crypto-common v0.1.7
+ Documenting toml v1.0.3+spec-1.1.0
+ Documenting clap_builder v4.5.60
+ Documenting rayon-core v1.13.0
+ Documenting globset v0.4.18
+ Documenting regex v1.12.3
+ Documenting clap_derive v4.5.55
+ Documenting thiserror-impl v1.0.69
+ Documenting notify v8.2.0
+ Documenting digest v0.10.7
+ Documenting rayon v1.11.0
+ Documenting ignore v0.4.25
+ Documenting thiserror v1.0.69
+ Documenting clap v4.5.60
+ Documenting sha2 v0.10.9
+ Documenting ignore-check v0.3.3
+ Documenting pwd v1.4.0
+ Documenting clap-cargo v0.18.3
+ Documenting expanduser v1.2.2
+ Documenting fhc v0.11.4
+ Documenting sprint v0.12.4
+ Documenting mkrs v0.25.1 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 41.11s
    Generated /media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs/target/doc/mkrs/index.html
 ```
 
@@ -280,10 +374,10 @@ All dependencies are up to date, yay!
 
 ```text
 $ cargo audit
-[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 867 security advisories (from /home/qtfkwk/.cargo/advisory-db)
-[0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (128 crate dependencies)
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 939 security advisories (from /home/qtfkwk/.cargo/advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (130 crate dependencies)
 ```
 
 ~~~
@@ -306,7 +400,7 @@ note: Re-run with `--verbose` to show more dependencies
 ```text
 $ cargo update
     Updating crates.io index
-     Locking 0 packages to latest Rust 1.91.1 compatible versions
+     Locking 0 packages to latest Rust 1.93.1 compatible versions
 note: pass `--verbose` to see 1 unchanged dependencies behind latest
 ```
 
@@ -321,18 +415,18 @@ All dependencies are up to date, yay!
 
 ```text
 $ cargo audit
-[0m[0m[1m[32m    Fetching[0m advisory database from `https://github.com/RustSec/advisory-db.git`
-[0m[0m[1m[32m      Loaded[0m 867 security advisories (from /home/qtfkwk/.cargo/advisory-db)
-[0m[0m[1m[32m    Updating[0m crates.io index
-[0m[0m[1m[32m    Scanning[0m Cargo.lock for vulnerabilities (128 crate dependencies)
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 939 security advisories (from /home/qtfkwk/.cargo/advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (130 crate dependencies)
 ```
 
 # `target/release/mkrs`
 
 ```text
 $ cargo build --release
-   Compiling mkrs v0.25.0 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
-    Finished `release` profile [optimized] target(s) in 1.67s
+   Compiling mkrs v0.25.1 (/media/sda1/backup-20250317/home/nick/github.com/qtfkwk/mkrs)
+    Finished `release` profile [optimized] target(s) in 1.55s
 ```
 
 ~~~
@@ -598,22 +692,22 @@ cocomo
 ```
 
 ```text
-===============================================================================
- Language            Files        Lines         Code     Comments       Blanks
-===============================================================================
- TOML                    1           27           25            0            2
--------------------------------------------------------------------------------
- Markdown                5         1177            0          873          304
- |- BASH                 3          112           90            6           16
- |- Python               1            1            1            0            0
- (Total)                           1290           91          879          320
--------------------------------------------------------------------------------
- Rust                    1          801          670           48           83
- |- Markdown             1           16            0           16            0
- (Total)                            817          670           64           83
-===============================================================================
- Total                   7         2005          695          921          389
-===============================================================================
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ Language              Files        Lines         Code     Comments       Blanks
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ TOML                      1           27           25            0            2
+─────────────────────────────────────────────────────────────────────────────────
+ Markdown                  5         1272            0          968          304
+ |- BASH                   3          112           90            6           16
+ |- Python                 1            1            1            0            0
+ (Total)                             1385           91          974          320
+─────────────────────────────────────────────────────────────────────────────────
+ Rust                      1          801          670           48           83
+ |- Markdown               1           16            0           16            0
+ (Total)                              817          670           64           83
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ Total                     7         2229          786         1038          405
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Total Physical Source Lines of Code (SLOC)                    = 695
 Development Effort Estimate, Person-Years (Person-Months)     = 0.14 (1.64)
