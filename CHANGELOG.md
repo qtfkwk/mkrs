@@ -53,6 +53,7 @@
     * 0.24.4 (2025-11-13): Update dependencies
 * 0.25.0 (2025-11-16): Add `{name}` variable; update dependencies
     * 0.25.1 (2026-03-03): Update dependencies
+    * 0.25.2 (2026-04-17): Update dependencies
 
 [default `Makefile.md` for a Rust project]: styles/Makefile.rust.md
 [#1]: https://github.com/qtfkwk/mkrs/issues/1
